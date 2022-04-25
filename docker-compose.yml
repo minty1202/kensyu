@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:latest
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+
+  app: 
+    build: .
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+      - bundle:/usr/local/bundle
+    tty: true
+    stdin_open: true
+    environment:
+      APP_DATABASE_HOST: db
+      APP_DATABASE_USERNAME: postgres
+      APP_DATABASE_PASSWORD: password
+      EDITOR: vi
+
+volumes:
+  db-data:
+  bundle:
