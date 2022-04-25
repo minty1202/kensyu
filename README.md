@@ -1,24 +1,32 @@
-# README
+# 研修
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## 資料
 
-Things you may want to cover:
+[doc](https://docs.google.com/document/d/1FXNSqwIKe-nEdo6YZdaV-udLnd1oKV6XxlZ7SuT_yKU/edit)
 
-* Ruby version
+## セットアップ
 
-* System dependencies
+基本的にはssh接続できるようにしておいてください
 
-* Configuration
+```bash
+git clone git@github.com:minty1202/kensyu.git
+make init
+make up
+```
 
-* Database creation
+## commit メッセージについて
 
-* Database initialization
+コミットメッセージは以下のルールに基づいて行ってください
 
-* How to run the test suite
+先頭に [add] [fix] [update] [remove] のうちどれかをつける
 
-* Services (job queues, cache servers, search engines, etc.)
+- fix: バグ修正
+- add: 新規（ファイル）機能追加
+- update: 機能修正（バグではない）
+- remove: 削除（ファイル）
 
-* Deployment instructions
+[ ] の後にissue番号をつける
 
-* ...
+実装した内容を一言でまとめる(日本語、英語かどちらでも良いです)
+
+例 [update] #1 hogeのviewファイル追記
