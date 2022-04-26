@@ -5,7 +5,7 @@
 研修資料ドキュメント  
 [doc](https://docs.google.com/document/d/1FXNSqwIKe-nEdo6YZdaV-udLnd1oKV6XxlZ7SuT_yKU/edit)
 
-画面遷移図  
+画面遷移図（参考）  
 [figma](https://www.figma.com/file/EDu4fCsjIgVB4fkORBP4w8/kensyu?node-id=0%3A1)
 
 ER図  
