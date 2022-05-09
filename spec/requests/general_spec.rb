@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Generals", type: :request do
+RSpec.describe "General", type: :request do
   describe "GET /index" do
     it "returns http success" do
       get root_path
