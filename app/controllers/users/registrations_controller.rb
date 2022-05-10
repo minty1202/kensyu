@@ -4,12 +4,13 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # before_action :configure_sign_up_params, only: [:create]
   # before_action :configure_account_update_params, only: [:update]
 
-  # def after_sign_up_path_for(resource)
-  # end
-
   def after_sign_up_path_for(resource)
-  format.html { redirect_to :new, status: :unprocessable_entity}
+    root_path
   end
+
+  # def after_sign_up_path_for(resource)
+  #   format.html { redirect_to :new, status: :unprocessable_entity}
+  # end
 
   # GET /resource/sign_up
   # def new
