@@ -2,10 +2,8 @@
 @import "bootstrap";
 
 body {
-  padding-top: 60px;
+  padding-top: 100px;
 }
-
-
 
 h1 {
   font-size: 3em;
@@ -15,7 +13,7 @@ h1 {
 }
 
 h2 {
-  font-size: 1.2em;
+  font-size: 1.6em;
   letter-spacing: -1px;
   margin-bottom: 30px;
   text-align: center;
@@ -28,6 +26,17 @@ p {
   line-height: 1.7em;
 }
 
+/* header */
+header{
+  background-color: #EDF6FC;
+  height: 80px;
+  display: flex;
+  align-items: center;
+}
+
+.container {
+  justify-content: space-between;
+}
 
 #header {
   float: left;
@@ -38,8 +47,51 @@ p {
   font-weight: bold;
 }
 
+/* footer */
 footer {
   position: absolute;
   bottom: 0;
   text-align: center;
+  width: 100%;
+  height: 80px;
+  background-color: #EDF6FC;
+  margin:0 auto;
+  font-size: 1.6rem;
+  color: rgb(9, 192, 243);
+}
+
+form{
+  text-align: center;
+}
+
+
+
+input, textarea, select, .uneditable-input {
+  border: 1px solid #bbb;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+input {
+  height: auto !important;
+}
+
+
+.checkbox {
+  margin-top: -10px;
+  margin-bottom: 10px;
+  height: 10px;
+  span {
+    margin-left: 20px;
+    font-weight: normal;
+  }
+}
+
+#session_remember_me {
+  width: auto;
+  margin-left: 0;
+}
+
+li{
+  margin-right: 10px;
 }
