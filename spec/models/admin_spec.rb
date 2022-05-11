@@ -1,32 +1,33 @@
 require 'rails_helper'
 
 RSpec.describe Admin, type: :model do
-  let(:user) {build(:user) }
+  let(:admin) {build(:admin) }
 
   it 'emailが必須であること' do
-    user.email = ''
-    expect(user).to_not be_valid
+    admin.email = ''
+    expect(admin).to_not be_valid
   end
 
   it 'emailは重複して登録できないこと' do
-    duplicate_user = user.dup
-    duplicate_user.email = user.email
-    user.save
-    expect(duplicate_user).to_not be_valid
+    duplicate_admin = admin.dup
+    # duplicate_admin.email = admin.email
+    admin.save
+    expect(duplicate_admin).to_not be_valid
   end
 
   it 'passwordが必須であること' do
-    user.password = user.password_confirmation = ' ' * 6
-    expect(user).to_not be_valid
+    admin.password = admin.password_confirmation = ' ' * 6
+    expect(admin).to_not be_valid
   end
 
   it 'passwordが6文字以下は登録できない' do
-    user.password = user.password_confirmation = 'a' * 5
-    expect(user).to_not be_valid
+    admin.password = admin.password_confirmation = 'a' * 5
+    expect(admin).to_not be_valid
   end
 
   it 'passwordが6文字以上であること' do
-    user.password = user.password_confirmation = 'a' * 6
-    expect(user).to be_valid
+    admin.password = admin.password_confirmation = 'a' * 6
+    expect(admin).to be_valid
+  it { expect(admin).to be_valid }
   end
 end

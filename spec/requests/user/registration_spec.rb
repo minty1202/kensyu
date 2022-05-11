@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe "User", type: :request do
-  # let(:user) { build(:user) }
 
   describe 'GET /users/sign_up' do
     it "returns http success" do
@@ -23,20 +22,20 @@ RSpec.describe "User", type: :request do
     end
 
     context '有効な値の場合' do
+  let(:user_params) { { user: { name: 'test',
+                                    email: 'test@example.com',
+                                    password: '123456',
+                                    password_confirmation: '123456' } } }
       it '登録されること' do
+        p user_params
+        puts "aaaaaa"
         expect {
-          post user_registration_path, params: { user: { name: 'test',
-                                              email: 'test@example.com',
-                                              password: '123456',
-                                              password_confirmation: '123456' } }
+          post user_registration_path, params: user_params
         }.to change(User, :count).by 1
       end
 
       it 'ログイン状態であること' do
-        post user_registration_path, params: { user: { name: 'test',
-                                              email: 'test@example.com',
-                                              password: '123456',
-                                              password_confirmation: '123456' } }
+        post user_registration_path, params: user_params
         expect(!!session.id).to be_truthy
       end
     end

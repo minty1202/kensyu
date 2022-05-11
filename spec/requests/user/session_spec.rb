@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "Session", type: :request do
+  let!(:user) { build(:user) }
   describe "POST /users/sign_in" do
     it "return http success" do
       post user_session_path, params: { user: {email: 'test@example.com',
@@ -10,7 +11,6 @@ RSpec.describe "Session", type: :request do
   end
 
   describe "DELETE /users/sign_out" do
-    let!(:user) { build(:user) }
     before do
       sign_in(user)
     end
