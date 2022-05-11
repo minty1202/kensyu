@@ -1,0 +1,10 @@
+header.navbar.navbar-fixed-top
+  div.container
+    = link_to "TODO", root_path, id:"header"
+    nav
+      ul.nav.navbar-nav.navbar-right
+        - if user_signed_in?
+          li.navbar-default= link_to "Logout", destroy_user_session_path, method: :delete
+        - else
+          li.navbar-default= link_to "Sign up", new_user_registration_path
+          li.navbar-default= link_to "Login", user_session_path
