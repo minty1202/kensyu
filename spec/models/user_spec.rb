@@ -33,7 +33,7 @@ RSpec.describe User, type: :model do
     expect(user).to be_valid
   end
 
-  it 'すべての値が通る' do
+  it 'すべての値が正常であれば登録できる' do
     expect(user).to be_valid
   end
 
