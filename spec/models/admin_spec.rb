@@ -8,13 +8,6 @@ RSpec.describe Admin, type: :model do
     expect(admin).to_not be_valid
   end
 
-  it 'emailは重複して登録できないこと' do
-    duplicate_admin = admin.dup
-    # duplicate_admin.email = admin.email
-    admin.save
-    expect(duplicate_admin).to_not be_valid
-  end
-
   it 'passwordが必須であること' do
     admin.password = admin.password_confirmation = ' ' * 6
     expect(admin).to_not be_valid
@@ -28,6 +21,7 @@ RSpec.describe Admin, type: :model do
   it 'passwordが6文字以上であること' do
     admin.password = admin.password_confirmation = 'a' * 6
     expect(admin).to be_valid
-  it { expect(admin).to be_valid }
   end
+
+  it { expect(admin).to be_valid }
 end

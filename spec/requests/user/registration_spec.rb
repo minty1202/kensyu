@@ -27,8 +27,6 @@ RSpec.describe "User", type: :request do
                                     password: '123456',
                                     password_confirmation: '123456' } } }
       it '登録されること' do
-        p user_params
-        puts "aaaaaa"
         expect {
           post user_registration_path, params: user_params
         }.to change(User, :count).by 1
