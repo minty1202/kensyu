@@ -14,4 +14,5 @@ Rails.application.routes.draw do
     registrations: 'admins/registrations'
   }
   root 'general#index'
+  resources :mypage
 end

@@ -50,7 +50,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   protected
     def after_sign_up_path_for(resource)
-      root_path
+      mypage_path(current_user)
     end
 
     # If you have extra params to permit, append them to the sanitizer.

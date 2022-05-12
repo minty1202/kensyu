@@ -1,0 +1,13 @@
+div
+  ul.user-info
+    li.user= @user.name
+    li.user= @user.email
+div.todo-list
+  - unless @todos.empty?
+    ul.todos-info
+      - @todos.each do |todo|
+        li.user= todo.title
+        li.user= todo.text
+        li.user= todo.created_at
+  - else
+    p.todos-info Todoリストがありません！
