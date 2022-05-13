@@ -11,7 +11,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
 
-  app: 
+  app:
     build: .
     ports:
       - '3000:3000'
