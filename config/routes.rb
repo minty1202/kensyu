@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   end
 
   namespace :users do
-    resource :mypage, only:[:show]
+    resource :mypage, only: :show
   end
 
   devise_for :admins, controllers: {

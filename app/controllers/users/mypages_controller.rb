@@ -1,4 +1,3 @@
-class Users::MypagesController < ApplicationController
-  before_action :authenticate_user!
+class Users::MypagesController < UsersController
   def show; end
 end
