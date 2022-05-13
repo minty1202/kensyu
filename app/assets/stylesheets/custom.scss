@@ -95,3 +95,29 @@ input {
 li{
   margin-right: 10px;
 }
+
+.user-info{
+  width: 70%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+}
+
+.user{
+  list-style: none;
+  font-size: 25px;
+}
+
+.todo-list{
+  margin-top: 50px;
+}
+
+.todos-info{
+  width: 70%;
+  margin: 0px auto;
+  display: flex;
+  justify-content: space-around;
+  background-color: rgb(229, 229, 229);
+  border-radius: 5px;
+  padding: 20px;
+}

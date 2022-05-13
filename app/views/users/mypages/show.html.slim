@@ -1,0 +1,12 @@
+ul.user-info
+  li.user= current_user.name
+  li.user= current_user.email
+.todo-list
+  - if current_user.todos.present?
+    ul.todos-info
+      - current_user.todos.each do |todo|
+        li.user= todo.title
+        li.user= todo.text
+        li.user= todo.created_at
+  - else
+    p.todos-info Todoリストがありません！
