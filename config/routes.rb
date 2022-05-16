@@ -10,7 +10,9 @@ Rails.application.routes.draw do
 
   namespace :users do
     resource :mypage, only: :show
+    resource :todo, only:[:new, :create]
   end
+
 
   devise_for :admins, controllers: {
     sessions:      'admins/sessions',
