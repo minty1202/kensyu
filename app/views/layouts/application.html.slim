@@ -10,5 +10,6 @@ html
     = javascript_importmap_tags
   body
     = render 'layouts/header'
+    h2 = flash[:success]
     = yield
     = render 'layouts/footer'
