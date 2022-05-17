@@ -10,7 +10,7 @@ Rails.application.routes.draw do
 
   namespace :users do
     resource :mypage, only: :show
-    resource :todo, only:[:new, :create]
+    resources :todos, only:[:new, :create, :edit, :update]
   end
 
 
