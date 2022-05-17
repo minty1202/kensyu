@@ -106,18 +106,27 @@ li{
 .user{
   list-style: none;
   font-size: 25px;
+  color: rgb(0, 0, 0);
 }
 
 .todo-list{
   margin-top: 50px;
+  :hover{
+    text-decoration: none;
+    color: rgb(0, 0, 0);
+  }
 }
 
 .todos-info{
+  color: rgb(0, 0, 0);
   width: 70%;
-  margin: 0px auto;
+  margin: 30px auto;
   display: flex;
   justify-content: space-around;
   background-color: rgb(229, 229, 229);
   border-radius: 5px;
   padding: 20px;
+  :hover{
+    color: rgb(0, 0, 0);
+  }
 }
