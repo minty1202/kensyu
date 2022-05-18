@@ -6,7 +6,7 @@ WORKDIR $APP_HOME
 
 RUN apt-get update -qq && \
     apt-get install -y build-essential \
-                       libpq-dev curl git
+                       libvips libpq-dev curl git
 
 RUN curl -O -fsSL https://download.docker.com/linux/debian/gpg
 RUN apt-key add gpg
