@@ -1,4 +1,7 @@
 class Users::TodosController < UsersController
+
+  before_action :todo_detail, only:[:edit, :update]
+
   def new
     @todo = Todo.new
   end
@@ -13,13 +16,9 @@ class Users::TodosController < UsersController
     end
   end
 
-  def edit
-    @todo = Todo.find(params[:id])
-  end
+  def edit; end
 
   def update
-    @todo = Todo.find(params[:id])
-
     if @todo.update(title: todo_params[:title], text: todo_params[:text], user_id: current_user.id)
       flash[:success] = "Todoを更新しました！"
       redirect_to users_mypage_path
@@ -29,7 +28,12 @@ class Users::TodosController < UsersController
   end
 
   private
+
     def todo_params
       params.require(:todo).permit(:title, :text)
+    end
+
+    def todo_detail
+      @todo = current_user.todos.find(params[:id])
     end
   end

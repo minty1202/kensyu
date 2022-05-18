@@ -64,7 +64,7 @@ RSpec.describe "Todos", type: :request do
     let!(:todo) { create(:todo) }
     context 'ログインしている場合' do
       before do
-        sign_in(user)
+        sign_in(todo.user)
       end
       it "return http success" do
         get edit_users_todo_path(todo)
@@ -83,7 +83,7 @@ RSpec.describe "Todos", type: :request do
     let!(:todo) { create(:todo) }
     context 'ログインしている場合' do
       before do
-        sign_in(user)
+        sign_in(todo.user)
       end
       context '更新が失敗する場合' do
         it '無効な値だと更新されないこと' do
@@ -97,7 +97,7 @@ RSpec.describe "Todos", type: :request do
       context '更新が成功する場合' do
         let(:todo_params) { { todo: { title: 'test',
                                   text: 'hogehogehoge',
-                                  user_id: 1} } }
+                                  user_id: todo.user.id} } }
         it '更新されること' do
           expect{
             patch users_todo_path(todo), params: todo_params

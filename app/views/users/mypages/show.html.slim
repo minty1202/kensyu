@@ -4,8 +4,8 @@ ul.user-info
   button
     = link_to 'Todo登録へ', new_users_todo_path
 .todo-list
-  - if current_user.todos.present?
-    - current_user.todos.each do |todo|
+  - if @todo.present?
+    - @todo.each do |todo|
       = link_to edit_users_todo_path(todo)
         ul.todos-info
           li.user= todo.title
