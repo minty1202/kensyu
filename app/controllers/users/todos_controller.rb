@@ -1,6 +1,6 @@
 class Users::TodosController < UsersController
 
-  before_action :todo_detail, only:[:edit, :update]
+  before_action :find_todo_detail, only:[:edit, :update]
 
   def new
     @todo = Todo.new
@@ -33,7 +33,7 @@ class Users::TodosController < UsersController
       params.require(:todo).permit(:title, :text)
     end
 
-    def todo_detail
+    def find_todo_detail
       @todo = current_user.todos.find(params[:id])
     end
   end
