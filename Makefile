@@ -16,4 +16,13 @@ install:
 	docker-compose run --rm app bundle install
 	docker-compose run --rm app yarn install
 
+rspec:
+	docker-compose run --rm app bundle exec rspec
+
+routes:
+	docker-compose run --rm app bundle exec rails routes
+
+console:
+	docker-compose run --rm app bundle exec rails console
+
 init: build install setup

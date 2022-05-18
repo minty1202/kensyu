@@ -1,3 +1,5 @@
 class Users::MypagesController < UsersController
-  def show; end
+  def show
+    @todos = current_user.todos
+  end
 end
