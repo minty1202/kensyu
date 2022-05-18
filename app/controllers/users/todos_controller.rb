@@ -1,6 +1,6 @@
 class Users::TodosController < UsersController
 
-  before_action :find_todo_detail, only:[:edit, :update]
+  before_action :find_todo_detail, only:[:edit, :update, :destroy]
 
   def new
     @todo = Todo.new
@@ -25,6 +25,12 @@ class Users::TodosController < UsersController
     else
       render 'edit', status: :unprocessable_entity
     end
+  end
+
+  def destroy
+    @todo.destroy
+    flash[:success] = "Todoを削除しました！"
+    redirect_to users_mypage_path
   end
 
   private
