@@ -118,4 +118,41 @@ RSpec.describe "Todos", type: :request do
       end
     end
   end
+
+  describe 'DELETE users/todos/#delete' do
+    let!(:todo) { create(:todo) }
+    context 'ログインしている場合'do
+      before do
+        sign_in(todo.user)
+      end
+
+      it "編集ページに移動すること" do
+        get edit_users_todo_path(todo)
+        expect(response).to have_http_status(:success)
+      end
+
+      # context '削除が失敗する場合' do
+      # end
+
+      context '削除が成功する場合' do
+        it '削除されること' do
+          expect{
+            delete users_todo_path(todo)
+          }.to change(Todo, :count).by(-1)
+        end
+        it 'ユーザー詳細ページにリダイレクトされること' do
+          delete users_todo_path(todo)
+          expect(response).to redirect_to users_mypage_path
+          expect(flash[:success]).to be_truthy
+        end
+      end
+    end
+
+    context 'ログインしていない場合'do
+      it "ログインページにリダイレクトされること" do
+        delete users_todo_path(todo)
+        expect(response).to redirect_to new_user_session_path
+      end
+    end
+  end
 end
