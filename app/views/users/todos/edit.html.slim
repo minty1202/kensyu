@@ -1,2 +1,4 @@
 h1 編集ページ
 = render 'form', todo:@todo
+.col-md-6.col-md-offset-3
+  = button_to "削除する", users_todo_path(@todo), method: :delete
