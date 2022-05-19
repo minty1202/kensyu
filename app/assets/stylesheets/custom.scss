@@ -123,9 +123,10 @@ li{
   margin: 30px auto;
   display: flex;
   justify-content: space-around;
+  align-items: center;
   background-color: rgb(229, 229, 229);
   border-radius: 5px;
-  padding: 20px;
+  padding: 10px;
   :hover{
     color: rgb(0, 0, 0);
   }
