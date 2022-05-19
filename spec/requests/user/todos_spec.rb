@@ -104,6 +104,9 @@ RSpec.describe "Todos", type: :request do
           }.to_not change(Todo, :count)
           expect(todo.reload.title).to eq 'test'
         end
+
+        it '選択された画像が削除されること'
+
         it "ユーザー詳細ページにリダイレクトされること" do
           patch users_todo_path(todo), params: todo_params
           expect(response).to redirect_to users_mypage_path

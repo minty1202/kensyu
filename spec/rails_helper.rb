@@ -38,6 +38,10 @@ RSpec.configure do |config|
   # config.before(:all) do
   #   FactoryBot.reload
   # end
+  #テストスイートの実行が終わったらアップロードされたファイルを削除する
+  config.after(:suite) do
+    FileUtils.rm_rf(ActiveStorage::Blob.service.root)
+  end
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false

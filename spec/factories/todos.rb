@@ -5,5 +5,9 @@ FactoryBot.define do
     user
     # association :user
     # user_id {FactoryBot.create(:user)}
-  end
+
+    trait :with_attachment do
+      attachment { Rack::Test::UploadedFile.new(
+      "#{Rails.root}/spec/fixtures/test_image.png", 'image/png') } end
+    end
 end
