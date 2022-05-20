@@ -12,6 +12,7 @@ ul.user-info
           li.user= todo.text
           li.user= todo.created_at
           - if todo.images.attached?
-            li.user= image_tag todo.images[0], size: '100x100'
+            - todo.images.each do |image|
+                li.user= image_tag image, size: '100x100'
   - else
     p.todos-info Todoリストがありません！

@@ -7,7 +7,7 @@ class Users::TodosController < UsersController
   end
 
   def create
-    @todo = Todo.new(title: todo_params[:title], text: todo_params[:text], images: todo_params[:images], user_id: current_user.id)
+    @todo = Todo.new(todo_params)
     if @todo.save
       flash[:success] = "登録が成功しました！"
       redirect_to users_mypage_path
@@ -19,7 +19,12 @@ class Users::TodosController < UsersController
   def edit; end
 
   def update
-    if @todo.update(title: todo_params[:title], text: todo_params[:text], images: todo_params[:images], user_id: current_user.id)
+    # @todo.update(todo_params)
+    # @todo = Todo.new(todo_params)
+    # @todo.images.each do |image|
+    #   image.tempfile = ImageProcessing::MiniMagick.source(image.tempfile).resize_to_fit(100, 100).call
+    # end
+    if @todo.update(todo_params)
       flash[:success] = "Todoを更新しました！"
       redirect_to users_mypage_path
     else
@@ -44,7 +49,7 @@ class Users::TodosController < UsersController
   private
 
     def todo_params
-      params.require(:todo).permit(:title, :text, images: [])
+      params.require(:todo).permit(:title, :text, images: []).merge(user_id: current_user.id)
     end
 
     def find_todo_detail
