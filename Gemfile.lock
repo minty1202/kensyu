@@ -333,6 +333,7 @@ DEPENDENCIES
   rspec-rails
   rubocop-rails
   rubocop-rspec
+  ruby-vips
   sassc-rails
   selenium-webdriver
   slim-rails
