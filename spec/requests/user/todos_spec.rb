@@ -105,34 +105,49 @@ RSpec.describe "Todos", type: :request do
           expect(todo.reload.title).to eq 'test'
         end
 
-        context '画像あり' do
-          # let!(:todo) { create(:todo, images: File.new("#{Rails.root}/spec/fixtures/files/image/test_image.png")) }
-          before do
-            todo.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
-          end
-          it '選択された画像が削除されること' do
-            puts '-------------------'
-            pp todo
-            pp todo.images.length
-            puts '-------------------'
-            # expect{
-            #   patch users_todo_path(todo), params: { todo: { title: 'test',
-            #                         text: 'hogehogehoge',
-            #                         user_id: todo.user.id ,
-            #                         image_ids: todo.image_ids} }
-            # }.to_not change(Todo, :count)
-            # expect(response).to have_selector?("img[src$='test_image.png']")
-            # attach_file 'todo[images][]', "#{Rails.root}/spec/factories/test.jpg", make_visible: true
-          end
-          # paramsの中にimage_idsがあればそれを削除する
-          # 削除に成功したらmypageにリダイレクトする
-          # todoのimagesの数がimages_idsの数だけ減少している
-        end
-
         it "ユーザー詳細ページにリダイレクトされること" do
           patch users_todo_path(todo), params: todo_params
           expect(response).to redirect_to users_mypage_path
           expect(flash[:success]).to be_truthy
+        end
+
+        context '画像投稿がある場合' do
+          let(:todo_image_ids_params) { { todo: { title: 'test',
+                                                  text: 'hogehogehoge',
+                                                  user_id: todo.user.id,
+                                                  image_ids:[1, 2]
+                                                  } } }
+          # let!(:todo) { create(:todo, images: File.new("#{Rails.root}/spec/fixtures/files/image/test_image.png")) }
+          before do
+            todo.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
+          end
+          it '画像投稿追加して更新できること' do
+            expect{
+              patch users_todo_path(todo), params: { todo: { title: 'test',
+                                    text: 'hogehogehoge',
+                                    user_id: todo.user.id ,
+                                    images: todo.images,
+                                    } }
+            }.to_not change(Todo, :count)
+          end
+
+          it '画像を削除のみして更新できること' do
+            puts '-------------------'
+            puts '-------------------'
+            # find('#todo_image_ids_1').click
+            find(:css, "#todo_image_ids_1[value='1']").set(true)
+            # patch users_todo_path(todo), params: todo_image_ids_params
+            expect(todo.reload.title).to eq 'test'
+            # todoにiamgesがあることを確認
+            # expect(todo.images.length).to eq 1
+            # find('#todo_image_ids_164').click
+            # expect(response).to have_http_status(302)
+            # params[:todo]の中身＝＝{"title"=>"1", "text"=>"1", "images"=>[""], "image_ids"=>["207"]}
+            # paramsの中のimage_ids("image_ids"=>["number"])が０になればいい？
+            # paramsの中にimage_idsがあればそれを削除する
+            # 削除に成功したらmypageにリダイレクトする
+            # todoのimagesの数がimages_idsの数だけ減少している
+          end
         end
       end
     end

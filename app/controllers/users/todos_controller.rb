@@ -19,11 +19,13 @@ class Users::TodosController < UsersController
   def edit; end
 
   def update
-    # @todo.update(todo_params)
-    # @todo = Todo.new(todo_params)
-    # @todo.images.each do |image|
-    #   image.tempfile = ImageProcessing::MiniMagick.source(image.tempfile).resize_to_fit(100, 100).call
-    # end
+      puts '---------images------------'
+      puts '---------------------'
+      puts params[:todo]
+      puts params[:id]
+      puts '---------------------'
+      puts '---------------------'
+
     if @todo.update(todo_params)
       flash[:success] = "Todoを更新しました！"
       redirect_to users_mypage_path
@@ -31,10 +33,17 @@ class Users::TodosController < UsersController
       render 'edit', status: :unprocessable_entity
     end
 
-    todo = Todo.find(params[:id])
+    # 削除する画像がある場合（check boxにチェックがない場合はparamsにimage_idsはない）
     if params[:todo][:image_ids]
+      puts '---------image_ids------------'
+      puts '---------------------'
+      puts params[:todo]
+      puts params[:id]
+      puts '---------------------'
+      puts '---------------------'
+
       params[:todo][:image_ids].each do |image_id|
-        image = todo.images.find(image_id)
+        image = @todo.images.find(image_id)
         image.purge
       end
     end
