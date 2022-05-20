@@ -18,14 +18,17 @@ RSpec.describe Todo, type: :model do
     expect(todo).to_not be_valid
   end
 
-  it '画像のファイル数は3つ以内であること' do
-    expect(todo.images.length).to_not eq  4
+    # todo = FactoryBot.create(:todo, :with_attachment)
+    # @todo.images = fixture_file_upload("/image/test_image.png")
+  it '画像のファイルが3枚以内であること' do
+    todo.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
+    todo.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
+    todo.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
+    # puts '---------------------------'
+    # puts todo.images.length 7になる.....
+    # puts '---------------------------'
+    expect(todo).to_not be_valid
   end
-
-  # it '画像を持っていること' do
-  #   todo = FactoryBot.create :todo, :with_attachment
-  #   expect(todo.attachment).to be_attached
-  # end
 
   it 'すべての値が正常であれば登録できる' do
     expect(todo).to be_valid

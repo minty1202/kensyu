@@ -105,7 +105,29 @@ RSpec.describe "Todos", type: :request do
           expect(todo.reload.title).to eq 'test'
         end
 
-        it '選択された画像が削除されること'
+        context '画像あり' do
+          # let!(:todo) { create(:todo, images: File.new("#{Rails.root}/spec/fixtures/files/image/test_image.png")) }
+          before do
+            todo.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
+          end
+          it '選択された画像が削除されること' do
+            puts '-------------------'
+            pp todo
+            pp todo.images.length
+            puts '-------------------'
+            # expect{
+            #   patch users_todo_path(todo), params: { todo: { title: 'test',
+            #                         text: 'hogehogehoge',
+            #                         user_id: todo.user.id ,
+            #                         image_ids: todo.image_ids} }
+            # }.to_not change(Todo, :count)
+            # expect(response).to have_selector?("img[src$='test_image.png']")
+            # attach_file 'todo[images][]', "#{Rails.root}/spec/factories/test.jpg", make_visible: true
+          end
+          # paramsの中にimage_idsがあればそれを削除する
+          # 削除に成功したらmypageにリダイレクトする
+          # todoのimagesの数がimages_idsの数だけ減少している
+        end
 
         it "ユーザー詳細ページにリダイレクトされること" do
           patch users_todo_path(todo), params: todo_params
