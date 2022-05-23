@@ -16,6 +16,6 @@
       p 削除するものはチェックして下さい
       - @todo.images.each do |image|
         = f.check_box :image_ids, {multiple: true}, image.id, false
-        li.user= image_tag image.variant(resize_to_limit: [100, 100])
+        li.user= image_tag image.variant(:thumb)
     = f.submit
   = link_to '戻る', users_mypage_path
