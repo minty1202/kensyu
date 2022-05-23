@@ -7,7 +7,7 @@ class Users::TodosController < UsersController
   end
 
   def create
-    @todo = Todo.new(title: todo_params[:title], text: todo_params[:text], user_id: current_user.id)
+    @todo = Todo.new(todo_params)
     if @todo.save
       flash[:success] = "登録が成功しました！"
       redirect_to users_mypage_path
@@ -19,11 +19,19 @@ class Users::TodosController < UsersController
   def edit; end
 
   def update
-    if @todo.update(title: todo_params[:title], text: todo_params[:text], user_id: current_user.id)
+    if @todo.update(todo_params)
       flash[:success] = "Todoを更新しました！"
       redirect_to users_mypage_path
     else
       render 'edit', status: :unprocessable_entity
+    end
+
+    # 削除する画像がある場合（check boxにチェックがない場合はparamsにimage_idsはない）
+    if params[:todo][:image_ids]
+      params[:todo][:image_ids].each do |image_id|
+        image = @todo.images.find(image_id)
+        image.purge
+      end
     end
   end
 
@@ -36,7 +44,7 @@ class Users::TodosController < UsersController
   private
 
     def todo_params
-      params.require(:todo).permit(:title, :text)
+      params.require(:todo).permit(:title, :text, images: []).merge(user_id: current_user.id)
     end
 
     def find_todo_detail

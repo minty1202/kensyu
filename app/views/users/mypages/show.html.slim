@@ -11,5 +11,8 @@ ul.user-info
           li.user= todo.title
           li.user= todo.text
           li.user= todo.created_at
+          - if todo.images.attached?
+            - todo.images.each do |image|
+                li.user= image_tag image.variant(:thumb)
   - else
     p.todos-info Todoリストがありません！

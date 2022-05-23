@@ -8,5 +8,14 @@
     = f.text_field :text
     - @todo.errors.full_messages_for(:text).each do |message|
       = message
+    = f.label :images
+    = f.file_field :images, multiple: true
+    - @todo.errors.full_messages_for(:images).each do |message|
+      = message
+    - if @todo.images.attached?
+      p 削除するものはチェックして下さい
+      - @todo.images.each do |image|
+        = f.check_box :image_ids, {multiple: true}, image.id, false
+        li.user= image_tag image.variant(:thumb)
     = f.submit
   = link_to '戻る', users_mypage_path

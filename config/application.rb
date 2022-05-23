@@ -15,6 +15,8 @@ module App
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}').to_s]
     config.time_zone = 'Tokyo'
     config.active_record.default_timezone = :local
+    config.active_storage.replace_on_assign_to_many = false
+    config.active_storage.variant_processor = :vips
 
     # Configuration for the application, engines, and railties goes here.
     #
