@@ -40,15 +40,33 @@ RSpec.describe "Todos", type: :request do
                                   text: 'hogehogehoge',
                                   user_id: 1} } }
           # let!(:todo) { create(:todo) }
-        it '登録されること' do
+        it '登録されること(画像なし)' do
         expect{
           post users_todos_path, params: todo_params
         }.to change(Todo, :count).by 1
         end
+
         it "ユーザー詳細ページにリダイレクトされること" do
           post users_todos_path(todo_params)
           expect(response).to redirect_to users_mypage_path
           expect(flash[:success]).to be_truthy
+        end
+
+        context '画像投稿がある場合' do
+          let!(:todo) { create(:todo) }
+          before do
+            todo.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
+          end
+          it '登録されること(画像あり)' do
+            expect{
+              post users_todos_path(todo), params: { todo: {
+                                                        title: todo.title,
+                                                        text: todo.text,
+                                                        user_id: todo.user.id ,
+                                                        images: todo.images,
+                                                    } }
+              }.to change(Todo, :count).by 1
+          end
         end
       end
     end
@@ -112,41 +130,27 @@ RSpec.describe "Todos", type: :request do
         end
 
         context '画像投稿がある場合' do
-          let(:todo_image_ids_params) { { todo: { title: 'test',
-                                                  text: 'hogehogehoge',
-                                                  user_id: todo.user.id,
-                                                  image_ids:[1, 2]
-                                                  } } }
-          # let!(:todo) { create(:todo, images: File.new("#{Rails.root}/spec/fixtures/files/image/test_image.png")) }
           before do
             todo.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
           end
           it '画像投稿追加して更新できること' do
             expect{
-              patch users_todo_path(todo), params: { todo: { title: 'test',
-                                    text: 'hogehogehoge',
-                                    user_id: todo.user.id ,
-                                    images: todo.images,
-                                    } }
+              patch users_todo_path(todo), params: { todo: {
+                                                        title: todo.title,
+                                                        text: todo.text,
+                                                        user_id: todo.user.id ,
+                                                        images: todo.images,
+                                                    } }
             }.to_not change(Todo, :count)
           end
 
-          it '画像を削除のみして更新できること' do
-            puts '-------------------'
-            puts '-------------------'
-            # find('#todo_image_ids_1').click
-            find(:css, "#todo_image_ids_1[value='1']").set(true)
-            # patch users_todo_path(todo), params: todo_image_ids_params
-            expect(todo.reload.title).to eq 'test'
-            # todoにiamgesがあることを確認
-            # expect(todo.images.length).to eq 1
-            # find('#todo_image_ids_164').click
-            # expect(response).to have_http_status(302)
-            # params[:todo]の中身＝＝{"title"=>"1", "text"=>"1", "images"=>[""], "image_ids"=>["207"]}
-            # paramsの中のimage_ids("image_ids"=>["number"])が０になればいい？
-            # paramsの中にimage_idsがあればそれを削除する
-            # 削除に成功したらmypageにリダイレクトする
-            # todoのimagesの数がimages_idsの数だけ減少している
+          it '画像を削除して更新できること' do
+            expect{ patch users_todo_path(todo.id), params: {todo: {
+                                                              title: todo.title,
+                                                              text: todo.text,
+                                                              image_ids: [todo.images[0].id]
+                                                            }}
+            }.to change { todo.images.count }.from(1).to(0)
           end
         end
       end
