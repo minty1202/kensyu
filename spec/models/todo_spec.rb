@@ -22,10 +22,6 @@ RSpec.describe Todo, type: :model do
     todo.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
     todo.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
     todo.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
-    # puts '---------------------------'
-    # puts todo.images.length
-    # puts '---------------------------'
-    # expect(todo).to_not be_valid
     expect(todo.errors[:images]).to include('は3ファイルまでにしてください')
   end
 
