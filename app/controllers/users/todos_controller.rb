@@ -16,7 +16,10 @@ class Users::TodosController < UsersController
     end
   end
 
-  def edit; end
+  def edit
+    @comments = @todo.comments
+    @comment = current_user.comments.new
+  end
 
   def update
     if @todo.update(todo_params)

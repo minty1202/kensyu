@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  namespace :admins do
+    get 'adminspage/show'
+    get 'adminspage/destroy'
+  end
   devise_for :users, controllers: {
     sessions:      'users/sessions',
     passwords:     'users/passwords',
@@ -10,7 +14,9 @@ Rails.application.routes.draw do
 
   namespace :users do
     resource :mypage, only: :show
-    resources :todos, only:[:new, :create, :edit, :update, :destroy]
+    resources :todos, only:[:new, :create, :edit, :update, :destroy] do
+      resources :comments, only: [:create]
+    end
   end
 
 
@@ -19,5 +25,9 @@ Rails.application.routes.draw do
     passwords:     'admins/passwords',
     registrations: 'admins/registrations'
   }
+  namespace :admins do
+    resources :adminspage , only: [:index, :destroy]
+  end
+
   root 'general#index'
 end
