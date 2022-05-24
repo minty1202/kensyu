@@ -1,8 +1,4 @@
 Rails.application.routes.draw do
-  namespace :admins do
-    get 'adminspage/show'
-    get 'adminspage/destroy'
-  end
   devise_for :users, controllers: {
     sessions:      'users/sessions',
     passwords:     'users/passwords',
@@ -25,8 +21,11 @@ Rails.application.routes.draw do
     passwords:     'admins/passwords',
     registrations: 'admins/registrations'
   }
+  devise_scope :admin do
+    get '/admins/sign_out' => 'devise/sessions#destroy'
+  end
   namespace :admins do
-    resources :adminspage , only: [:index, :destroy]
+    resources :dashbord , only: [:show, :destroy]
   end
 
   root 'general#index'
