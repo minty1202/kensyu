@@ -1,5 +1,5 @@
 class GeneralController < ApplicationController
   def index
-    @todos = Todo.all
+    @todos = Todo.includes(:user)
   end
 end
