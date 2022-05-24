@@ -25,4 +25,10 @@ routes:
 console:
 	docker-compose run --rm app bundle exec rails console
 
+lint:
+		docker-compose run --rm app bundle exec rubocop
+
+fix:
+		docker-compose run --rm app bundle exec rubocop -a
+
 init: build install setup
