@@ -6,11 +6,11 @@ h1 編集ページ
 
   h1 コメントをする
   = form_with model:[:users, @todo, @comment], method: :post do |f|
-    = f.text_area :comment_text
+    = f.text_area :text
     = f.hidden_field :todo_id, value: @todo.id
     = f.submit 'コメントする'
 
   h2 コメント一覧
   - @comments.each do |comment|
     ul.comment-info
-      li.user= comment.comment_text
+      li.user= comment.text
