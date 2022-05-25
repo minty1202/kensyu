@@ -26,13 +26,6 @@ RSpec.describe "Users::Comments", type: :request do
         end
 
         it '有効な値でコメント投稿できること' do
-          puts '--------------------------------------'
-          puts '----------todo----------------------------'
-          puts todo_params
-          puts '--------comment------------------------------'
-          puts comment_params
-          puts '--------------------------------------'
-          puts '--------------------------------------'
           expect{
             post users_todo_comments_path(todo.id), params: comment_params
           }.to change(Comment, :count).by 1

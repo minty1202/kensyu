@@ -11,6 +11,6 @@ h1 編集ページ
     = f.submit 'コメントする'
 
   h2 コメント一覧
-  - @comments.each do |comment|
+  - @todo.comments.each do |comment|
     ul.comment-info
       li.user= comment.text

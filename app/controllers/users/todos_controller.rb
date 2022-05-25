@@ -17,7 +17,6 @@ class Users::TodosController < UsersController
   end
 
   def edit
-    @comments = @todo.comments
     @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
   end
 
