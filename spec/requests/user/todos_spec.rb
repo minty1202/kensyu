@@ -103,15 +103,15 @@ RSpec.describe "Todos", type: :request do
       before do
         sign_in(todo.user)
       end
-      # context '更新が失敗する場合' do
-      #   it '無効な値だと更新されないこと' do
-      #     expect {
-      #       patch users_todo_path(todo), params:{todo: {title: '',
-      #                                     text: '',
-      #                                     user_id: ''}}
-      #       }.to_not change(Todo, :count)
-      #   end
-      # end
+      context '更新が失敗する場合' do
+        it '無効な値だと更新されないこと' do
+          expect {
+            patch users_todo_path(todo), params:{todo: {title: '',
+                                          text: '',
+                                          user_id: ''}}
+            }.to_not change(Todo, :count)
+        end
+      end
       context '更新が成功する場合' do
         let(:todo_params) { { todo: { title: 'test',
                                   text: 'hogehogehoge',
