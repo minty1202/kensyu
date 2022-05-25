@@ -20,7 +20,8 @@ Rails.application.routes.draw do
   }
 
   namespace :admins do
-    resource :dashbord , only: [:show, :destroy]
+    resource :dashbord , only: :show
+    resources :users, only: [:index, :destroy]
   end
 
   root 'general#index'
