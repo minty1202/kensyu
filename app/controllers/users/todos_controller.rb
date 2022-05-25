@@ -16,13 +16,16 @@ class Users::TodosController < UsersController
     end
   end
 
-  def edit; end
+  def edit
+    @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
+  end
 
   def update
     if @todo.update(todo_params)
       flash[:success] = "Todoを更新しました！"
       redirect_to users_mypage_path
     else
+      @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
       render 'edit', status: :unprocessable_entity
     end
 

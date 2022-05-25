@@ -1,4 +1,16 @@
+h2 = current_user.name
 h1 編集ページ
 = render 'form', todo:@todo
-.col-md-6.col-md-offset-3
+.col-md-6.col-md-offset-3.form-edit
   = button_to "削除する", users_todo_path(@todo), method: :delete
+
+  h1 コメントをする
+  = form_with model:[:users, @todo, @comment], method: :post do |f|
+    = f.text_area :text
+    = f.hidden_field :todo_id, value: @todo.id
+    = f.submit 'コメントする'
+
+  h2 コメント一覧
+  - @todo.comments.each do |comment|
+    ul.comment-info
+      li.user= comment.text

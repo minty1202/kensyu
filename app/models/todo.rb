@@ -6,6 +6,7 @@ class Todo < ApplicationRecord
     attachable.variant :thumb, resize_to_limit: [100, 100]
   end
   belongs_to :user
+  has_many :comments, dependent: :destroy
 
   private
     def file_length

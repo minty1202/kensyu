@@ -4,13 +4,12 @@ Rails.application.routes.draw do
     passwords:     'users/passwords',
     registrations: 'users/registrations'
   }
-  devise_scope :user do
-    get '/users/sign_out' => 'devise/sessions#destroy'
-  end
 
   namespace :users do
     resource :mypage, only: :show
-    resources :todos, only:[:new, :create, :edit, :update, :destroy]
+    resources :todos, only:[:new, :create, :edit, :update, :destroy] do
+      resources :comments, only: [:create]
+    end
   end
 
 
@@ -19,5 +18,11 @@ Rails.application.routes.draw do
     passwords:     'admins/passwords',
     registrations: 'admins/registrations'
   }
+
+  namespace :admins do
+    resource :dashbord , only: :show
+    resources :users, only: [:index, :destroy]
+  end
+
   root 'general#index'
 end

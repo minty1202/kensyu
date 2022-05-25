@@ -1,1 +1,16 @@
-h1 Hello, World
+h1 Todo 一覧
+- @todos&.each do |todo|
+  - if todo.user === current_user
+    = link_to edit_users_todo_path(todo)
+      ul.todos-info-self
+        li.user= todo.title
+        li.user= todo.text
+        li.user= todo.created_at
+  - else
+      ul.todos-info
+        li.user= todo.title
+        li.user= todo.text
+        li.user= todo.created_at
+
+- if @todos.nil?
+    p.todos-info Todoがありません！
