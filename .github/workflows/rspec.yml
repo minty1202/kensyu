@@ -14,10 +14,14 @@ jobs:
       env:
         RAILS_ENV: test
 
-    - name: Run RSpec and Lint
+    - name: Run RSpec
       shell: bash
       run:
         make rspec
-        make lint
       env:
         RAILS_ENV: test
+
+    - name: Run Lint
+      shell: bash
+      run:
+        make lint
