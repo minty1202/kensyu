@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     resources :todos, only:[:new, :create, :edit, :update, :destroy] do
       resources :comments, only: [:create]
     end
+    get '/search', to: 'searches#search'
   end
 
 
