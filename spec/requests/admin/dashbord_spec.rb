@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Dashbord", type: :request do
+RSpec.describe "Admins::Dashbord", type: :request do
   let!(:admin) { create(:admin) }
   let!(:user) { create(:user) }
 
