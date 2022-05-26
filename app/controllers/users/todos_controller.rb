@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Users
   class TodosController < UsersController
     before_action :find_todo_detail, only: [:edit, :update, :destroy]
