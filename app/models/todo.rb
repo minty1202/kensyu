@@ -11,8 +11,6 @@ class Todo < ApplicationRecord
   private
 
   def file_length
-    return if images.length > 3
-
-    errors.add(:images, 'は3ファイルまでにしてください')
+    return errors.add(:images, 'は3ファイルまでにしてください') if images.length > 3
   end
 end

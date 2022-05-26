@@ -32,9 +32,9 @@ module Users
       end
 
       # 削除する画像がある場合（check boxにチェックがない場合はparamsにimage_idsはない）
-      return if params[:todo][:image_ids]
+      return unless params[:todo][:image_ids]
 
-      params[:todo][:image_ids]&.each do |image_id|
+      params[:todo][:image_ids].each do |image_id|
         image = @todo.images.find(image_id)
         image.purge
       end
