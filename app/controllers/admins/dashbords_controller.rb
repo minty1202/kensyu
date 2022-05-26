@@ -1,6 +1,9 @@
-class Admins::DashbordsController < AdminsController
+# frozen_string_literal: true
 
-  def show
-    @users = User.includes(:todos)
+module Admins
+  class DashbordsController < AdminsController
+    def show
+      @users = User.includes(:todos)
+    end
   end
 end
