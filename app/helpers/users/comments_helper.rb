@@ -1,2 +1,4 @@
-module Users::CommentsHelper
+module Users
+  class CommentsHelper
+  end
 end
