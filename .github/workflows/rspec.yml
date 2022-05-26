@@ -14,9 +14,10 @@ jobs:
       env:
         RAILS_ENV: test
 
-    - name: Run RSpec
+    - name: Run RSpec and Lint
       shell: bash
       run:
-        docker-compose run app bundle exec rspec
+        make rspec
+        make lint
       env:
         RAILS_ENV: test
