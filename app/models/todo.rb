@@ -12,15 +12,15 @@ class Todo < ApplicationRecord
     def lookfor(search, word)
       case search
       when "perfect_match"
-          @todo = Todo.includes(:user).where("title LIKE ?", "#{word}")
+        Todo.includes(:user).where("title LIKE ?", word.to_s)
       when "forward_match"
-        @todo = Todo.includes(:user).where("title LIKE ?", "#{word}%")
+        Todo.includes(:user).where("title LIKE ?", word.to_s.concat('%'))
       when "backward_match"
-        @todo = Todo.includes(:user).where("title LIKE ?", "%#{word}")
+        Todo.includes(:user).where("title LIKE ?", '%'.concat(word.to_s))
       when "partial_match"
-        @todo = Todo.includes(:user).where("title LIKE ?", "%#{word}%")
+        Todo.includes(:user).where("title LIKE ?", '%'.concat(word.to_s).concat('%'))
       else
-        @todo = Todo.includes(:user)
+        Todo.includes(:user)
       end
     end
   end

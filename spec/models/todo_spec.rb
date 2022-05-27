@@ -28,4 +28,49 @@ RSpec.describe Todo, type: :model do
   it 'すべての値が正常であれば登録できる' do
     expect(todo).to be_valid
   end
+
+  describe 'lookforメソッド' do
+  let(:todo2) {create(:todo, title: 'todo2') }
+
+    context '完全一致で検索した場合' do
+    let(:perfect_match_params) { {search: 'perfect_match'} }
+
+      it 'todoを取得出来ること ' do
+        expect(Todo.lookfor(perfect_match_params, todo.title)).to include(todo)
+      end
+      it 'todo2を取得出来ないこと ' do
+        expect(Todo.lookfor(perfect_match_params, todo.title)).to_not include(todo2.title)
+      end
+    end
+    context '前方一致で検索した場合' do
+    let(:forward_match_params) { {search: 'forward_match'} }
+
+      it 'todoを取得出来ること ' do
+        expect(Todo.lookfor(forward_match_params, todo.title)).to include(todo)
+      end
+      it 'todo2を取得出来ないこと ' do
+        expect(Todo.lookfor(forward_match_params, todo.title)).to_not include(todo2.title)
+      end
+    end
+    context '後方一致で検索した場合' do
+    let(:backword_match_params) { {search: 'backword_match'} }
+
+      it 'todoを取得出来ること ' do
+        expect(Todo.lookfor(backword_match_params, todo.title)).to include(todo)
+      end
+      it 'todo2を取得出来ないこと ' do
+        expect(Todo.lookfor(backword_match_params, todo.title)).to_not include(todo2.title)
+      end
+    end
+    context '部分一致で検索した場合' do
+    let(:partial_match_params) { {search: 'partial_match'} }
+
+      it 'todoを取得出来ること ' do
+        expect(Todo.lookfor(partial_match_params, todo.title)).to include(todo)
+      end
+      it 'todo2を取得出来ないこと ' do
+        expect(Todo.lookfor(partial_match_params, todo.title)).to_not include(todo2.title)
+      end
+    end
+  end
 end

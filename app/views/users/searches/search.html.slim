@@ -1,6 +1,7 @@
 / - raise @users.class
 - if @range == "User"
   h1 User 検索結果 : #{ @users.count}人
+  h2.hidden 検索条件 : #{@search}
   - @users.each do |user|
     - if user.id === current_user.id
         = link_to users_mypage_path(user)
@@ -13,6 +14,7 @@
           li.user 名前：#{user.name}
 - else
   h1 Todo 検索結果: #{ @todos.count}個
+  h2.hidden 検索条件 : #{@search}
   - @todos.each do |todo|
     - if todo.user === current_user
       = link_to edit_users_todo_path(todo)

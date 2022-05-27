@@ -10,15 +10,15 @@ class User < ApplicationRecord
     def lookfor(search, word)
       case search
       when "perfect_match"
-        @user = User.includes(:todos).where("name LIKE ?", "#{word}")
+        User.includes(:todos).where("name LIKE ?", word.to_s)
       when "forward_match"
-        @user = User.includes(:todos).where("name LIKE ?", "#{word}%")
+        User.includes(:todos).where("name LIKE ?", word.to_s.concat('%'))
       when "backward_match"
-        @user = User.includes(:todos).where("name LIKE ?", "%#{word}")
+        User.includes(:todos).where("name LIKE ?", '%'.concat(word.to_s))
       when "partial_match"
-        @user = User.includes(:todos).where("name LIKE ?", "%#{word}%")
+        User.includes(:todos).where("name LIKE ?", '%'.concat(word.to_s).concat('%'))
       else
-        @user = User.includes(:todos)
+        User.includes(:todos)
       end
     end
   end
