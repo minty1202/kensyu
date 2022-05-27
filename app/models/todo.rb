@@ -1,4 +1,6 @@
 class Todo < ApplicationRecord
+  include Search
+
   validates :title, presence: true, length: { maximum: 50 }
   validates :text, presence: true
   validate :file_length
