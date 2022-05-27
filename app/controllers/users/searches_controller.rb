@@ -5,9 +5,9 @@ module Users
       @search = params[:search]
 
       if @range == 'User'
-        @users = User.lookfor(params[:search], params[:word])
+        @users = User.lookfor(params[:search], params[:word], :todos, 'name')
       else
-        @todos = Todo.lookfor(params[:search], params[:word])
+        @todos = Todo.lookfor(params[:search], params[:word], :user, 'title')
       end
     end
   end
