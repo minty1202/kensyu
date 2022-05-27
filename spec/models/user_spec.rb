@@ -38,8 +38,8 @@ RSpec.describe User, type: :model do
   end
 
   describe 'lookforメソッド' do
-  let(:user) {create(:user) }
-  let(:user2) {create(:user, name: 'user2') }
+  let!(:user) {create(:user) }
+  let!(:user2) {create(:user, name: 'user2') }
 
     context '完全一致で検索した場合' do
     let(:perfect_match_params) { {search: 'perfect_match'} }

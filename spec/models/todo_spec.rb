@@ -30,7 +30,7 @@ RSpec.describe Todo, type: :model do
   end
 
   describe 'lookforメソッド' do
-  let(:todo2) {create(:todo, title: 'todo2') }
+  let!(:todo2) {create(:todo, title: 'todo2') }
 
     context '完全一致で検索した場合' do
     let(:perfect_match_params) { {search: 'perfect_match'} }
