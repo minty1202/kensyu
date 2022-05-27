@@ -83,3 +83,4 @@ end
 gem 'slim-rails'
 gem 'rails-i18n'
 gem 'dotenv-rails'
+gem 'kaminari'

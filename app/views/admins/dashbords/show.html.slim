@@ -6,3 +6,6 @@ ul.user-info
   = button_to 'Logout', destroy_admin_session_path, method: :delete
 
 = render template: 'admins/users/index'
+
+.text-center
+  = paginate @users

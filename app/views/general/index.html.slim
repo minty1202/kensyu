@@ -15,3 +15,6 @@ h1 Todo 一覧
 
 - if @todos.nil?
     p.todos-info Todoがありません！
+
+.text-center
+  = paginate @todos
