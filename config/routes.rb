@@ -6,7 +6,9 @@ Rails.application.routes.draw do
   }
 
   namespace :users do
-    resource :mypage, only: :show
+    resource :mypage, only: :show do
+      resources :tags, only: :show
+    end
     resources :todos, only:[:new, :create, :edit, :update, :destroy] do
       resources :comments, only: [:create]
     end
