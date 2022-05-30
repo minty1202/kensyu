@@ -1,9 +1,12 @@
-.text-center
-  h3 タグリスト
-- @tags.each do |tag|
-  .user-info
-    = link_to tag.name, users_mypage_tag_path(tag)
-    = "(#{tag.todos.count})"
+//各tagの投稿を表示させる
+h2 tag name is #{@tag.name}
+
+/ - @todo_tags.each do |todo_tag|
+/   span
+/     = link_to todo_tag.name, edit_users_todo(@todo)
+
+/ = link_to 'ホーム', root_path
+
 
 ul.user-info
   li.user= current_user.name
@@ -24,5 +27,5 @@ ul.user-info
   - else
     p.todos-info Todoリストがありません！
 
-.text-center
-  = paginate @todos
+/ .text-center
+/   = paginate @todos

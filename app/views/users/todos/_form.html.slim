@@ -8,6 +8,8 @@
     = f.text_field :text
     - @todo.errors.full_messages_for(:text).each do |message|
       = message
+    = f.label :tag
+    = f.text_field :name
     = f.label :images
     = f.file_field :images, multiple: true
     - @todo.errors.full_messages_for(:images).each do |message|

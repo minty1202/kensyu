@@ -66,8 +66,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_27_084617) do
 
   create_table "tags", force: :cascade do |t|
     t.string "name"
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_tags_on_user_id"
   end
 
   create_table "todo_tags", force: :cascade do |t|
@@ -105,6 +107,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_27_084617) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "comments", "todos"
   add_foreign_key "comments", "users"
+  add_foreign_key "tags", "users"
   add_foreign_key "todo_tags", "tags"
   add_foreign_key "todo_tags", "todos"
   add_foreign_key "todos", "users"

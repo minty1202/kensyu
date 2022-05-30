@@ -7,13 +7,13 @@ module Users
     end
 
     def create
-      puts '-------------------------'
-      puts '---------params----------------'
-      puts params
-      puts params[:todo][:name]
-
       @todo = current_user.todos.new(todo_params)
-      tags = params[:todo][:name].split(',') # 送らててきたタグの取得
+      tags = params[:todo][:name].split(',') # 送らててきたタグの取得, tagsは配列
+
+      puts '--------------------'
+      puts '----------tags----------'
+      pp tags
+
       if @todo.save
         @todo.save_tag(tags) #タグの保存
         flash[:success] = "登録が成功しました！"
@@ -54,7 +54,7 @@ module Users
     private
 
     def todo_params
-      params.require(:todo).permit(:title, :text, images: [], name: []).merge(user_id: current_user.id)
+      params.require(:todo).permit(:title, :text, images: []).merge(user_id: current_user.id)
     end
 
     def find_todo_detail
