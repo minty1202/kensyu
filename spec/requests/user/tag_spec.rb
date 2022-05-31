@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe "Tag", type: :request do
   let!(:user) { create(:user) }
   let!(:todo) { create(:todo) }
+  let!(:tag) { create(:tag) }
 
 
   describe "GET /mypage/tags #show" do
@@ -11,14 +12,14 @@ RSpec.describe "Tag", type: :request do
         sign_in(user)
       end
       it "returns http success" do
-        get users_mypage_tag_path(todo.tag.id)
+        get users_mypage_tag_path(tag)
         expect(response).to have_http_status(:success)
       end
     end
 
     context 'ログインしていない場合' do
       it "ログインページにリダイレクトされること" do
-        get users_mypage_tag_path
+        get users_mypage_tag_path(tag)
         expect(response).to redirect_to new_user_session_path
       end
     end

@@ -2,6 +2,8 @@ require 'rails_helper'
 
 RSpec.describe "Todos", type: :request do
   let!(:user) { create(:user) }
+  let!(:tag) { create(:tag) }
+
 
   describe "GET /todos/new #new" do
     context 'ログインしている場合' do
@@ -31,15 +33,16 @@ RSpec.describe "Todos", type: :request do
           expect {
             post users_todos_path, params:{todo: {title: '',
                                           text: '',
-                                          user_id: ''}}
+                                          user_id: '',
+                                          name: ''}}
             }.to_not change(Todo, :count)
         end
       end
       context '登録が成功する場合' do
         let(:todo_params) { { todo: { title: 'test',
                                   text: 'hogehogehoge',
-                                  user_id: 1} } }
-          # let!(:todo) { create(:todo) }
+                                  user_id: 1,
+                                  name: tag.name} } }
         it '登録されること(画像なし)' do
         expect{
           post users_todos_path, params: todo_params
@@ -64,6 +67,7 @@ RSpec.describe "Todos", type: :request do
                                                         text: todo.text,
                                                         user_id: todo.user.id ,
                                                         images: todo.images,
+                                                        name: tag.name,
                                                     } }
               }.to change(Todo, :count).by 1
           end
@@ -99,6 +103,8 @@ RSpec.describe "Todos", type: :request do
 
   describe "PATCH /todos #update" do
     let!(:todo) { create(:todo) }
+    let!(:tag) { create(:tag) }
+
     context 'ログインしている場合' do
       before do
         sign_in(todo.user)
@@ -108,14 +114,16 @@ RSpec.describe "Todos", type: :request do
           expect {
             patch users_todo_path(todo), params:{todo: {title: '',
                                           text: '',
-                                          user_id: ''}}
+                                          user_id: '',
+                                          name: ''}}
             }.to_not change(Todo, :count)
         end
       end
       context '更新が成功する場合' do
         let(:todo_params) { { todo: { title: 'test',
                                   text: 'hogehogehoge',
-                                  user_id: todo.user.id} } }
+                                  user_id: todo.user.id,
+                                  name: tag.name}} }
         it '更新されること' do
           expect{
             patch users_todo_path(todo), params: todo_params
@@ -140,6 +148,7 @@ RSpec.describe "Todos", type: :request do
                                                         text: todo.text,
                                                         user_id: todo.user.id ,
                                                         images: todo.images,
+                                                        name: tag.name
                                                     } }
             }.to_not change(Todo, :count)
           end
@@ -148,7 +157,8 @@ RSpec.describe "Todos", type: :request do
             expect{ patch users_todo_path(todo.id), params: {todo: {
                                                               title: todo.title,
                                                               text: todo.text,
-                                                              image_ids: [todo.images[0].id]
+                                                              image_ids: [todo.images[0].id],
+                                                              name: tag.name
                                                             }}
             }.to change { todo.images.count }.from(1).to(0)
           end
