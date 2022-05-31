@@ -1,4 +1,6 @@
 .col-md-6.col-md-offset-3
+  - tags_name = @todo.tags.map(&:name)
+  - tags = tags_name.join(',')
   = form_with model: [:users, @todo ],local: true do |f|
     = f.label :title
     = f.text_field :title
@@ -9,7 +11,7 @@
     - @todo.errors.full_messages_for(:text).each do |message|
       = message
     = f.label :tag
-    = f.text_field :name
+    = f.text_field :name, value: tags
     = f.label :images
     = f.file_field :images, multiple: true
     - @todo.errors.full_messages_for(:images).each do |message|
