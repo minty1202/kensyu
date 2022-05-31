@@ -9,13 +9,8 @@ module Users
     def create
       @todo = current_user.todos.new(todo_params)
       tags = params[:todo][:name].split(',') # 送らててきたタグの取得, tagsは配列
-
-      puts '--------------------'
-      puts '----------tags----------'
-      pp tags
-
       if @todo.save
-        @todo.save_tag(tags) #タグの保存
+        @todo.save_tag(tags)
         flash[:success] = "登録が成功しました！"
         redirect_to users_mypage_path
       else
@@ -28,7 +23,14 @@ module Users
     end
 
     def update
+      tags = params[:todo][:name].split(',')
       if @todo.update(todo_params)
+        # 今のtodoに紐付いているtagを消す
+        @old_tags = TodoTag.where(todo_id: @todo.id)
+        @old_tags.each do |old_tag|
+          old_tag.delete
+        end
+        @todo.save_tag(tags)
         flash[:success] = "Todoを更新しました！"
         redirect_to users_mypage_path
       else
