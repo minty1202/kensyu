@@ -11,7 +11,7 @@ class TodoTag < ApplicationRecord
   #     self.tags.delete Tag.find_by(name: old, user_id: self.user_id)
   #   end
 
-  #   #新しいタグの保存
+  #   # 新しいタグの保存
   #   new_tags.each do |new|
   #     new_todo_tag = Tag.find_or_create_by(name: new, user_id: self.user_id)
   #     self.tags << new_todo_tag #末尾に追加

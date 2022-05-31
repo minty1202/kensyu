@@ -13,20 +13,20 @@ class Todo < ApplicationRecord
   has_many :tags, through: :todo_tags
 
   def save_tag(sent_tags)
-    current_tags = self.tags.pluck(:name) #unless self.tags.nil? #現在存在するタグの取得
+    current_tags = self.tags.pluck(:name) # 現在存在するタグの取得
 
-    old_tags = current_tags - sent_tags #古いタグの取得
-    new_tags = sent_tags - current_tags #新しいタグの取得
+    old_tags = current_tags - sent_tags # 古いタグの取得
+    new_tags = sent_tags - current_tags # 新しいタグの取得
 
     # 古いタグの削除
     old_tags.each do |old|
-      self.tags.delete Tag.find_by(name: old, user_id: self.user_id)
+      self.tags.delete(Tag.find_by(name: old, user_id: self.user_id))
     end
 
-    #新しいタグの保存
-    new_tags.each do |new|
-      new_todo_tag = Tag.find_or_create_by(name: new, user_id: self.user_id)
-      self.tags << new_todo_tag #末尾に追加
+    # 新しいタグの保存
+    new_tags.each do |new_tag|
+      new_todo_tag = Tag.find_or_create_by(name: new_tag, user_id: self.user_id)
+      self.tags << new_todo_tag  # 末尾に追加
     end
   end
 
