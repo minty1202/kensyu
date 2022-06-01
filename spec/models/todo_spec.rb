@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe Todo, type: :model do
   let(:todo) {create(:todo) }
-  let(:tag) {create(:tag) }
 
   it 'タイトルが必須であること' do
     todo.title = ' '
@@ -17,16 +16,6 @@ RSpec.describe Todo, type: :model do
   it 'textが必須であること' do
     todo.text = ' '
     expect(todo).to_not be_valid
-  end
-
-  it 'tagが必須であること' do
-    tag.name = ' '
-    expect(tag).to_not be_valid
-  end
-
-  it 'tagが10字以内であること' do
-    tag.name = 'a' * 11
-    expect(tag).to_not be_valid
   end
 
   it '画像のファイルが3枚以内であること' do
@@ -86,28 +75,43 @@ RSpec.describe Todo, type: :model do
   end
 
   describe 'save_tagメソッド' do
-    let!(:user) { create(:user) }
-    let!(:todo) { create(:todo) }
-    let!(:tag) { create(:tag) }
-    let!(:tag2) { create(:tag) }
     let!(:tag3) { create(:tag, name: 'tag3') }
+    let!(:todo) { create(:todo)}
 
-    context '古いタグの削除' do
-      let(:todo_params) { { todo: { title: todo.title,
-                                  text: todo.text,
-                                  user_id: todo.user.id,
-                                  name: tag2.name} } }
-      it 'Tagの数が変わらないこと' do
-        expect{todo.save_tag(tag.name.split(',') - tag2.name.split(','))}.to_not change(Tag, :count)
+    context 'すでにあるタグから他のタグに変える' do
+      before do
+        tag_hoge = Tag.create(name: 'hoge', user_id: todo.user.id)
+        tag_fuga = Tag.create(name: 'fuga', user_id: todo.user.id)
+        tag_piyo = Tag.create(name: 'piyo', user_id: todo.user.id)
+        todo.todo_tags.create(tag_id: tag_hoge.id)
+        todo.todo_tags.create(tag_id: tag_fuga.id)
+        todo.todo_tags.create(tag_id: tag_piyo.id)
+        # pp todo.tags.pluck(:name)
       end
+
+      it 'Tagの数は変わらないこと' do
+        expect{todo.save_tag([])}.to_not change(Tag, :count)
+      end
+
+      it 'TodoTagの数が減ること' do
+        expect(todo.save_tag(['fuga'])).to_not eq todo.tags.pluck(:name)
+      end
+
     end
     context '新しいタグの保存' do
-      let(:todo_params) { { todo: { title: todo.title,
-                            text: todo.text,
-                            user_id: todo.user.id,
-                            name: tag3.name} } }
       it 'Tagの数が増えていること' do
         expect{todo.save_tag(tag3.name.split(','))}.to change(Tag, :count).by(1)
+      end
+      it 'TodoTagの数が増えていること' do
+        expect{todo.save_tag(tag3.name.split(','))}.to change(TodoTag, :count).by(1)
+      end
+    end
+    context 'すでに作成してあるタグの登録' do
+      it 'TodoTagの数が増えること' do
+        expect{todo.save_tag(tag3.name.split(','))}.to change(TodoTag, :count).by(1)
+      end
+      it 'Tagの数は変わらないこと' do
+        expect{todo.save_tag([])}.to_not change(TodoTag, :count)
       end
     end
   end
