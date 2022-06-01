@@ -75,18 +75,17 @@ RSpec.describe Todo, type: :model do
   end
 
   describe 'save_tagメソッド' do
-    let!(:tag3) { create(:tag, name: 'tag3') }
+    let!(:tag) { build(:tag) }
     let!(:todo) { create(:todo)}
 
     context 'すでにあるタグから他のタグに変える' do
       before do
-        tag_hoge = Tag.create(name: 'hoge', user_id: todo.user.id)
-        tag_fuga = Tag.create(name: 'fuga', user_id: todo.user.id)
-        tag_piyo = Tag.create(name: 'piyo', user_id: todo.user.id)
-        todo.todo_tags.create(tag_id: tag_hoge.id)
-        todo.todo_tags.create(tag_id: tag_fuga.id)
-        todo.todo_tags.create(tag_id: tag_piyo.id)
-        # pp todo.tags.pluck(:name)
+        tag_one = Tag.create(name: 'tag1', user_id: todo.user.id)
+        tag_tow = Tag.create(name: 'tag2', user_id: todo.user.id)
+        tag_three = Tag.create(name: 'tag3', user_id: todo.user.id)
+        todo.todo_tags.create(tag_id: tag_one.id)
+        todo.todo_tags.create(tag_id: tag_tow.id)
+        todo.todo_tags.create(tag_id: tag_three.id)
       end
 
       it 'Tagの数は変わらないこと' do
@@ -94,24 +93,31 @@ RSpec.describe Todo, type: :model do
       end
 
       it 'TodoTagの数が減ること' do
-        expect(todo.save_tag(['fuga'])).to_not eq todo.tags.pluck(:name)
+        expect{todo.save_tag(['tag3'])}.to change(TodoTag, :count).by(-2)
       end
 
     end
     context '新しいタグの保存' do
       it 'Tagの数が増えていること' do
-        expect{todo.save_tag(tag3.name.split(','))}.to change(Tag, :count).by(1)
+        expect{todo.save_tag([tag.name])}.to change(Tag, :count).by(1)
       end
       it 'TodoTagの数が増えていること' do
-        expect{todo.save_tag(tag3.name.split(','))}.to change(TodoTag, :count).by(1)
+        expect{todo.save_tag([tag.name])}.to change(TodoTag, :count).by(1)
       end
     end
     context 'すでに作成してあるタグの登録' do
-      it 'TodoTagの数が増えること' do
-        expect{todo.save_tag(tag3.name.split(','))}.to change(TodoTag, :count).by(1)
+      before do
+        tag_one = Tag.create(name: 'tag1', user_id: todo.user.id)
+        tag_tow = Tag.create(name: 'tag2', user_id: todo.user.id)
+        todo.todo_tags.create(tag_id: tag_one.id)
+        todo.todo_tags.create(tag_id: tag_tow.id)
       end
       it 'Tagの数は変わらないこと' do
-        expect{todo.save_tag([])}.to_not change(TodoTag, :count)
+        expect{todo.save_tag(['tag_one','tag_tow'])}.to_not change(TodoTag, :count)
+      end
+
+      it 'TodoTagの数が変わらないこと' do
+        expect{todo.save_tag(['tag_one','tag_tow'])}.to_not change(TodoTag, :count)
       end
     end
   end

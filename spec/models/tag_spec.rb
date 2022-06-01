@@ -8,8 +8,8 @@ RSpec.describe Tag, type: :model do
     expect(tag).to_not be_valid
   end
 
-  it 'tagが10個以内であること' do
-    tag.name = ' '
+  it 'tagが10文字以内であること' do
+    tag.name = 'a' * 11
     expect(tag).to_not be_valid
   end
 
