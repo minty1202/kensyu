@@ -30,7 +30,7 @@ RSpec.describe Todo, type: :model do
   end
 
   describe 'lookforメソッド' do
-  let!(:todo2) {create(:todo, title: 'todo2') }
+    let!(:todo2) {create(:todo, title: 'todo2') }
 
     context '完全一致で検索した場合' do
     let(:perfect_match_params) { {search: 'perfect_match'} }
@@ -70,6 +70,54 @@ RSpec.describe Todo, type: :model do
       end
       it 'todo2を取得出来ないこと ' do
         expect(Todo.lookfor(partial_match_params, todo.title, :user, 'name')).to_not include(todo2.title)
+      end
+    end
+  end
+
+  describe 'save_tagメソッド' do
+    let!(:tag) { build(:tag) }
+    let!(:todo) { create(:todo)}
+
+    context 'すでにあるタグから他のタグに変える' do
+      before do
+        tag_one = Tag.create(name: 'tag1', user_id: todo.user.id)
+        tag_tow = Tag.create(name: 'tag2', user_id: todo.user.id)
+        tag_three = Tag.create(name: 'tag3', user_id: todo.user.id)
+        todo.todo_tags.create(tag_id: tag_one.id)
+        todo.todo_tags.create(tag_id: tag_tow.id)
+        todo.todo_tags.create(tag_id: tag_three.id)
+      end
+
+      it 'Tagの数は変わらないこと' do
+        expect{todo.save_tag([])}.to_not change(Tag, :count)
+      end
+
+      it 'TodoTagの数が減ること' do
+        expect{todo.save_tag(['tag3'])}.to change(TodoTag, :count).by(-2)
+      end
+
+    end
+    context '新しいタグの保存' do
+      it 'Tagの数が増えていること' do
+        expect{todo.save_tag([tag.name])}.to change(Tag, :count).by(1)
+      end
+      it 'TodoTagの数が増えていること' do
+        expect{todo.save_tag([tag.name])}.to change(TodoTag, :count).by(1)
+      end
+    end
+    context 'すでに作成してあるタグの登録' do
+      before do
+        tag_one = Tag.create(name: 'tag1', user_id: todo.user.id)
+        tag_tow = Tag.create(name: 'tag2', user_id: todo.user.id)
+        todo.todo_tags.create(tag_id: tag_one.id)
+        todo.todo_tags.create(tag_id: tag_tow.id)
+      end
+      it 'Tagの数は変わらないこと' do
+        expect{todo.save_tag(['tag_one','tag_tow'])}.to_not change(TodoTag, :count)
+      end
+
+      it 'TodoTagの数が変わらないこと' do
+        expect{todo.save_tag(['tag_one','tag_tow'])}.to_not change(TodoTag, :count)
       end
     end
   end

@@ -7,8 +7,9 @@ module Users
     end
 
     def create
-      @todo = Todo.new(todo_params)
+      @todo = current_user.todos.new(todo_params)
       if @todo.save
+        @todo.save_tag(fix_name_array)
         flash[:success] = "登録が成功しました！"
         redirect_to users_mypage_path
       else
@@ -22,6 +23,7 @@ module Users
 
     def update
       if @todo.update(todo_params)
+        @todo.save_tag(fix_name_array)
         flash[:success] = "Todoを更新しました！"
         redirect_to users_mypage_path
       else
@@ -52,6 +54,10 @@ module Users
 
     def find_todo_detail
       @todo = current_user.todos.find(params[:id])
+    end
+
+    def fix_name_array
+      params[:todo][:name].split(',') # 送らててきたタグの取得
     end
   end
 end

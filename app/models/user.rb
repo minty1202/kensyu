@@ -7,4 +7,5 @@ class User < ApplicationRecord
   validates :name, presence: true, length: { maximum: 10 }
   has_many :todos, dependent: :destroy
   has_many :comments, dependent: :destroy, through: :todos
+  has_many :tags, dependent: :destroy
 end

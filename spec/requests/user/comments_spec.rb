@@ -4,6 +4,7 @@ RSpec.describe "Users::Comments", type: :request do
   let!(:user) { create(:user) }
   let!(:todo) { create(:todo) }
   let!(:comment) { create(:comment) }
+  let!(:tag) { create(:tag) }
 
   describe "POST /users/comments/ #create" do
     context 'ログインしている場合' do
@@ -13,7 +14,8 @@ RSpec.describe "Users::Comments", type: :request do
       context 'コメントの登録が成功する場合' do
         let(:todo_params) { { todo: { title: todo.title,
                                   text: todo.text,
-                                  user_id: todo.user},
+                                  user_id: todo.user,
+                                  name: tag.name},
                                   todo_id: todo.id } }
         let(:comment_params) { { comment: { text: comment.text,
                                   user_id: comment.user,
