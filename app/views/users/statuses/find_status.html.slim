@@ -1,3 +1,11 @@
+.text-center
+  - if params[:status] == 'todo'
+    h2 未完了リスト一覧
+  - if params[:status] == 'done'
+    h2 完了リスト一覧
+  - if params[:status] == 'expired'
+    h2 期限切れリスト一覧
+
 ul.user-info
   li.user= current_user.name
   li.user= current_user.email

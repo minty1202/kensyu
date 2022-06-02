@@ -13,9 +13,10 @@ ul.user-info
 br
 
 ul.user-info
-  = link_to '未完了', status_todo_users_mypage_path
-  = link_to '完了', status_done_users_mypage_path
-  = link_to '期限切れ', status_expired_users_mypage_path
+  = link_to '未完了', status_users_mypage_path('todo')
+  / = button_to '未完了', '/users/mypage/find_to/:status' , { method: :get, params: {status: 'todo'} }
+  = link_to '完了', status_users_mypage_path('done')
+  = link_to '期限切れ', status_users_mypage_path('expired')
 
 .todo-list
   - if @todos.present?
