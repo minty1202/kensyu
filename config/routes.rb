@@ -8,6 +8,10 @@ Rails.application.routes.draw do
   namespace :users do
     resource :mypage, only: :show do
       resources :tags, only: :show
+      get '/status_todo', to: 'statuses#find_todo'
+      get '/status_done', to: 'statuses#find_done'
+      get '/status_expired', to: 'statuses#find_expired'
+      resources :statuses, only: [:show]
     end
     resources :todos, only:[:new, :create, :edit, :update, :destroy] do
       resources :comments, only: [:create]

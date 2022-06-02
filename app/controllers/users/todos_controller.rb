@@ -49,7 +49,7 @@ module Users
     private
 
     def todo_params
-      params.require(:todo).permit(:title, :text, images: []).merge(user_id: current_user.id)
+      params.require(:todo).permit(:title, :text, :limit_date, :status, images: []).merge(user_id: current_user.id)
     end
 
     def find_todo_detail
