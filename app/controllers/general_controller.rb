@@ -1,5 +1,5 @@
 class GeneralController < ApplicationController
   def index
-    @todos = Todo.includes(:user).page(params[:page]).per(8)
+    @todos = Todo.order(limit_date: "ASC").includes(:user).page(params[:page]).per(8)
   end
 end

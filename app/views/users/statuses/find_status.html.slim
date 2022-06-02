@@ -1,22 +1,18 @@
 .text-center
-  h3 タグリスト
-- @tags.each do |tag|
-  .user-info
-    = link_to tag.name, users_mypage_tag_path(tag)
-    = "(#{tag.todos.count})"
+  - if params[:status] == 'todo'
+    h2 未完了リスト一覧
+  - if params[:status] == 'done'
+    h2 完了リスト一覧
+  - if params[:status] == 'expired'
+    h2 期限切れリスト一覧
 
 ul.user-info
   li.user= current_user.name
   li.user= current_user.email
   button
     = link_to 'Todo登録へ', new_users_todo_path
-br
 
-ul.user-info
-  = link_to '未完了', status_users_mypage_path('todo')
-  / = button_to '未完了', '/users/mypage/find_to/:status' , { method: :get, params: {status: 'todo'} }
-  = link_to '完了', status_users_mypage_path('done')
-  = link_to '期限切れ', status_users_mypage_path('expired')
+
 
 .todo-list
   - if @todos.present?
@@ -24,6 +20,8 @@ ul.user-info
       = link_to edit_users_todo_path(todo)
         ul.todos-info
           li.user タイトル：#{todo.title}
+          / li.user= todo.text
+          / li.user= todo.created_at
           li.user 期日：#{todo.limit_date}
           li.user= todo.status
           - if todo.images.attached?
@@ -31,6 +29,8 @@ ul.user-info
                 li.user= image_tag image.variant(:thumb)
   - else
     p.todos-info Todoリストがありません！
+
+h2 = link_to 'マイページに戻る', users_mypage_path
 
 .text-center
   = paginate @todos

@@ -25,6 +25,20 @@ RSpec.describe Todo, type: :model do
     expect(todo.errors[:images]).to include('は3ファイルまでにしてください')
   end
 
+  it '終了期日が必須であること' do
+    todo.limit_date = ' '
+    expect(todo).to_not be_valid
+  end
+
+  it 'ステータスが必須であること' do
+    todo.status = ' '
+    expect(todo).to_not be_valid
+  end
+
+  it '初期値が未完了であること' do
+    expect(todo.status).to eq '未完了'
+  end
+
   it 'すべての値が正常であれば登録できる' do
     expect(todo).to be_valid
   end
