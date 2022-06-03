@@ -135,4 +135,45 @@ RSpec.describe Todo, type: :model do
       end
     end
   end
+
+  describe 'change_statusメソッド' do
+    let!(:todo) { create(:todo)}
+
+    context 'after_commitが実行される' do
+      # context '登録が失敗する場合' do
+      #   it '無効な値だと登録されないこと' do
+      #     expect {
+      #       post users_todos_path, params:{todo: {title: '',
+      #                                     text: '',
+      #                                     user_id: '',
+      #                                     name: ''}}
+      #       }.to_not change(Todo, :count)
+      #   end
+      # end
+      # context '登録が成功する場合' do
+      #   let(:todo_params) { { todo: { title: 'test',
+      #                               text: 'hogehogehoge',
+      #                               user_id: 1,
+      #                               name: tag.name} } }
+      #     it '登録されること' do
+      #     expect{
+      #       post users_todos_path, params: todo_params
+      #     }.to change(Todo, :count).by 1
+      #     end
+
+      #     it "ユーザー詳細ページにリダイレクトされること" do
+      #       post users_todos_path(todo_params)
+      #       expect(response).to redirect_to users_mypage_path
+      #       expect(flash[:success]).to be_truthy
+      #     end
+
+          it '今日より以前かつステータスが未完了がないこと' do
+              expect{todo.change_status}.to
+          end
+
+          it '取得した分だけ未完了のステータスが減ること' do
+          end
+      end
+    end
+  end
 end

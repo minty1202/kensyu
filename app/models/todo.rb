@@ -16,6 +16,8 @@ class Todo < ApplicationRecord
 
   enum status: { '未完了': 'todo', '完了': 'done', '期限切れ': 'expired' }
 
+  after_commit :change_status
+
   def save_tag(sent_tags)
     current_tags = tags.pluck(:name)
 
@@ -38,5 +40,14 @@ class Todo < ApplicationRecord
 
   def file_length
     return errors.add(:images, 'は3ファイルまでにしてください') if images.length > 3
+  end
+
+  def change_status
+    timeout_todos = Todo.where("limit_date < ?", Date.today).where(status: 'todo')
+    timeout_todos.each do |timeout_todo|
+      timeout_todo.status = 'expired'
+      timeout_todo.save
+    end
+    puts 'chnage status!!'
   end
 end
