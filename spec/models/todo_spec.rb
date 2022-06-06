@@ -138,15 +138,6 @@ RSpec.describe Todo, type: :model do
 
   describe 'change_statusメソッド' do
     let!(:user) { create(:user) }
-    context 'after_commitの前の状態' do
-      let!(:todo) { create(:todo, limit_date: Time.current.yesterday)}
-      it '今日より以前であること' do
-          expect(todo.limit_date < Time.current).to be_truthy
-      end
-      it 'ステータスが未完了であること' do
-          expect(todo.status).to eq '未完了'
-      end
-    end
     context 'after_commitが実行される' do
       let!(:todo) { create(:todo, limit_date: Time.current.yesterday)}
       it '未完了から期限切れになること' do
