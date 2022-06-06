@@ -2,7 +2,8 @@ FactoryBot.define do
   factory :todo do
     title { "MyString" }
     text { "MyText" }
-    limit_date {"Sun, 05 Jun 2022"}
+    limit_date {Time.current}
+    # "Sun, 05 Jun 2022"
     status {"todo"}
     user
     # association :user

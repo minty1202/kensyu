@@ -43,11 +43,10 @@ class Todo < ApplicationRecord
   end
 
   def change_status
-    timeout_todos = Todo.where("limit_date < ?", Date.today).where(status: 'todo')
-    timeout_todos.each do |timeout_todo|
+    timeout_todos = Todo.where("limit_date < ?", Time.current).where(status: 'todo')
+    timeout_todos.find_each do |timeout_todo|
       timeout_todo.status = 'expired'
       timeout_todo.save
     end
-    puts 'chnage status!!'
   end
 end
