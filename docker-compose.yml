@@ -8,7 +8,6 @@ services:
     ports:
       - "5432:5432"
     environment:
-      TZ: Asia/Tokyo
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
 

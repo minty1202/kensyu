@@ -16,7 +16,6 @@ class Todo < ApplicationRecord
 
   enum status: { '未完了': 'todo', '完了': 'done', '期限切れ': 'expired' }
 
-
   def save_tag(sent_tags)
     current_tags = tags.pluck(:name)
 
@@ -32,6 +31,14 @@ class Todo < ApplicationRecord
     new_tags.each do |new_tag|
       new_todo_tag = Tag.find_or_create_by(name: new_tag, user_id:)
       tags << new_todo_tag
+    end
+  end
+
+  def self.change_status
+    timeout_todos = Todo.where("limit_date < ?", Time.current).where(status: 'todo')
+    timeout_todos.find_each do |timeout_todo|
+      timeout_todo.status = 'expired'
+      timeout_todo.save
     end
   end
 
