@@ -8,6 +8,7 @@ services:
     ports:
       - "5432:5432"
     environment:
+      TZ: Asia/Tokyo
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
 
@@ -23,6 +24,7 @@ services:
     tty: true
     stdin_open: true
     environment:
+      TZ: Asia/Tokyo
       APP_DATABASE_HOST: db
       APP_DATABASE_USERNAME: postgres
       APP_DATABASE_PASSWORD: password
