@@ -12,8 +12,6 @@ FactoryBot.define do
     # after(:build) do |post|
     #   post.image.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
     # end
-    before(:create) { Todo.skip_callback(:commit, :after, :change_status) }
-    after(:create) { Todo.set_callback(:commit, :after, :change_status) }
 
     trait :with_attachment do
       attachment { Rack::Test::UploadedFile.new(
