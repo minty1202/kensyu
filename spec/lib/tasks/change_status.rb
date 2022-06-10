@@ -5,6 +5,7 @@ describe 'change_status' do
   before(:all) do
     @rake = Rake::Application.new
     Rake.application = @rake
+    # Rake.application.rake_require('change_expired', [Rails.root.join('lib', 'tasks', 'change_status')])
     Rake.application.rake_require 'tasks/change_status'
     Rake::Task.define_task(:environment)
   end
