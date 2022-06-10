@@ -36,6 +36,17 @@ class Todo < ApplicationRecord
     end
   end
 
+  # 1日後に終了期限かつ未完了のTodoを取得して通知
+  def self.expired_tomorrow
+    notifier = Slack::Notifier.new(ENV['WEBHOOK_URL'])
+    expired_tomorrow_todos = Todo.where(limit_date: Time.current.tomorrow).where(status: 'todo')
+    # sss = expired_tomorrow_todos.find_each {|expired_tomorrow_todo| expired_tomorrow_todo.title}
+    notifier.ping expired_tomorrow_todos.count
+    # if expired_tomorrow_todos.count != 0
+    #   notifier.ping "明日期限の未完了Todoは#{expired_tomorrow_todos.count}件です"
+    # end
+  end
+
   private
 
   def file_length
