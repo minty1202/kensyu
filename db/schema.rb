@@ -87,7 +87,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_01_081322) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "limit_date", default: "2022-06-05", null: false
+    t.date "limit_date", default: "2022-06-13", null: false
     t.string "status", default: "todo", null: false
     t.index ["user_id"], name: "index_todos_on_user_id"
   end

@@ -145,4 +145,13 @@ RSpec.describe Todo, type: :model do
       end
     end
   end
+
+  describe 'todo_notifier' do
+    context 'get_todo_statusが実行される' do
+      let!(:todo) { create(:todo, limit_date: Time.current.tomorrow)}
+      it '1日後に期限の未完了Todoを取得' do
+        expect(Todo.notice_expired_todo).to be_truthy
+      end
+    end
+  end
 end
