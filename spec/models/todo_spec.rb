@@ -141,7 +141,7 @@ RSpec.describe Todo, type: :model do
     context 'after_commitが実行される' do
       let!(:todo) { create(:todo, limit_date: Time.current.yesterday)}
       it '未完了から期限切れになること' do
-        expect{todo.send(:change_status)}.to change{ todo.reload.status }.from('未完了').to('期限切れ')
+        expect{Todo.change_status}.to change{ todo.reload.status }.from('未完了').to('期限切れ')
       end
     end
   end
