@@ -158,5 +158,7 @@ RSpec.describe Todo, type: :model do
     it 'is success' do
       expect(Todo.notice_expired_todo).to be_truthy
     end
+
+    it { expect(Todo.notice_expired_todo).to eq ('Working as expected') }
   end
 end
