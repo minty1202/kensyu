@@ -3,7 +3,7 @@ module Users
     before_action :find_todo_detail, only: [:edit, :update, :destroy]
 
     def new
-      @todo = Todo.new
+      @todo = Todo.new(limit_date: Time.current)
     end
 
     def create

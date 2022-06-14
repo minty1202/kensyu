@@ -42,7 +42,8 @@ RSpec.describe "Todos", type: :request do
         let(:todo_params) { { todo: { title: 'test',
                                   text: 'hogehogehoge',
                                   user_id: 1,
-                                  name: tag.name} } }
+                                  name: tag.name,
+                                  limit_date: Time.current} } }
         it '登録されること(画像なし)' do
         expect{
           post users_todos_path, params: todo_params
@@ -68,6 +69,7 @@ RSpec.describe "Todos", type: :request do
                                                         user_id: todo.user.id ,
                                                         images: todo.images,
                                                         name: tag.name,
+                                                        limit_date: Time.current
                                                     } }
               }.to change(Todo, :count).by 1
           end

@@ -145,4 +145,20 @@ RSpec.describe Todo, type: :model do
       end
     end
   end
+
+  describe '明日期限の未完了todoを取得して通知する' do
+    let!(:todo) { create(:todo, limit_date: Time.current.tomorrow)}
+    # モックを作る
+    let(:notifier) { double("mock notifier", ping: 'Working as expected')}
+    # newメソッドが呼べるようにし、作ったモックを返す
+    before do
+      allow(Slack::Notifier).to receive(:new).and_return(notifier)
+    end
+
+    it 'is success' do
+      expect(Todo.notice_expired_todo).to be_truthy
+    end
+
+    it { expect(Todo.notice_expired_todo).to eq ('Working as expected') }
+  end
 end
