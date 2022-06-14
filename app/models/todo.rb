@@ -47,11 +47,11 @@ class Todo < ApplicationRecord
     notifier = Slack::Notifier.new(ENV['WEBHOOK_URL'])
     expired_tomorrow_todos = Todo.where(limit_date: Time.current.tomorrow).where(status: 'todo')
 
-    if expired_tomorrow_todos.count != 0
-      todo_title = expired_tomorrow_todos.pluck(:title)
-      all_todo_title = todo_title.join("\n")
-      notifier.ping "明日期限の未完了Todoは#{expired_tomorrow_todos.count}件です。\n#{all_todo_title}"
-    end
+    return if expired_tomorrow_todos.count.zero?
+
+    todo_title = expired_tomorrow_todos.pluck(:title)
+    all_todo_title = todo_title.join("\n")
+    notifier.ping "明日期限の未完了Todoは#{expired_tomorrow_todos.count}件です。\n#{all_todo_title}"
   end
 
   private

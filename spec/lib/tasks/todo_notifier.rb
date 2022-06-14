@@ -15,10 +15,15 @@ describe 'todo_notifier' do
   # end
 
   describe 'get_todo_status' do
-    let(:task) { 'todo_notifier:get_todo_status' }
-
-    it 'is success' do
-      expect(@rake[task].invoke).to be_truthy
+    let!(:todo) { create(:todo, limit_date: Time.current.tomorrow)}
+    # モックを作る
+    let(:notifier) { double("mock notifier", ping: 'Working as expected')}
+    # newメソッドが呼べるようにし、作ったモックを返す
+    before do
+      allow(Slack::Notifier).to receive(:new).and_return(notifier)
+    end
+    it 'is Working as expected' do
+      expect(Todo.notice_expired_todo).to eq ('Working as expected')
     end
   end
 end
