@@ -1,5 +1,4 @@
 class Todo < ApplicationRecord
-
   validates :title, presence: true, length: { maximum: 50 }
   validates :text, presence: true
   validates :limit_date, presence: true
