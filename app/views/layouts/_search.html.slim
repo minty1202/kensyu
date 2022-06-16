@@ -1,5 +1,5 @@
 - if user_signed_in?
-  h2 検索
+  h2 キーワード検索
   .col-md-4.col-md-offset-4
     = form_with url: users_search_path, local: true, method: :get do |f|
       = f.text_field :keyword
