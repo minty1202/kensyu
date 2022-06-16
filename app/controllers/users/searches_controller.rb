@@ -1,14 +1,9 @@
 module Users
   class SearchesController < UsersController
     def search
-      @range = params[:range]
-      @search = params[:search]
-
-      if @range == 'User'
-        @users = User.lookfor(params[:search], params[:word], :todos, 'name')
-      else
-        @todos = Todo.lookfor(params[:search], params[:word], :user, 'title')
-      end
+      keywords = params[:keyword].split(/\s/)
+      @todos = keywords.map { |keyword| Todo.search_title(keyword).or(Todo.search_text(keyword)) }.flatten.uniq
+      @todos = @todos.sort { |a, b| a[:limit_date] <=> b[:limit_date] }
     end
   end
 end

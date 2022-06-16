@@ -1,6 +1,4 @@
 class Todo < ApplicationRecord
-  include Search
-
   validates :title, presence: true, length: { maximum: 50 }
   validates :text, presence: true
   validates :limit_date, presence: true
@@ -15,6 +13,9 @@ class Todo < ApplicationRecord
   has_many :tags, through: :todo_tags
 
   enum status: { '未完了': 'todo', '完了': 'done', '期限切れ': 'expired' }
+
+  scope :search_title, ->(word) { where("title LIKE ?", "%#{word}%").order(limit_date: "ASC") }
+  scope :search_text, ->(word) { where("text LIKE ?", "%#{word}%").order(limit_date: "ASC") }
 
   def save_tag(sent_tags)
     current_tags = tags.pluck(:name)

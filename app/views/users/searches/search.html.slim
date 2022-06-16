@@ -1,27 +1,17 @@
-/ - raise @users.class
-- if @range == "User"
-  h1 User 検索結果 : #{ @users.count}人
-  h2.hidden 検索条件 : #{@search}
-  - @users.each do |user|
-    - if user.id === current_user.id
-        = link_to users_mypage_path(user)
-          ul.todos-info-self
-            li.user ID：#{user.id}
-            li.user 名前：#{user.name}
-    - else
-        ul.todos-info
-          li.user ID：#{user.id}
-          li.user 名前：#{user.name}
-- else
-  h1 Todo 検索結果: #{ @todos.count}個
-  h2.hidden 検索条件 : #{@search}
-  - @todos.each do |todo|
-    - if todo.user === current_user
-      = link_to edit_users_todo_path(todo)
-        ul.todos-info-self
-          li.user タイトル：#{todo.title}
-          li.user テキスト：#{todo.text}
-    - else
-        ul.todos-info
-          li.user タイトル：#{todo.title}
-          li.user テキスト：#{todo.text}
+h1 Todo 検索結果: #{ @todos.count .to_i }個
+h2.hidden = @todos.count.to_i == 0 ? '検索マッチ0' : '検索マッチ'
+- @todos.each do |todo|
+  - if todo.user === current_user
+    = link_to edit_users_todo_path(todo)
+      ul.todos-info-self
+        li.user タイトル：#{todo.title}
+        li.user テキスト：#{todo.text}
+        li.user 期日：#{todo.limit_date}
+  - else
+      ul.todos-info
+        li.user タイトル：#{todo.title}
+        li.user テキスト：#{todo.text}
+        li.user 期日：#{todo.limit_date}
+
+h2 = link_to 'マイページに戻る', users_mypage_path if current_user
+h2 = link_to '一覧に戻る', root_path

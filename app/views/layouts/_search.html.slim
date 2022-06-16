@@ -1,8 +1,6 @@
 - if user_signed_in?
-  h2 検索
+  h2 キーワード検索
   .col-md-4.col-md-offset-4
     = form_with url: users_search_path, local: true, method: :get do |f|
-      = f.text_field :word
-      = f.select :range, options_for_select([['User'], ['Todo']])
-      = f.select :search, options_for_select([["完全一致","perfect_match"], ["前方一致","forward_match"],  ["後方一致","backword_match"], ["部分一致","partial_match"]])
+      = f.text_field :keyword
       = f.submit "検索", class: "btn btn-primary"
