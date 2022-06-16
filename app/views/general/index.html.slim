@@ -7,15 +7,11 @@ h1 Todo 一覧
         li.user タイトル:#{todo.title}
         li.user 期日：#{todo.limit_date}
         li.user= todo.status
-        / li.user テキスト:#{todo.text}
-        / li.user= todo.created_at
   - else
       ul.todos-info
         li.user タイトル:#{todo.title}
         li.user 期日：#{todo.limit_date}
         li.user= todo.status
-        / li.user テキスト:#{todo.text}
-        / li.user= todo.created_at
 
 - if @todos.nil?
     p.todos-info Todoがありません！

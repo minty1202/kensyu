@@ -1,13 +1,19 @@
-h1 Todo 検索結果: #{ @todos[1].count}個
-
-/ h2.hidden 検索条件 : #{@search}
-/ - @todos.to_a.each do |todo|
-/   - if todo.user === current_user
-/     = link_to edit_users_todo_path(todo)
-/       ul.todos-info-self
-/         li.user タイトル：#{todo.title}
-/         li.user テキスト：#{todo.text}
-/   - else
-/       ul.todos-info
-/         li.user タイトル：#{todo.title}
-/         li.user テキスト：#{todo.text}
+- if @todos.count == 0
+  h1 Todo 検索結果: #{ @todos.count}個
+  h2.hidden 検索マッチ0
+- else
+  h1 Todo 検索結果: #{ @todos.count}個
+  h2.hidden 検索マッチ
+  - @todos.to_a.each do |todo|
+    - if todo.user === current_user
+      = link_to edit_users_todo_path(todo)
+        ul.todos-info-self
+          li.user タイトル：#{todo.title}
+          li.user テキスト：#{todo.text}
+          li.user 期日：#{todo.limit_date}
+    - else
+        ul.todos-info
+          li.user タイトル：#{todo.title}
+          li.user テキスト：#{todo.text}
+          li.user 期日：#{todo.limit_date}
+h2 = link_to '一覧に戻る', root_path
