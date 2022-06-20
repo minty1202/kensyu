@@ -34,7 +34,9 @@ RSpec.describe "Todos", type: :request do
             post users_todos_path, params:{todo: {title: '',
                                           text: '',
                                           user_id: '',
-                                          name: ''}}
+                                          name: '',
+                                          tag_ids: '',
+                                          }}
             }.to_not change(Todo, :count)
         end
       end
@@ -43,6 +45,7 @@ RSpec.describe "Todos", type: :request do
                                   text: 'hogehogehoge',
                                   user_id: 1,
                                   name: tag.name,
+                                  tag_ids: [],
                                   limit_date: Time.current} } }
         it '登録されること(画像なし)' do
         expect{
@@ -69,6 +72,7 @@ RSpec.describe "Todos", type: :request do
                                                         user_id: todo.user.id ,
                                                         images: todo.images,
                                                         name: tag.name,
+                                                        tag_ids: [],
                                                         limit_date: Time.current
                                                     } }
               }.to change(Todo, :count).by 1
@@ -125,7 +129,9 @@ RSpec.describe "Todos", type: :request do
         let(:todo_params) { { todo: { title: 'test',
                                   text: 'hogehogehoge',
                                   user_id: todo.user.id,
-                                  name: tag.name}} }
+                                  name: tag.name,
+                                  tag_ids: [tag.id]
+                                  }} }
         it '更新されること' do
           expect{
             patch users_todo_path(todo), params: todo_params
@@ -150,7 +156,8 @@ RSpec.describe "Todos", type: :request do
                                                         text: todo.text,
                                                         user_id: todo.user.id ,
                                                         images: todo.images,
-                                                        name: tag.name
+                                                        name: tag.name,
+                                                        tag_ids: [tag.id]
                                                     } }
             }.to_not change(Todo, :count)
           end
@@ -160,7 +167,8 @@ RSpec.describe "Todos", type: :request do
                                                               title: todo.title,
                                                               text: todo.text,
                                                               image_ids: [todo.images[0].id],
-                                                              name: tag.name
+                                                              name: tag.name,
+                                                              tag_ids: [tag.id]
                                                             }}
             }.to change { todo.images.count }.from(1).to(0)
           end

@@ -16,11 +16,15 @@ class Todo < ApplicationRecord
 
   enum status: { '未完了': 'todo', '完了': 'done', '期限切れ': 'expired' }
 
-  def save_tag(sent_tags)
+  def save_tag(new_sent_tags, checkbox_sent_tags)
+    checkbox_tags = Tag.find(checkbox_sent_tags)
+    checkbox_tags = checkbox_tags.map {|checkbox_tag| checkbox_tag.name}
+
+    all_sent_tags = new_sent_tags + checkbox_tags
     current_tags = tags.pluck(:name)
 
-    old_tags = current_tags - sent_tags
-    new_tags = sent_tags - current_tags
+    old_tags = current_tags - all_sent_tags
+    new_tags = all_sent_tags - current_tags
 
     # 古いタグの削除
     old_tags.each do |old|
