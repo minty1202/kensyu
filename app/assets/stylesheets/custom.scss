@@ -96,6 +96,28 @@ input {
   }
 }
 
+input[type="checkbox"]{
+  width: 30px;
+  margin: 0;
+  padding: 0;
+}
+
+.tag_checkbox {
+  margin-bottom: 30px;
+}
+
+.tags {
+  width: 100%;
+  margin: 30 auto;
+}
+
+.all_tags{
+  width: 70%;
+  margin: 30px auto;
+  display: flex;
+  justify-content: space-around;
+}
+
 #session_remember_me {
   width: auto;
   margin-left: 0;

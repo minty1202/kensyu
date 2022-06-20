@@ -1,7 +1,6 @@
 .col-md-6.col-md-offset-3
   - tags_name = @todo.tags.pluck(:name)
   - tags = tags_name.join(',')
-  / - tags = tags_name.split(',')
 
   = form_with model: [:users, @todo ],local: true do |f|
     = f.label :title
@@ -14,11 +13,11 @@
       = message
     = f.label :新しいタグを追加
     = f.text_field :name
-    / = f.text_field :name, value: tags
     = f.label :既存のタグ一覧
-    = f.collection_check_boxes(:tag_ids, @todo.tags, :id, :name)
-
-    = f.label :終了期日, class: 'checkbox'
+    .tag_checkbox
+      .tags
+        = f.collection_check_boxes(:tag_ids, @todo.tags, :id, :name)
+    = f.label :終了期日
     = f.date_field :limit_date
     - @todo.errors.full_messages_for(:limit_date).each do |message|
     = f.label :ステータス

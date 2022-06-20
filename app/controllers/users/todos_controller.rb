@@ -62,6 +62,8 @@ module Users
     end
 
     def checkbox_tag
+      return [] if params[:todo][:tag_ids].blank?
+
       params[:todo][:tag_ids].reject(&:empty?)
     end
   end

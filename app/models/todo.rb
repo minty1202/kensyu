@@ -16,7 +16,7 @@ class Todo < ApplicationRecord
 
   enum status: { '未完了': 'todo', '完了': 'done', '期限切れ': 'expired' }
 
-  def save_tag(new_sent_tags = nil, checkbox_sent_tags)
+  def save_tag(new_sent_tags = nil, checkbox_sent_tags = [])
     checkbox_tags = Tag.find(checkbox_sent_tags)
     checkbox_tags = checkbox_tags.pluck(:name)
 
