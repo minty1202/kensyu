@@ -19,19 +19,9 @@ module Users
 
     def edit
       @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
-      # raise @todo.tags[0].inspect
     end
 
     def update
-      puts '-----------params start-----------'
-      puts params[:todo][:name].class #string
-      puts params[:todo][:name].strip.split.class #array
-      puts params[:todo][:name].strip.split #array
-      puts params[:todo][:name].strip.split.join.class #string
-      puts params[:todo][:name].strip.split.join.split.class #array
-      # p params[:todo][:tag_ids].reject(&:empty?).count
-      puts '-----------params end-----------'
-
       if @todo.update(todo_params)
         @todo.save_tag(new_tag, checkbox_tag)
         flash[:success] = "Todoを更新しました！"
@@ -69,7 +59,6 @@ module Users
     def new_tag
       # 送らててきた新しいタグの取得、空白がある場合一つの文字列にする
       params[:todo][:name].strip.split.join.split
-      # params[:todo][:name].strip.split(',') # 送らててきた新しいタグの取得
     end
 
     def checkbox_tag

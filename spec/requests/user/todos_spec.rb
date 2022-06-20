@@ -48,9 +48,9 @@ RSpec.describe "Todos", type: :request do
                                   tag_ids: [],
                                   limit_date: Time.current} } }
         it '登録されること(画像なし)' do
-        expect{
-          post users_todos_path, params: todo_params
-        }.to change(Todo, :count).by 1
+          expect{
+            post users_todos_path, params: todo_params
+          }.to change(Todo, :count).by 1
         end
 
         it "ユーザー詳細ページにリダイレクトされること" do

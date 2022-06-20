@@ -116,9 +116,6 @@ RSpec.describe Todo, type: :model do
         expect{todo.save_tag([tag.name], [])}.to change(Tag, :count).by(1)
       end
       it 'TodoTagの数が増えていること' do
-        puts '---------------------------'
-        puts '---------------------------'
-        p tag.id
         expect{todo.save_tag([tag.name], [])}.to change(TodoTag, :count).by(1)
       end
     end
@@ -130,7 +127,7 @@ RSpec.describe Todo, type: :model do
         todo.todo_tags.create(tag_id: tag_tow.id)
       end
       it 'Tagの数は変わらないこと' do
-        expect{todo.save_tag(['tag_one','tag_tow'], [])}.to_not change(Tag, :count)
+        expect{todo.save_tag(['tag1'], [])}.to_not change(Tag, :count)
       end
 
       it 'TodoTagの数が変わらないこと' do
