@@ -11,15 +11,16 @@
     = f.text_field :text
     - @todo.errors.full_messages_for(:text).each do |message|
       = message
-    = f.label :tag
-    = f.text_field :name, value: tags
-    - @todo.errors.full_messages_for(:limit_date).each do |message|
+    = f.label :新しいタグを追加
+    = f.text_field :name
+    = f.label :既存のタグ一覧
+    .tag_checkbox
+      .tags
+        = f.collection_check_boxes(:tag_ids, @todo.tags, :id, :name)
     = f.label :終了期日
     = f.date_field :limit_date
+    - @todo.errors.full_messages_for(:limit_date).each do |message|
     = f.label :ステータス
-    / - if @todo.user
-    /   = f.select :status, ([["完了","done"]])
-    / - else
     = f.select :status, options_for_select([["未完了","todo"], ["完了","done"]])
     - @todo.errors.full_messages_for(:status).each do |message|
     = f.label :images
@@ -32,4 +33,5 @@
         = f.check_box :image_ids, {multiple: true}, image.id, false
         li.user= image_tag image.variant(:thumb)
     = f.submit
+
   = link_to '戻る', users_mypage_path

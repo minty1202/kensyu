@@ -9,7 +9,7 @@ module Users
     def create
       @todo = current_user.todos.new(todo_params)
       if @todo.save
-        @todo.save_tag(fix_name_array)
+        @todo.save_tag(new_tag, checkbox_tag)
         flash[:success] = "登録が成功しました！"
         redirect_to users_mypage_path
       else
@@ -23,7 +23,7 @@ module Users
 
     def update
       if @todo.update(todo_params)
-        @todo.save_tag(fix_name_array)
+        @todo.save_tag(new_tag, checkbox_tag)
         flash[:success] = "Todoを更新しました！"
         redirect_to users_mypage_path
       else
@@ -49,15 +49,22 @@ module Users
     private
 
     def todo_params
-      params.require(:todo).permit(:title, :text, :limit_date, :status, images: []).merge(user_id: current_user.id)
+      params.require(:todo).permit(:title, :text, :limit_date, :status, images: [], tag_ids: []).merge(user_id: current_user.id)
     end
 
     def find_todo_detail
       @todo = current_user.todos.find(params[:id])
     end
 
-    def fix_name_array
-      params[:todo][:name].split(',') # 送らててきたタグの取得
+    def new_tag
+      # 送らててきた新しいタグの取得、空白がある場合一つの文字列にする
+      params[:todo][:name].strip.split.join.split
+    end
+
+    def checkbox_tag
+      return [] if params[:todo][:tag_ids].blank?
+
+      params[:todo][:tag_ids].reject(&:empty?)
     end
   end
 end

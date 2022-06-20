@@ -16,6 +16,7 @@ RSpec.describe "Users::Comments", type: :request do
                                   text: todo.text,
                                   user_id: todo.user,
                                   name: tag.name,
+                                  tag_ids: [],
                                   limit_date: Time.current},
                                   todo_id: todo.id } }
         let(:comment_params) { { comment: { text: comment.text,

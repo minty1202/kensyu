@@ -7,10 +7,10 @@ h2 キーワード検索
 
 .text-center
   h3 タグリスト
-- @tags.each do |tag|
-  .user-info
-    = link_to tag.name, users_mypage_tag_path(tag)
-    = "(#{tag.todos.count})"
+  .all_tags
+    - @tags.each do |tag|
+      = link_to tag.name, users_mypage_tag_path(tag)
+      = "(#{tag.todos.count})"
 
 ul.user-info
   li.user= current_user.name
