@@ -6,12 +6,12 @@ h1 Todo 一覧
       ul.todos-info-self
         li.user タイトル:#{todo.title}
         li.user 期日：#{todo.limit_date}
-        li.user= todo.status
+        li.user = todo.status
   - else
       ul.todos-info
         li.user タイトル:#{todo.title}
         li.user 期日：#{todo.limit_date}
-        li.user= todo.status
+        li.user = todo.status
 
 - if @todos.nil?
     p.todos-info Todoがありません！
