@@ -2,6 +2,9 @@
   - tags_name = @todo.tags.pluck(:name)
   - tags = tags_name.join(',')
 
+  - if @todo.errors.any?
+    p error todo!!!!!!
+
   = form_with model: [:users, @todo ],local: true do |f|
     = f.label :title
     = f.text_field :title
@@ -20,9 +23,11 @@
     = f.label :終了期日
     = f.date_field :limit_date
     - @todo.errors.full_messages_for(:limit_date).each do |message|
+      = message
     = f.label :ステータス
     = f.select :status, options_for_select([["未完了","todo"], ["完了","done"]])
     - @todo.errors.full_messages_for(:status).each do |message|
+      = message
     = f.label :images
     = f.file_field :images, multiple: true
     - @todo.errors.full_messages_for(:images).each do |message|
