@@ -4,8 +4,8 @@ h2 タグ： #{@tag.name}
 ul.user-info
   li.user= current_user.name
   li.user= current_user.email
-  button
-    = link_to 'Todo登録へ', new_users_todo_path
+  = link_to new_users_todo_path do
+    button Todo登録へ
 .todo-list
   - if @todos.present?
     - @todos.each do |todo|
