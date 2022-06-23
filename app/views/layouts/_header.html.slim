@@ -2,8 +2,9 @@ header.navbar.navbar-fixed-top
   div.container
     = link_to "TODO", root_path, id:"header"
     nav
-      ul.nav.navbar-nav.navbar-right
+      ul.nav.navbar-nav.navbar-right.header-info
         - if user_signed_in?
+          li.navbar-default= link_to "マイページへ", users_mypage_path
           li.navbar-default= button_to "Logout", destroy_user_session_path, method: :delete
         - else
           li.navbar-default= link_to "Sign up", new_user_registration_path
