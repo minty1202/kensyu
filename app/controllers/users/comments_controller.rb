@@ -4,7 +4,7 @@ module Users
       @comment = current_user.comments.new(comment_params)
       if @comment.save
         redirect_to edit_users_todo_path(@comment.todo)
-        flash[:success] = "コメントの登録が成功しました！"
+        flash[:success] = "コメントを投稿しました！"
       else
         @todo = Todo.find(comment_params[:todo_id])
         render 'users/todos/edit', status: :unprocessable_entity
