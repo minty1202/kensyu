@@ -2,9 +2,6 @@
   - tags_name = @todo.tags.pluck(:name)
   - tags = tags_name.join(',')
 
-  - if @todo.errors.any?
-    p error todo!!!!!!
-
   = form_with model: [:users, @todo ],local: true do |f|
     = f.label :title
     = f.text_field :title
