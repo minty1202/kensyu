@@ -7,22 +7,23 @@
       - @todo.errors.full_messages.each do |message|
         li.error-messages= message
     ul
-      - @tags.errors.full_messages.each do |message|
-        li.error-messages= message
+      - if @tags_errors.present?
+        - @tags_errors.each do |message|
+          li.error-messages = message
 
     = f.label :title
     = f.text_field :title
     = f.label :text
     = f.text_area :text, rows: "5", placeholder: '140文字以内でご入力ください'
-    = f.label :新しいタグを追加
+    = f.label '新しいタグを追加'
     = f.text_field :name
-    = f.label :既存のタグ一覧
+    = f.label '既存のタグ一覧'
     .tag_checkbox
       .tags
         = f.collection_check_boxes(:tag_ids, @todo.tags, :id, :name)
-    = f.label :終了期日
+    = f.label '終了期日'
     = f.date_field :limit_date
-    = f.label :ステータス
+    = f.label 'ステータス'
     = f.select :status, options_for_select([["未完了","todo"], ["完了","done"]])
     = f.label :images
     = f.file_field :images, multiple: true
