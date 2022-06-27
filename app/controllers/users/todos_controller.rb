@@ -72,14 +72,9 @@ module Users
     end
 
     def tag_todo_valid?(tag, todo)
-      return false if !tag.valid? && !todo.valid?
-      return false if !tag.errors || !todo.errors
+      return true if (tag.valid? & todo.valid?) && (!tag.errors.nil? & !todo.errors.nil?)
 
-      # return true if ( tag.valid? && todo.valid? ) && ( !tag.errors && !todo.errors )
-      p '-------tag valid?---------------'
-      p tag.valid?
-      p '-------todo valid?---------------'
-      p todo.valid?
+      false
     end
 
     def todo_params_for_update
