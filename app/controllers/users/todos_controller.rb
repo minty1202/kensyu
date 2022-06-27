@@ -5,11 +5,9 @@ module Users
 
     def new
       @todo = Todo.new(limit_date: Time.current)
-      # @tags = Tag.new(user_id: current_user.id)
     end
 
     def create
-      # @tags = Tag.new(name: params[:todo][:name], user_id: current_user.id)
       @todo = current_user.todos.new(todo_params)
       if tag_todo_valid?(new_tag, @todo)
         @todo.save
@@ -23,11 +21,9 @@ module Users
 
     def edit
       @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
-      # @tags = Tag.new(user_id: current_user.id)
     end
 
     def update
-      # @tags = Tag.new(name: params[:todo][:name], user_id: current_user.id)
       if tag_todo_valid?(new_tag, @todo)
         @todo.save
         @todo.save_tag(new_tag, checkbox_tag)
