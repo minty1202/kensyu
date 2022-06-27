@@ -72,7 +72,7 @@ module Users
     end
 
     def tag_todo_valid?(tag, todo)
-      return true if (tag.valid? & todo.valid?) && (!tag.errors.nil? & !todo.errors.nil?)
+      return true if tag.valid? & todo.valid?
 
       false
     end
