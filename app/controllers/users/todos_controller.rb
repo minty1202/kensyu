@@ -5,13 +5,13 @@ module Users
 
     def new
       @todo = Todo.new(limit_date: Time.current)
-      @tags = Tag.new(user_id: current_user.id)
+      # @tags = Tag.new(user_id: current_user.id)
     end
 
     def create
-      @tags = Tag.new(name: params[:todo][:name], user_id: current_user.id)
+      # @tags = Tag.new(name: params[:todo][:name], user_id: current_user.id)
       @todo = current_user.todos.new(todo_params)
-      if tag_todo_valid?(@tags, @todo)
+      if tag_todo_valid?(new_tag, @todo)
         @todo.save
         @todo.save_tag(new_tag, checkbox_tag)
         flash[:success] = "登録が成功しました！"
@@ -23,12 +23,12 @@ module Users
 
     def edit
       @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
-      @tags = Tag.new(user_id: current_user.id)
+      # @tags = Tag.new(user_id: current_user.id)
     end
 
     def update
-      @tags = Tag.new(name: params[:todo][:name], user_id: current_user.id)
-      if tag_todo_valid?(@tags, @todo)
+      # @tags = Tag.new(name: params[:todo][:name], user_id: current_user.id)
+      if tag_todo_valid?(new_tag, @todo)
         @todo.save
         @todo.save_tag(new_tag, checkbox_tag)
         flash[:success] = "Todoを更新しました！"
@@ -71,10 +71,16 @@ module Users
       params[:todo][:tag_ids].reject(&:empty?)
     end
 
-    def tag_todo_valid?(tag, todo)
-      return true if tag.valid? & todo.valid?
+    def tag_todo_valid?(tag_names, todo)
+      # tag1つずつに対してバリデーションをかける、重複は省く
+      @tags_errors = tag_names.map do |tag|
+        tag = Tag.new(name: tag, user_id: current_user.id)
+        tag.valid?
+        tag.errors.full_messages
+      end.flatten.uniq
 
-      false
+      todo.valid?
+      @tags_errors.empty? && todo.errors.empty?
     end
 
     def todo_params_for_update
