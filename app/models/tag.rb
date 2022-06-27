@@ -1,5 +1,5 @@
 class Tag < ApplicationRecord
-  validates :name, presence: true, length: { maximum: 10 }
+  validates :name, length: { maximum: 10 }
 
   belongs_to :user
   has_many :todo_tags, dependent: :destroy, foreign_key: 'tag_id'

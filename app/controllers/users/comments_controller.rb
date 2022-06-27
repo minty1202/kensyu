@@ -7,6 +7,7 @@ module Users
         flash[:success] = "コメントを投稿しました！"
       else
         @todo = Todo.find(comment_params[:todo_id])
+        @tags = Tag.new(user_id: current_user.id)
         render 'users/todos/edit', status: :unprocessable_entity
       end
     end

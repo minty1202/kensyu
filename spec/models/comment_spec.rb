@@ -7,8 +7,8 @@ RSpec.describe Comment, type: :model do
     expect(comment).to_not be_valid
   end
 
-  it 'textが140文字以内であること'do
-    comment.text = 'a' * 141
+  it 'textが100文字以内であること'do
+    comment.text = 'a' * 101
     expect(comment).to_not be_valid
   end
 

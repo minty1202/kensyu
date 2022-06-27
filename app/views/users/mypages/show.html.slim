@@ -4,8 +4,9 @@
   h3 タグリスト
   .all_tags
     - @tags.each do |tag|
-      = link_to tag.name, users_mypage_tag_path(tag)
-      = "(#{tag.todos.count})"
+      / = link_to tag.name, users_mypage_tag_path(tag)
+      = link_to "#{tag.name} (#{tag.todos.count})", users_mypage_tag_path(tag)
+      / = "(#{tag.todos.count})"
 
 ul.user-info
   li.user= current_user.name

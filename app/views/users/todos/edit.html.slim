@@ -6,9 +6,10 @@ h1 編集ページ
 
   h2.comment-title コメントをする
   = form_with model:[:users, @todo, @comment],local: true, method: :post do |f|
-    - @comment.errors.full_messages_for(:text).each do |message|
-      = message
-    = f.text_area :text, placeholder: '140文字以内'
+    ul
+      - @comment.errors.full_messages_for(:text).each do |message|
+        li.error-messages= message
+    = f.text_area :text, rows: "4", placeholder: '100文字以内でご入力ください'
     = f.hidden_field :todo_id, value: @todo.id
     = f.submit 'コメントする'
 

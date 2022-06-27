@@ -1,5 +1,5 @@
 //各tagの投稿を表示させる
-h2 タグ： #{@tag.name}
+h2 タグ名： #{@tag.name}
 
 ul.user-info
   li.user= current_user.name
@@ -7,6 +7,7 @@ ul.user-info
   = link_to new_users_todo_path do
     button Todo登録へ
 .todo-list
+  h2 #{@tag.todos.count}件
   - if @todos.present?
     - @todos.each do |todo|
       = link_to edit_users_todo_path(todo)

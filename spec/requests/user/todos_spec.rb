@@ -126,9 +126,11 @@ RSpec.describe "Todos", type: :request do
         end
       end
       context '更新が成功する場合' do
-        let(:todo_params) { { todo: { title: 'test',
-                                  text: 'hogehogehoge',
+        let(:todo_params) { { todo: { title: todo.title,
+                                  text: todo.text,
                                   user_id: todo.user.id,
+                                  limit_date: todo.limit_date,
+                                  status: todo.status,
                                   name: tag.name,
                                   tag_ids: [tag.id]
                                   }} }
@@ -136,7 +138,7 @@ RSpec.describe "Todos", type: :request do
           expect{
             patch users_todo_path(todo), params: todo_params
           }.to_not change(Todo, :count)
-          expect(todo.reload.title).to eq 'test'
+          expect(todo.reload.title).to eq 'MyString'
         end
 
         it "ユーザー詳細ページにリダイレクトされること" do
