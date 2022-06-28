@@ -2,7 +2,7 @@ h2 ユーザー名：#{current_user.name}
 h1 編集ページ
 = render partial: '/users/todos/form', locals: {todo: @todo}
 .col-md-6.col-md-offset-3.form-edit
-  = button_to "削除する", users_todo_path(@todo), method: :delete
+  = button_to "削除する", users_todo_path(@todo), class: "btn btn-danger", method: :delete
 
   h2.comment-title コメントをする
   = form_with model:[:users, @todo, @comment],local: true, method: :post do |f|
@@ -11,7 +11,7 @@ h1 編集ページ
         li.error-messages= message
     = f.text_area :text, rows: "4", placeholder: '100文字以内でご入力ください'
     = f.hidden_field :todo_id, value: @todo.id
-    = f.submit 'コメントする'
+    = f.submit 'コメントする', class: "btn btn-primary"
 
   h2 コメント一覧
   - @todo.comments.each do |comment|
