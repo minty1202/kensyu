@@ -18,6 +18,11 @@ RSpec.describe Todo, type: :model do
     expect(todo).to_not be_valid
   end
 
+  it 'textが140字以内であること' do
+    todo.title = 'a' * 141
+    expect(todo).to_not be_valid
+  end
+
   it '画像のファイルが3枚以内であること' do
     todo.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
     todo.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')

@@ -1,6 +1,7 @@
 module Users
   class TodosController < UsersController
     before_action :find_todo_detail, only: [:edit, :update, :destroy]
+    before_action :todo_params_for_update, only: :update
 
     def new
       @todo = Todo.new(limit_date: Time.current)
@@ -8,7 +9,8 @@ module Users
 
     def create
       @todo = current_user.todos.new(todo_params)
-      if @todo.save
+      if tag_todo_valid?(new_tag, @todo)
+        @todo.save
         @todo.save_tag(new_tag, checkbox_tag)
         flash[:success] = "登録が成功しました！"
         redirect_to users_mypage_path
@@ -22,7 +24,8 @@ module Users
     end
 
     def update
-      if @todo.update(todo_params)
+      if tag_todo_valid?(new_tag, @todo)
+        @todo.save
         @todo.save_tag(new_tag, checkbox_tag)
         flash[:success] = "Todoを更新しました！"
         redirect_to users_mypage_path
@@ -34,10 +37,7 @@ module Users
       # 削除する画像がある場合（check boxにチェックがない場合はparamsにimage_idsはない）
       return unless params[:todo][:image_ids]
 
-      params[:todo][:image_ids].each do |image_id|
-        image = @todo.images.find(image_id)
-        image.purge
-      end
+      delete_images
     end
 
     def destroy
@@ -57,14 +57,42 @@ module Users
     end
 
     def new_tag
-      # 送らててきた新しいタグの取得、空白がある場合一つの文字列にする
-      params[:todo][:name].strip.split.join.split
+      # 送らててきた新しいタグの取得、空白を省き、カンマで区切り配列にする
+      params[:todo][:name].gsub(/\s+/, "").split(',')
     end
 
     def checkbox_tag
       return [] if params[:todo][:tag_ids].blank?
 
       params[:todo][:tag_ids].reject(&:empty?)
+    end
+
+    def tag_todo_valid?(tag_names, todo)
+      # tag1つずつに対してバリデーションをかける、重複は省く
+      @tags_errors = tag_names.map do |tag|
+        tag = Tag.new(name: tag, user_id: current_user.id)
+        tag.valid?
+        tag.errors.full_messages
+      end.flatten.uniq
+
+      todo.valid?
+      @tags_errors.empty? && todo.errors.empty?
+    end
+
+    def todo_params_for_update
+      @todo = Todo.find(params[:id])
+      @todo.title = todo_params[:title]
+      @todo.text = todo_params[:text]
+      @todo.limit_date = todo_params[:limit_date]
+      @todo.status = todo_params[:status]
+      @todo.images = todo_params[:images]
+    end
+
+    def delete_images
+      params[:todo][:image_ids].each do |image_id|
+        image = @todo.images.find(image_id)
+        image.purge
+      end
     end
   end
 end
