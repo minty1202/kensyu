@@ -34,6 +34,6 @@
       - @todo.images.each do |image|
         = f.check_box :image_ids, {multiple: true}, image.id, false
         li.user= image_tag image.variant(:thumb)
-    = f.submit
+    = f.submit class: "btn btn-primary"
 
   = link_to '戻る', users_mypage_path
