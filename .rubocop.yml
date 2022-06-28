@@ -1,11 +1,14 @@
 inherit_from: .rubocop_todo.yml
 
+require:
+  - rubocop-rspec
+
 AllCops:
   Exclude:
     - 'db/**/*'
     - 'config/**/*'
     - 'script/**/*'
-    - 'spec/**/*'
+    # - 'spec/**/*'
     - !ruby/regexp /old_and_unused\.rb$/
 
   Rails:

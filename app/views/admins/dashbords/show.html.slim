@@ -1,7 +1,7 @@
 ul.user-info
   - if @users.present?
     li.user ユーザー数:
-    li.user= @users.count
+    li.user = @users.count
 
   = button_to 'Logout', destroy_admin_session_path, method: :delete
 
