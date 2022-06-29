@@ -30,12 +30,12 @@ class Todo < ApplicationRecord
 
     # 古いタグの削除
     old_tags.each do |old|
-      tags.delete(Tag.find_by(name: old, user_id:))
+      tags.delete(Tag.find_by(name: old, user_id: current_usear.id))
     end
 
     # 新しいタグの保存
     new_tags.each do |new_tag|
-      new_todo_tag = Tag.find_or_create_by(name: new_tag, user_id:)
+      new_todo_tag = Tag.find_or_create_by(name: new_tag, user_id: current_usear.id)
       tags << new_todo_tag
     end
   end

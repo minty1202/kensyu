@@ -27,10 +27,11 @@
     = f.select :status, options_for_select([["未完了","todo"], ["完了","done"]])
     = f.label :images
     = f.file_field :images, multiple: true
-    - @todo.errors.full_messages_for(:images).each do |message|
-      = message
+    / - @todo.errors.full_messages_for(:images).each do |message|
+    /   = message
     - if @todo.images.attached?
       p 削除するものはチェックして下さい
+      = @todo.images.count
       - @todo.images.each do |image|
         = f.check_box :image_ids, {multiple: true}, image.id, false
         li.user= image_tag image.variant(:thumb)

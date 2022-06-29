@@ -2,6 +2,7 @@ module Users
   class TodosController < UsersController
     before_action :find_todo_detail, only: [:edit, :update, :destroy]
     before_action :todo_params_for_update, only: :update
+    before_action :delete_images, only: :update
 
     def new
       @todo = Todo.new(limit_date: Time.current)
@@ -24,20 +25,27 @@ module Users
     end
 
     def update
+      puts '-----------2-----------------------'
+
+      # 削除する画像がある場合（check boxにチェックがない場合はparamsにimage_idsはない）
+      # return unless params[:todo][:image_ids]
+
+      # delete_images
       if tag_todo_valid?(new_tag, @todo)
+        puts '-----------3-----------------------'
         @todo.save
         @todo.save_tag(new_tag, checkbox_tag)
         flash[:success] = "Todoを更新しました！"
         redirect_to users_mypage_path
       else
+        puts '-----------4-----------------------'
         @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
         render 'edit', status: :unprocessable_entity
       end
+      # # 削除する画像がある場合（check boxにチェックがない場合はparamsにimage_idsはない）
+      # return unless params[:todo][:image_ids]
 
-      # 削除する画像がある場合（check boxにチェックがない場合はparamsにimage_idsはない）
-      return unless params[:todo][:image_ids]
-
-      delete_images
+      # delete_images if @todo.valid?
     end
 
     def destroy
@@ -89,10 +97,31 @@ module Users
     end
 
     def delete_images
-      params[:todo][:image_ids].each do |image_id|
-        image = @todo.images.find(image_id)
-        image.purge
-      end
+      return unless params[:todo][:image_ids]
+      puts '-----------1-----------------------'
+      # puts params[:todo][:image_ids].class
+
+      # params[:todo][:image_ids].each do |image_id| # params[:todo][:image_ids] は['121']
+
+      # raise @todo.images.inspect
+      # p @todo.images.each do |image|
+      #   puts params[:todo][:image_ids]
+      #   will_delete_image =  image if image.id.include(params[:todo][:image_ids])
+      #   puts '------------delete-----------'
+      #   puts  will_delete_image
+      #   will_delete_image.purge
+      # end
+
+
+
+        # image = @todo.images.find(image_id)
+        # p params[:todo][:image_ids] # ['121']
+        # p image_id # 121
+
+        # p image # 期待の形になる（削除のみの場合）<ActiveStorage::Attachment id: 114, name: "images", record_type: "Todo", record_id: 102, blob_id: 114, created_at: "2022-06-29 14:15:43.327990000 +0900">
+        # p image.class # 削除だけの場合 ActiveStorage::Attachment(id: integer, name: string, record_type: string, record_id: integer, blob_id: integer, created_at: datetime)
+        # image.purge
+      # end
     end
   end
 end
