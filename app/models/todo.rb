@@ -3,10 +3,10 @@ class Todo < ApplicationRecord
   validates :text, presence: true, length: { maximum: 140 }
   validates :limit_date, presence: true
   validates :status, presence: true
-  validate :file_length
   has_many_attached :images do |attachable|
     attachable.variant :thumb, resize_to_limit: [100, 100]
   end
+  validate :file_length
   belongs_to :user
   has_many :comments, dependent: :destroy
   has_many :todo_tags, dependent: :destroy
@@ -63,6 +63,11 @@ class Todo < ApplicationRecord
   private
 
   def file_length
-    return errors.add(:images, 'は3ファイルまでにしてください') if images.length > 3
+    if images.length > 3
+      while images.length > 3 do
+        images.last.purge
+      end
+       errors.add(:images, 'は3ファイルまでにしてください')
+    end
   end
 end
