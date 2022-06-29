@@ -15,6 +15,7 @@ module Users
         flash[:success] = "登録が成功しました！"
         redirect_to users_mypage_path
       else
+        @tags = params[:todo][:name]
         render 'new', status: :unprocessable_entity
       end
     end
@@ -30,6 +31,7 @@ module Users
         flash[:success] = "Todoを更新しました！"
         redirect_to users_mypage_path
       else
+        @tags = params[:todo][:name]
         @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
         render 'edit', status: :unprocessable_entity
       end
