@@ -1,9 +1,8 @@
 class ApplicationController < ActionController::Base
-
-  unless Rails.env.production?
-    rescue_from Exception,                        with: :_render_500
-    rescue_from ActiveRecord::RecordNotFound,     with: :_render_404
-    rescue_from ActionController::RoutingError,   with: :_render_404
+  unless Rails.env.development?
+    rescue_from Exception,                        with: :render_server_error
+    rescue_from ActiveRecord::RecordNotFound,     with: :render_client_errpr
+    rescue_from ActionController::RoutingError,   with: :render_client_errpr
   end
 
   def routing_error
@@ -12,8 +11,8 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def _render_404(e = nil)
-    logger.info "Rendering 404 with exception: #{e.message}" if e
+  def render_client_errpr(error = nil)
+    logger.info "Rendering 404 with exception: #{error.message}" if error
 
     if request.format.to_sym == :json
       render json: { error: '404 error' }, status: :not_found
@@ -22,9 +21,9 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def _render_500(e = nil)
-    logger.error "Rendering 500 with exception: #{e.message}" if e
-    Airbrake.notify(e) if e # Airbrake/Errbitを使う場合はこちら
+  def render_server_error(error = nil)
+    logger.error "Rendering 500 with exception: #{error.message}" if error
+    Airbrake.notify(error) if error # Airbrake/Errbitを使う場合はこちら
 
     if request.format.to_sym == :json
       render json: { error: '500 error' }, status: :internal_server_error
