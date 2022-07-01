@@ -11,5 +11,6 @@ html
   body
     = render 'layouts/header'
     h2 = flash[:success]
+    h2 = flash[:notice]
     = yield
     = render 'layouts/footer'
