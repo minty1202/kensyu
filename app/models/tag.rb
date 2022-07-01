@@ -1,5 +1,6 @@
 class Tag < ApplicationRecord
   validates :name, length: { maximum: 10 }
+  validate :limit_number_of_tags
 
   belongs_to :user
   has_many :todo_tags, dependent: :destroy, foreign_key: 'tag_id'
@@ -10,5 +11,11 @@ class Tag < ApplicationRecord
       .left_joins(:todo_tags)
       .group('id')
       .order('todo_tags desc')
+  end
+
+  def limit_number_of_tags
+    if user && user.tags.count > 100
+      errors.add(:name, "は100個以上登録できません。")
+    end
   end
 end
