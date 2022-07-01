@@ -1,9 +1,14 @@
 class Todo < ApplicationRecord
-  validates :title, presence: true, length: { maximum: 50 }
-  validates :text, presence: true, length: { maximum: 140 }
-  validates :limit_date, presence: true
-  validates :status, presence: true
-  validate :file_length
+  # validates :title, presence: true, length: { maximum: 50 }
+  # validates :text, presence: true, length: { maximum: 140 }
+  # validates :limit_date, presence: true
+  # validates :status, presence: true
+  # validate :file_length
+
+  # with_options on: :no_change do
+  #     validate :pretend_ago
+  # end
+
   has_many_attached :images do |attachable|
     attachable.variant :thumb, resize_to_limit: [100, 100]
   end
@@ -62,7 +67,11 @@ class Todo < ApplicationRecord
 
   private
 
-  def file_length
-    return errors.add(:images, 'は3ファイルまでにしてください') if images.length > 3
-  end
+  # def file_length
+  #   return errors.add(:images, 'は3ファイルまでにしてください') if images.length > 3
+  # end
+
+  # def pretend_ago
+  #   errors.add(:limit_date, 'は先の日付にしてください') if limit_date.nil? || limit_date < Date.today #nilまたは過去の日付なら
+  # end
 end

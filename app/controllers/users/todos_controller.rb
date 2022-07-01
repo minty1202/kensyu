@@ -7,9 +7,15 @@ module Users
       @todo = Todo.new(limit_date: Time.current)
     end
 
+    # '---------------------------------------------------------------------------'
+    # def new
+    #   @todo_tag = TodoTagForm.new(limit_date: Time.current)
+    # end
+    # '---------------------------------------------------------------------------'
+
     def create
       @todo = current_user.todos.new(todo_params)
-      if tag_todo_valid?(new_tag, @todo)
+      if tag_todo_valid_for_create?(new_tag, @todo)
         @todo.save
         @todo.save_tag(new_tag, checkbox_tag)
         flash[:success] = "登録が成功しました！"
@@ -19,17 +25,37 @@ module Users
       end
     end
 
+    # '---------------------------------------------------------------------------'
+    # def create
+    #   @todo_tag = TodoTagForm.new(todo_tag_params)
+    #   if @todo_tag.save
+    #     flash[:success] = "登録が成功しました！"
+    #     redirect_to users_mypage_path
+    #   else
+    #     render 'new', status: :unprocessable_entity
+    #   end
+    # end
+    # '---------------------------------------------------------------------------'
+
     def edit
       @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
     end
 
+    # '---------------------------------------------------------------------------'
+    # def edit
+    #   @todo_tag = TodoTagForm.new(todo_tag_params, todo_tag_form: @todo)
+    # end
+    # '---------------------------------------------------------------------------'
+
     def update
       if tag_todo_valid?(new_tag, @todo)
+        puts '-----------1--------------------'
         @todo.save
         @todo.save_tag(new_tag, checkbox_tag)
         flash[:success] = "Todoを更新しました！"
         redirect_to users_mypage_path
       else
+        puts '-----------2--------------------'
         @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
         render 'edit', status: :unprocessable_entity
       end
@@ -40,6 +66,25 @@ module Users
       delete_images
     end
 
+    # '---------------------------------------------------------------------------'
+    # def update
+    #   @todo_tag = TodoTagForm.new(todo_tag_params,  @todo, name: new_tag, tag_ids: checkbox_tag)
+    #   if @todo_tag.valid?
+    #     @todo_tag.save
+    #     flash[:success] = "Todoを更新しました！"
+    #     redirect_to users_mypage_path
+    #   else
+    #     @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
+    #     render 'edit', status: :unprocessable_entity
+    #   end
+
+    #   削除する画像がある場合（check boxにチェックがない場合はparamsにimage_idsはない）
+    #   return unless params[:todo][:image_ids]
+
+    #   delete_images
+    # end
+    # '---------------------------------------------------------------------------'
+
     def destroy
       @todo.destroy
       flash[:success] = "Todoを削除しました！"
@@ -47,6 +92,11 @@ module Users
     end
 
     private
+    # '---------------------------------------------------------------------------'
+    # def todo_tag_params
+    #   params.require(:todo_tag_form).permit(:title, :text, :limit_date, :status, :name, images: [], tag_ids: []).merge(user_id: current_user.id)
+    # end
+    # '---------------------------------------------------------------------------'
 
     def todo_params
       params.require(:todo).permit(:title, :text, :limit_date, :status, images: [], tag_ids: []).merge(user_id: current_user.id)
@@ -67,6 +117,18 @@ module Users
       params[:todo][:tag_ids].reject(&:empty?)
     end
 
+    def tag_todo_valid_for_create?(tag_names, todo)
+      # tag1つずつに対してバリデーションをかける、重複は省く
+      @tags_errors = tag_names.map do |tag|
+        tag = Tag.new(name: tag, user_id: current_user.id)
+        tag.valid?
+        tag.errors.full_messages
+      end.flatten.uniq
+
+      todo.valid?(:no_change)
+      @tags_errors.empty? && todo.errors.empty?
+    end
+
     def tag_todo_valid?(tag_names, todo)
       # tag1つずつに対してバリデーションをかける、重複は省く
       @tags_errors = tag_names.map do |tag|
@@ -75,8 +137,14 @@ module Users
         tag.errors.full_messages
       end.flatten.uniq
 
-      todo.valid?
-      @tags_errors.empty? && todo.errors.empty?
+      if no_changed_limit_date?
+        todo.valid?
+        @tags_errors.empty? && todo.errors.empty?
+      else
+        # falseのときだけpretend_agoのバリデーションをかける
+        todo.valid?(:no_change) # 過去の日付ならfalseになる
+        @tags_errors.empty? && todo.errors.empty?
+      end
     end
 
     def todo_params_for_update
@@ -93,6 +161,12 @@ module Users
         image = @todo.images.find(image_id)
         image.purge
       end
+    end
+
+    def no_changed_limit_date?
+      before = find_todo_detail
+      todo_params_for_update
+      before.limit_date == @todo.limit_date
     end
   end
 end
