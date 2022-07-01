@@ -3,7 +3,7 @@ class Todo < ApplicationRecord
   validates :text, presence: true, length: { maximum: 140 }
   validates :limit_date, presence: true
   validates :status, presence: true
-  validate :file_length
+  validate :file_length, unless: -> { validation_context == :to_delete_images }
   has_many_attached :images do |attachable|
     attachable.variant :thumb, resize_to_limit: [100, 100]
   end

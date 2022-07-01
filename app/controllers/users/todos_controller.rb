@@ -26,20 +26,16 @@ module Users
 
     def update
       if tag_todo_valid?(new_tag, @todo)
-        @todo.save
+        @todo.save(context: :to_delete_images)
         @todo.save_tag(new_tag, checkbox_tag)
         flash[:success] = "Todoを更新しました！"
         redirect_to users_mypage_path
+        delete_images
       else
         @tags = params[:todo][:name]
         @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
         render 'edit', status: :unprocessable_entity
       end
-
-      # 削除する画像がある場合（check boxにチェックがない場合はparamsにimage_idsはない）
-      return unless params[:todo][:image_ids]
-
-      delete_images
     end
 
     def destroy
@@ -77,7 +73,7 @@ module Users
         tag.errors.full_messages
       end.flatten.uniq
 
-      todo.valid?
+      todo.valid?(:to_delete_images)
       @tags_errors.empty? && todo.errors.empty?
     end
 
@@ -91,10 +87,14 @@ module Users
     end
 
     def delete_images
+      return unless params[:todo][:image_ids]
+
+      @todo.save(context: :to_delete_images)
       params[:todo][:image_ids].each do |image_id|
-        image = @todo.images.find(image_id)
-        image.purge
+        @todo.images.find(image_id).purge
       end
+      @todo.images.reload
+      @todo.save
     end
   end
 end
