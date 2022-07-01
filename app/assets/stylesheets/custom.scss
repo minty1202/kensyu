@@ -116,6 +116,25 @@ input[type="checkbox"]{
   margin: 30 auto;
 }
 
+.array-tags-all {
+  background-color: rgb(244, 244, 244);
+  border-radius: 12px;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  width: 80%;
+}
+
+.each-tags {
+  display: flex;
+  justify-content: start;
+  margin: 10px;
+}
+
+.each-tag {
+  padding-right: 10px;
+}
+
 .all_tags{
   width: 70%;
   margin: 30px auto;
