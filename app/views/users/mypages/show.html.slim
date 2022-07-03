@@ -6,16 +6,10 @@
   / 配列の@tagを８件ずつ表示させる
   .all_tags
     .array-tags-all
-      - @tags.each_slice(8) do |tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8|
+      - @tags.each_slice(8).to_a.each do |tag_blocks|
         .each-tags
-          .each-tag= link_to "#{tag1.name} (#{tag1.todos.count})", users_mypage_tag_path(tag1) if tag1 != nil && tag1.todos.present?
-          .each-tag= link_to "#{tag2.name} (#{tag2.todos.count})", users_mypage_tag_path(tag2) if tag2 != nil && tag2.todos.present?
-          .each-tag= link_to "#{tag3.name} (#{tag3.todos.count})", users_mypage_tag_path(tag3) if tag3 != nil && tag3.todos.present?
-          .each-tag= link_to "#{tag4.name} (#{tag4.todos.count})", users_mypage_tag_path(tag4) if tag4 != nil && tag4.todos.present?
-          .each-tag= link_to "#{tag5.name} (#{tag5.todos.count})", users_mypage_tag_path(tag5) if tag5 != nil && tag5.todos.present?
-          .each-tag= link_to "#{tag6.name} (#{tag6.todos.count})", users_mypage_tag_path(tag6) if tag6 != nil && tag6.todos.present?
-          .each-tag= link_to "#{tag7.name} (#{tag7.todos.count})", users_mypage_tag_path(tag7) if tag7 != nil && tag7.todos.present?
-          .each-tag= link_to "#{tag8.name} (#{tag8.todos.count})", users_mypage_tag_path(tag8) if tag8 != nil && tag8.todos.present?
+          - tag_blocks.each do |tag|
+            .each-tag= link_to "#{tag.name} (#{tag.todos.count})", users_mypage_tag_path(tag) if tag != nil && tag.todos.present?
 
 ul.user-info
   li.user= current_user.name
