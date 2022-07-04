@@ -1,8 +1,8 @@
 class ApplicationController < ActionController::Base
   unless Rails.env.development?
     rescue_from Exception,                        with: :render_server_error
-    rescue_from ActiveRecord::RecordNotFound,     with: :render_client_errpr
-    rescue_from ActionController::RoutingError,   with: :render_client_errpr
+    rescue_from ActiveRecord::RecordNotFound,     with: :render_client_error
+    rescue_from ActionController::RoutingError,   with: :render_client_error
   end
 
   def routing_error
@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def render_client_errpr(error = nil)
+  def render_client_error(error = nil)
     logger.info "Rendering 404 with exception: #{error.message}" if error
 
     if request.format.to_sym == :json
