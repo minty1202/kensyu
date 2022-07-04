@@ -16,7 +16,7 @@
     = f.label :text
     = f.text_area :text, rows: "5", placeholder: '140文字以内でご入力ください'
     = f.label '新しいタグを追加(複数追加は , で区切る)'
-    = f.text_field :name, placeholder: 'タグ1, タグ2'
+    = f.text_field :name, placeholder: 'タグ1, タグ2', value: @tags
     = f.label '既存のタグ一覧'
     .tag_checkbox
       .tags

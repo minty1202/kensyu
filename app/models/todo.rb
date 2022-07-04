@@ -60,6 +60,11 @@ class Todo < ApplicationRecord
     notifier.ping "明日期限の未完了Todoは#{expired_tomorrow_todos.count}件です。\n#{all_todo_title}"
   end
 
+  def self.send_error_message(message)
+    notifier = Slack::Notifier.new(ENV['WEBHOOK_URL'])
+    notifier.ping message
+  end
+
   private
 
   def file_length
