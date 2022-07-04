@@ -1,23 +1,15 @@
 module Users
   class TodosController < UsersController
     before_action :find_todo_detail, only: [:edit, :update, :destroy]
-    before_action :todo_params_for_update, only: :update
+    # before_action :todo_params_for_update, only: :update
 
     def new
-      @todo = Todo.new(limit_date: Time.current)
+      @todo_tag = TodoTagForm.new
     end
 
-    # '---------------------------------------------------------------------------'
-    # def new
-    #   @todo_tag = TodoTagForm.new(limit_date: Time.current)
-    # end
-    # '---------------------------------------------------------------------------'
-
     def create
-      @todo = current_user.todos.new(todo_params)
-      if tag_todo_valid_for_create?(new_tag, @todo)
-        @todo.save
-        @todo.save_tag(new_tag, checkbox_tag)
+      @todo_tag = TodoTagForm.new(todo_tag_params)
+      if @todo_tag.save
         flash[:success] = "登録が成功しました！"
         redirect_to users_mypage_path
       else
@@ -25,37 +17,17 @@ module Users
       end
     end
 
-    # '---------------------------------------------------------------------------'
-    # def create
-    #   @todo_tag = TodoTagForm.new(todo_tag_params)
-    #   if @todo_tag.save
-    #     flash[:success] = "登録が成功しました！"
-    #     redirect_to users_mypage_path
-    #   else
-    #     render 'new', status: :unprocessable_entity
-    #   end
-    # end
-    # '---------------------------------------------------------------------------'
-
     def edit
+      @todo_tag = TodoTagForm.new(todo: @todo)
       @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
     end
 
-    # '---------------------------------------------------------------------------'
-    # def edit
-    #   @todo_tag = TodoTagForm.new(todo_tag_params, todo_tag_form: @todo)
-    # end
-    # '---------------------------------------------------------------------------'
-
     def update
-      if tag_todo_valid?(new_tag, @todo)
-        puts '-----------1--------------------'
-        @todo.save
-        @todo.save_tag(new_tag, checkbox_tag)
+      @todo_tag = TodoTagForm.new(todo_tag_params, todo: @todo)
+      if @todo_tag.update
         flash[:success] = "Todoを更新しました！"
         redirect_to users_mypage_path
       else
-        puts '-----------2--------------------'
         @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
         render 'edit', status: :unprocessable_entity
       end
@@ -66,25 +38,6 @@ module Users
       delete_images
     end
 
-    # '---------------------------------------------------------------------------'
-    # def update
-    #   @todo_tag = TodoTagForm.new(todo_tag_params,  @todo, name: new_tag, tag_ids: checkbox_tag)
-    #   if @todo_tag.valid?
-    #     @todo_tag.save
-    #     flash[:success] = "Todoを更新しました！"
-    #     redirect_to users_mypage_path
-    #   else
-    #     @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
-    #     render 'edit', status: :unprocessable_entity
-    #   end
-
-    #   削除する画像がある場合（check boxにチェックがない場合はparamsにimage_idsはない）
-    #   return unless params[:todo][:image_ids]
-
-    #   delete_images
-    # end
-    # '---------------------------------------------------------------------------'
-
     def destroy
       @todo.destroy
       flash[:success] = "Todoを削除しました！"
@@ -92,14 +45,9 @@ module Users
     end
 
     private
-    # '---------------------------------------------------------------------------'
-    # def todo_tag_params
-    #   params.require(:todo_tag_form).permit(:title, :text, :limit_date, :status, :name, images: [], tag_ids: []).merge(user_id: current_user.id)
-    # end
-    # '---------------------------------------------------------------------------'
 
-    def todo_params
-      params.require(:todo).permit(:title, :text, :limit_date, :status, images: [], tag_ids: []).merge(user_id: current_user.id)
+    def todo_tag_params
+      params.require(:todo_tag_form).permit(:title, :text, :limit_date, :status, :name, images: [], tag_ids: []).merge(user_id: current_user.id)
     end
 
     def find_todo_detail
@@ -117,44 +65,44 @@ module Users
       params[:todo][:tag_ids].reject(&:empty?)
     end
 
-    def tag_todo_valid_for_create?(tag_names, todo)
-      # tag1つずつに対してバリデーションをかける、重複は省く
-      @tags_errors = tag_names.map do |tag|
-        tag = Tag.new(name: tag, user_id: current_user.id)
-        tag.valid?
-        tag.errors.full_messages
-      end.flatten.uniq
+    # def tag_todo_valid_for_create?(tag_names, todo)
+    #   # tag1つずつに対してバリデーションをかける、重複は省く
+    #   @tags_errors = tag_names.map do |tag|
+    #     tag = Tag.new(name: tag, user_id: current_user.id)
+    #     tag.valid?
+    #     tag.errors.full_messages
+    #   end.flatten.uniq
 
-      todo.valid?(:no_change)
-      @tags_errors.empty? && todo.errors.empty?
-    end
+    #   todo.valid?(:no_change)
+    #   @tags_errors.empty? && todo.errors.empty?
+    # end
 
-    def tag_todo_valid?(tag_names, todo)
-      # tag1つずつに対してバリデーションをかける、重複は省く
-      @tags_errors = tag_names.map do |tag|
-        tag = Tag.new(name: tag, user_id: current_user.id)
-        tag.valid?
-        tag.errors.full_messages
-      end.flatten.uniq
+    # def tag_todo_valid?(tag_names, todo)
+    #   # tag1つずつに対してバリデーションをかける、重複は省く
+    #   @tags_errors = tag_names.map do |tag|
+    #     tag = Tag.new(name: tag, user_id: current_user.id)
+    #     tag.valid?
+    #     tag.errors.full_messages
+    #   end.flatten.uniq
 
-      if no_changed_limit_date?
-        todo.valid?
-        @tags_errors.empty? && todo.errors.empty?
-      else
-        # falseのときだけpretend_agoのバリデーションをかける
-        todo.valid?(:no_change) # 過去の日付ならfalseになる
-        @tags_errors.empty? && todo.errors.empty?
-      end
-    end
+    #   if no_changed_limit_date?
+    #     todo.valid?
+    #     @tags_errors.empty? && todo.errors.empty?
+    #   else
+    #     # falseのときだけpretend_agoのバリデーションをかける
+    #     todo.valid?(:no_change) # 過去の日付ならfalseになる
+    #     @tags_errors.empty? && todo.errors.empty?
+    #   end
+    # end
 
-    def todo_params_for_update
-      @todo = Todo.find(params[:id])
-      @todo.title = todo_params[:title]
-      @todo.text = todo_params[:text]
-      @todo.limit_date = todo_params[:limit_date]
-      @todo.status = todo_params[:status]
-      @todo.images = todo_params[:images]
-    end
+    # def todo_params_for_update
+    #   @todo = Todo.find(params[:id])
+    #   @todo.title = todo_params[:title]
+    #   @todo.text = todo_params[:text]
+    #   @todo.limit_date = todo_params[:limit_date]
+    #   @todo.status = todo_params[:status]
+    #   @todo.images = todo_params[:images]
+    # end
 
     def delete_images
       params[:todo][:image_ids].each do |image_id|
@@ -163,10 +111,10 @@ module Users
       end
     end
 
-    def no_changed_limit_date?
-      before = find_todo_detail
-      todo_params_for_update
-      before.limit_date == @todo.limit_date
-    end
+    # def no_changed_limit_date?
+    #   before = find_todo_detail
+    #   todo_params_for_update
+    #   before.limit_date == @todo.limit_date
+    # end
   end
 end

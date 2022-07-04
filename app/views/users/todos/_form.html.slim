@@ -2,14 +2,14 @@
   - tags_name = @todo.tags.pluck(:name)
   - tags = tags_name.join(',')
 
-  = form_with model: [:users, @todo ],local: true do |f|
+  = form_with model: [:users, @todo_tag ],url: @todo_tag.persisted? ? users_todo_path : users_todos_path, local: true do |f|
     ul
-      - @todo.errors.full_messages.each do |message|
+      - @todo_tag.errors.full_messages.each do |message|
         li.error-messages= message
-    ul
-      - if @tags_errors.present?
-        - @tags_errors.each do |message|
-          li.error-messages= message
+    / ul
+    /   - if @tags_errors.present?
+    /     - @tags_errors.each do |message|
+    /       li.error-messages= message
 
     = f.label :title
     = f.text_field :title
@@ -27,8 +27,8 @@
     = f.select :status, options_for_select([["未完了","todo"], ["完了","done"]])
     = f.label :images
     = f.file_field :images, multiple: true
-    - @todo.errors.full_messages_for(:images).each do |message|
-      = message
+    / - @todo.errors.full_messages_for(:images).each do |message|
+    /   = message
     - if @todo.images.attached?
       p 削除するものはチェックして下さい
       - @todo.images.each do |image|
