@@ -3,7 +3,7 @@ class Todo < ApplicationRecord
   validates :text, presence: true, length: { maximum: 140 }
   validates :limit_date, presence: true
   validates :status, presence: true
-  validate :file_length
+  validate :file_length, unless: -> { validation_context == :to_delete_images } # context: :to_delete_images以外のときだけバリデーションする
   has_many_attached :images do |attachable|
     attachable.variant :thumb, resize_to_limit: [100, 100]
   end
@@ -30,12 +30,12 @@ class Todo < ApplicationRecord
 
     # 古いタグの削除
     old_tags.each do |old|
-      tags.delete(Tag.find_by(name: old, user_id: current_usear.id))
+      tags.delete(Tag.find_by(name: old, user_id:))
     end
 
     # 新しいタグの保存
     new_tags.each do |new_tag|
-      new_todo_tag = Tag.find_or_create_by(name: new_tag, user_id: current_usear.id)
+      new_todo_tag = Tag.find_or_create_by(name: new_tag, user_id:)
       tags << new_todo_tag
     end
   end
