@@ -1,10 +1,8 @@
 class GeneralController < ApplicationController
-  include JudgeParams
 
   def index
-    @set_todos = Todo.order(limit_date: "ASC").includes(:user)
-    @todos = @set_todos.page(params[:page]).per(8)
-    judge_params
+    @todos = Todo.order(limit_date: "ASC").includes(:user).page(params[:page]).per(8)
+    no_page if @todos.empty? && params[:page]
   end
 
   private
