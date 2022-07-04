@@ -1,8 +1,7 @@
 = render 'layouts/search'
 
 .text-center
-  - tag_have_todos = @tags.select{|tag| tag.todos.present? }
-  h3 タグリスト : #{tag_have_todos.count}個
+  h3 タグリスト : #{@tag_have_todos.count}個
   / 配列の@tagを８件ずつ表示させる
   .all_tags
     .array-tags-all
