@@ -1,5 +1,7 @@
 module Users
   class TodosController < UsersController
+    require './app/forms/todo_tag_form'
+
     before_action :find_todo_detail, only: [:edit, :update, :destroy]
     # before_action :todo_params_for_update, only: :update
 
@@ -9,7 +11,8 @@ module Users
 
     def create
       @todo_tag = TodoTagForm.new(todo_tag_params)
-      if @todo_tag.save
+      if @todo_tag.valid?
+        @todo_tag.save
         flash[:success] = "登録が成功しました！"
         redirect_to users_mypage_path
       else
@@ -24,7 +27,8 @@ module Users
 
     def update
       @todo_tag = TodoTagForm.new(todo_tag_params, todo: @todo)
-      if @todo_tag.update
+      if @todo_tag.valid?
+        @todo_tag.update
         flash[:success] = "Todoを更新しました！"
         redirect_to users_mypage_path
       else
@@ -33,7 +37,7 @@ module Users
       end
 
       # 削除する画像がある場合（check boxにチェックがない場合はparamsにimage_idsはない）
-      return unless params[:todo][:image_ids]
+      return unless params[:image_ids]
 
       delete_images
     end

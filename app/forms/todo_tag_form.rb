@@ -1,6 +1,6 @@
 class TodoTagForm
   include ActiveModel::Model
-  include ActiveRecord::AttributeAssignment
+  include ActiveModel::Attributes
 
   attr_accessor :title, :text, :limit_date, :status, :name, :user_id, :images, :tag_ids
   attr_reader :todo, :tag
@@ -8,7 +8,7 @@ class TodoTagForm
   #todo
   validates :title, presence: true, length: { maximum: 50 }
   validates :text, presence: true, length: { maximum: 140 }
-  validates :limit_date, presence: true
+  # validates :limit_date, presence: true
   validates :status, presence: true
   validate :file_length
 
@@ -22,7 +22,7 @@ class TodoTagForm
   delegate :persisted?, to: :todo
 
   # form objectの値を初期化
-  def initialize(attributes = nil, todo = Todo.new, tag = Tag.new)
+  def initialize(attributes = nil, todo: Todo.new, tag: Tag.new)
     @todo = todo
     @tag = tag
     attributes ||= default_attributes
@@ -31,8 +31,8 @@ class TodoTagForm
 
   def save
     ActiveRecord::Base.transaction do
-      Todo.create(title: todo.title, text: todo.text, limit_date: todo.limit_date, status: todo.status)
-      Tag.create(name:tag.name, user_id: tag.user_id)
+      Todo.create(title:, text:, limit_date:, status:, images:)
+      Tag.create(name:, user_id:) # tag_ids: tag.tag_ids
     end
   rescue ActiveRecord::RecordInvalid
       false
@@ -40,11 +40,11 @@ class TodoTagForm
 
   def update
     ActiveRecord::Base.transaction do
-      todo.update(title: todo.title, text: todo.text, limit_date: todo.limit_date, status: todo.status)
-      Tag.update(name:tag.name, user_id: tag.user_id)
+      todo.update(title:, text:, limit_date:, status:, images:)
+      Tag.update(name:, user_id:) # tag_ids: tag.tag_ids
     end
   rescue ActiveRecord::RecordInvalid
-    false
+      false
   end
 
   private
