@@ -9,7 +9,7 @@ namespace :todo_notifier do
   rescue StandardError => e
     if num_attempts <= MAX_ATTEMPTS
       sleep 60
-      message = p "get_todo_statusのエラーが発生しました!(#{num_attempts}回目目)"
+      message = p "1日後に終了期限のTodo取得のエラーが発生しました!(#{num_attempts}回目目)"
       Todo.send_error_message(message)
       retry
     else
