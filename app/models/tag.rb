@@ -14,6 +14,6 @@ class Tag < ApplicationRecord
   end
 
   def limit_number_of_tags
-    errors.add(:name, "は100個以上登録できません。") if user && user.tags.count > 100
+    errors.add(:name, "は100個以上登録できません。") if user && user.tags.count > 99
   end
 end
