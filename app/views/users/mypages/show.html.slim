@@ -1,14 +1,14 @@
 = render 'layouts/search'
 
 .text-center
-  h3 タグリスト : #{@tag_have_todos.count}個
+  h3 タグリスト : #{@tags.count}個
   / 配列の@tagを８件ずつ表示させる
   .all_tags
     .array-tags-all
       - @tags.each_slice(8).to_a.each do |tag_blocks|
         .each-tags
           - tag_blocks.each do |tag|
-            .each-tag= link_to "#{tag.name} (#{tag.todos.count})", users_mypage_tag_path(tag) if tag != nil && tag.todos.present?
+            .each-tag= link_to "#{tag.name} (#{tag.todos.count})", users_mypage_tag_path(tag) if tag != nil
 
 ul.user-info
   li.user= current_user.name
