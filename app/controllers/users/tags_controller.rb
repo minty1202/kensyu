@@ -1,16 +1,16 @@
 module Users
   class TagsController < UsersController
     def show
-      @tag = Tag.find(params[:id]) # クリックしたタグを取得
+      @tag = current_user.tags.find(params[:id]) # クリックしたタグを取得
       @todos = @tag.todos.all.page(params[:page]).per(8)  # クリックしたタグに紐付けられた投稿を全て表示
     end
 
     def edit
-      @tag = Tag.find(params[:id])
+      @tag = current_user.tags.find(params[:id])
     end
 
     def update
-      @tag = Tag.find(params[:id])
+      @tag = current_user.tags.find(params[:id])
       if @tag.update(tag_params)
         flash[:success] = "タグを更新しました！"
         redirect_to users_mypage_path
@@ -20,7 +20,7 @@ module Users
     end
 
     def destroy
-      @tag = Tag.find(params[:id])
+      @tag = current_user.tags.find(params[:id])
       @tag.destroy
       flash[:success] = "タグを削除しました！"
       redirect_to users_mypage_path
