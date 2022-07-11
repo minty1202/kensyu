@@ -3,7 +3,6 @@ FactoryBot.define do
     title { "MyString" }
     text { "MyText" }
     limit_date {Time.current}
-    # "Sun, 05 Jun 2022"
     status {"todo"}
     user
     # association :user
@@ -13,11 +12,18 @@ FactoryBot.define do
     #   post.image.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
     # end
 
+    trait :todo_change_status do
+      limit_date {Time.current.yesterday}
+    end
+
+    trait :skip_validate do
+      to_create {|instance| instance.save(validate: false)}
+    end
+
     trait :with_attachment do
       attachment { Rack::Test::UploadedFile.new(
       "#{Rails.root}/spec/fixtures/files/image/test_image.png", 'image/png') }
     end
 
   end
-
 end
