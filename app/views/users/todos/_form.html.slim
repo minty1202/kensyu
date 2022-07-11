@@ -4,7 +4,6 @@
 
   = form_with model: [:users, @todo ],local: true do |f|
     ul
-      = @todo.errors.full_messages
       - @todo.errors.full_messages.each do |message|
         li.error-messages= message
     ul
@@ -25,7 +24,10 @@
     = f.label '終了期日'
     = f.date_field :limit_date
     = f.label 'ステータス'
-    = f.select :status, options_for_select([["未完了","todo"], ["完了","done"]])
+    - if @todo.user
+      = f.select :status, ([["未完了","todo"], ["完了","done"]])
+    - else
+      = f.select :status, options_for_select([["未完了","todo"]])
     = f.label :images
     = f.file_field :images, multiple: true
     - @todo.errors.full_messages_for(:images).each do |message|

@@ -4,10 +4,7 @@ class Todo < ApplicationRecord
   validates :limit_date, presence: true
   validates :status, presence: true
   validate :file_length
-
-  with_options on: :changed do
-    validate :pretend_ago
-  end
+  validate :pretend_ago
 
   has_many_attached :images do |attachable|
     attachable.variant :thumb, resize_to_limit: [100, 100]
@@ -77,6 +74,8 @@ class Todo < ApplicationRecord
   end
 
   def pretend_ago
-    errors.add(:limit_date, 'は先の日付にしてください' ) if limit_date.nil? || limit_date < Date.today
+    return if status == '完了' || status == '期限切れ'
+
+    errors.add(:limit_date, 'は先の日付にしてください') if limit_date.nil? || limit_date < Date.today # or Time.current.yesterday
   end
 end
