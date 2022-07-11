@@ -4,6 +4,7 @@
 
   = form_with model: [:users, @todo ],local: true do |f|
     ul
+      = @todo.errors.full_messages
       - @todo.errors.full_messages.each do |message|
         li.error-messages= message
     ul

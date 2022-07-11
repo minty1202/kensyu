@@ -1,6 +1,6 @@
 module Users
   class TodosController < UsersController
-    before_action :find_todo_detail, only: [:edit, :update, :destroy]
+    before_action :find_todo_detail, only: [:edit, :destroy] #update
     before_action :todo_params_for_update, only: :update
 
     def new
@@ -9,12 +9,15 @@ module Users
 
     def create
       @todo = current_user.todos.new(todo_params)
-      if tag_todo_valid?(new_tag, @todo)
+      if tag_todo_valid_for_create?(new_tag, @todo)
+        p @todo.errors.full_messages
         @todo.save
         @todo.save_tag(new_tag, checkbox_tag)
         flash[:success] = "登録が成功しました！"
         redirect_to users_mypage_path
       else
+        puts '-----------create_else---------------'
+        p @todo.errors.full_messages
         @tags = params[:todo][:name]
         render 'new', status: :unprocessable_entity
       end
@@ -25,12 +28,16 @@ module Users
     end
 
     def update
+      todo_params_for_update
       if tag_todo_valid?(new_tag, @todo)
+        p @todo.errors.full_messages
         @todo.save
         @todo.save_tag(new_tag, checkbox_tag)
         flash[:success] = "Todoを更新しました！"
         redirect_to users_mypage_path
       else
+        puts '-----------update_else---------------'
+        p @todo.errors
         @tags = params[:todo][:name]
         @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
         render 'edit', status: :unprocessable_entity
@@ -69,6 +76,12 @@ module Users
       params[:todo][:tag_ids].reject(&:empty?)
     end
 
+    def tag_todo_valid_for_create?(tag_names, todo)
+      valid_each_tag(tag_names)
+      todo.valid?(:changed)
+      @tags_errors.empty? && todo.errors.empty?
+    end
+
     def tag_todo_valid?(tag_names, todo)
       # tag1つずつに対してバリデーションをかける、重複は省く
       @tags_errors = tag_names.map do |tag|
@@ -77,12 +90,25 @@ module Users
         tag.errors.full_messages
       end.flatten.uniq
 
-      todo.valid?
-      @tags_errors.empty? && todo.errors.empty?
+      if no_change_limit_date?
+        puts '--------no_change--------------------'
+        p todo.valid?
+        p todo.errors
+        todo.valid?
+        @tags_errors.empty? && todo.errors.empty?
+      else
+        # 終了期日に変化があればpretend_agoのバリデーションをかける
+        puts '--------changed--------------------'
+        p todo.valid?(:changed)
+        p todo.errors
+        todo.valid?(:changed) # 過去の日付ならfalseになる
+        @tags_errors.empty? && todo.errors.empty?
+      end
     end
 
     def todo_params_for_update
-      @todo = Todo.find(params[:id])
+      @todo = current_user.todos.find(params[:id])
+      # @todo = Todo.find(params[:id])
       @todo.title = todo_params[:title]
       @todo.text = todo_params[:text]
       @todo.limit_date = todo_params[:limit_date]
@@ -95,6 +121,21 @@ module Users
         image = @todo.images.find(image_id)
         image.purge
       end
+    end
+
+    def valid_each_tag(tag_names)
+      # tag1つずつに対してバリデーションをかける、重複は省く
+      @tags_errors = tag_names.map do |tag|
+        tag = Tag.new(name: tag, user_id: current_user.id)
+        tag.valid?
+        tag.errors.full_messages
+      end.flatten.uniq
+    end
+
+    def no_change_limit_date?
+      before = find_todo_detail
+      todo_params_for_update
+      before.limit_date == @todo.limit_date
     end
   end
 end
