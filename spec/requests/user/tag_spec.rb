@@ -13,7 +13,7 @@ RSpec.describe "Tag", type: :request do
       end
       it "returns http success" do
         get users_mypage_tag_path(tag)
-        expect(todo.tags).to be_truthy
+        expect(response).to have_http_status(:success)
       end
     end
 
