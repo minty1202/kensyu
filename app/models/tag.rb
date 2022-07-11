@@ -1,5 +1,6 @@
 class Tag < ApplicationRecord
   validates :name, length: { maximum: 10 }
+  validates :name, presence: true, on: :update
   validate :limit_number_of_tags
 
   belongs_to :user
