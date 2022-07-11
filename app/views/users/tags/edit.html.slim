@@ -1,0 +1,23 @@
+//各tagの投稿を表示させる
+h1 タグ編集ページ
+
+ul.user-info
+  li.user= current_user.name
+  li.user= current_user.email
+  = button_to 'Todo登録へ', new_users_todo_path, method: :get, class: "btn btn-success"
+
+.col-md-4.col-md-offset-4
+  = form_with model: [:users, :mypage, @tag ],local: true do |f|
+    ul
+      - @tag.errors.full_messages.each do |message|
+        li.error-messages= message
+
+    = f.label 'タグの編集'
+    = f.text_field :name, placeholder: '10文字以内で入力してください', value: @tag.name
+    = f.submit class: "btn btn-primary"
+
+.delete_button
+  = button_to "削除する", users_mypage_tag_path(@tag), class: "btn btn-danger", method: :delete
+
+
+h2 = link_to 'マイページに戻る', users_mypage_path
