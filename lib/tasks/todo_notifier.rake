@@ -7,14 +7,14 @@ namespace :todo_notifier do
     num_attempts += 1
     Todo.notice_expired_todo
   rescue StandardError => e
-    if num_attempts <= MAX_ATTEMPTS
-      sleep 60
-      message = p "1日後に終了期限のTodo取得が失敗しました!(#{num_attempts}回目目)"
-      Todo.send_error_message(message) if num_attempts == MAX_ATTEMPTS
+    if num_attempts < MAX_ATTEMPTS
+      sleep 3
       retry
     else
       puts e
     end
+    message = p "1日後に終了期限のTodo取得が失敗しました!(#{num_attempts}回目目)"
+    Todo.send_error_message(message)
   ensure
     puts 'finish!!!!!!!!!!!!!!!!!!!!!'
   end
