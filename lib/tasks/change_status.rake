@@ -7,15 +7,13 @@ namespace :change_status do
     num_attempts += 1
     Todo.change_status
   rescue StandardError => e
-    if num_attempts <= MAX_ATTEMPTS
+    if num_attempts < MAX_ATTEMPTS
       sleep 60
-      message = p "期限切れのTodoステータス変更エラーが発生しました!(#{num_attempts}回目目)"
-      Todo.send_error_message(message)
       retry
     else
       puts e
     end
-  ensure
-    puts 'finish!!!!!!!!!!!!!!!!!!!!!'
+    message = "期限切れのTodoステータス変更が失敗しました!(#{num_attempts}回目目)"
+    Todo.send_error_message(message)
   end
 end
