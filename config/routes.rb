@@ -29,6 +29,7 @@ Rails.application.routes.draw do
   end
 
   root 'general#index'
-  get '*not_found' => 'application#routing_error'
-  post '*not_found' => 'application#routing_error'
+  # 画像がリンク切れになっているため一旦コメントアウト
+  # get '*not_found' => 'application#routing_error'
+  # post '*not_found' => 'application#routing_error'
 end

@@ -20,15 +20,14 @@
     = f.label '既存のタグ一覧'
     .tag_checkbox
       .tags
-        = f.collection_check_boxes(:tag_ids, @todo.tags, :id, :name)
+        = f.collection_check_boxes(:tag_ids, @todo.tags, :id, :name, include_hidden: false)
     = f.label '終了期日'
     = f.date_field :limit_date
     = f.label 'ステータス'
     = f.select :status, options_for_select([["未完了","todo"], ["完了","done"]])
-    = f.label :images
-    = f.file_field :images, multiple: true
-    - @todo.errors.full_messages_for(:images).each do |message|
-      = message
+    = f.label '画像（3枚まで）'
+    = f.file_field :images, multiple: true, include_hidden: false
+
     - if @todo.images.attached?
       p 削除するものはチェックして下さい
       - @todo.images.each do |image|
