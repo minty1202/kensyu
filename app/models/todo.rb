@@ -76,6 +76,6 @@ class Todo < ApplicationRecord
   def pretend_ago
     return if status == '完了' || status == '期限切れ'
 
-    errors.add(:limit_date, 'は先の日付にしてください') if limit_date.nil? || limit_date < Date.today # or Time.current.yesterday
+    errors.add(:limit_date, 'は先の日付にしてください') if limit_date.nil? || limit_date < Time.current.yesterday
   end
 end
