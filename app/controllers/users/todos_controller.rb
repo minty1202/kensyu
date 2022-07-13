@@ -71,11 +71,7 @@ module Users
 
     def tag_todo_valid?(tag_names, todo)
       # tag1つずつに対してバリデーションをかける、重複は省く
-      @tags_errors = tag_names.map do |tag|
-        tag = Tag.new(name: tag, user_id: current_user.id)
-        tag.valid?
-        tag.errors.full_messages
-      end.flatten.uniq
+      valid_each_tag(tag_names)
 
       todo.valid?
       @tags_errors.empty? && todo.errors.empty?
@@ -95,6 +91,15 @@ module Users
         image = @todo.images.find(image_id)
         image.purge
       end
+    end
+
+    def valid_each_tag(tag_names)
+      # tag1つずつに対してバリデーションをかける、重複は省く
+      @tags_errors = tag_names.map do |tag|
+        tag = Tag.new(name: tag, user_id: current_user.id)
+        tag.valid?
+        tag.errors.full_messages
+      end.flatten.uniq
     end
   end
 end

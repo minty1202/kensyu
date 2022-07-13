@@ -111,8 +111,9 @@ RSpec.describe Todo, type: :model do
 
   describe 'change_statusメソッド' do
     let!(:user) { create(:user) }
+    let!(:todo) { create(:todo, :todo_change_status, :skip_validate) }
+
     context 'after_commitが実行される' do
-      let!(:todo) { create(:todo, limit_date: Time.current.yesterday)}
       it '未完了から期限切れになること' do
         expect{Todo.change_status}.to change{ todo.reload.status }.from('未完了').to('期限切れ')
       end
