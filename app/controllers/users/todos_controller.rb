@@ -24,24 +24,95 @@ module Users
       @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
     end
 
-    def update
-      if tag_todo_valid?(new_tag, @todo)
-        @todo.save
-        @todo.save_tag(new_tag, checkbox_tag)
-        flash[:success] = "Todoを更新しました！"
-        redirect_to users_mypage_path
-        delete_images
-      else
-        @tags = params[:todo][:name]
-        @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
-        render 'edit', status: :unprocessable_entity
-      end
+# 1---------------------------------------------------------------------------------------------
+  #1 今ある画像（最大３枚）から削除する画像を引いて残りの画像を出す
+  #2 残った数と追加される数を足して合計を出す
+  #3 合計の数が３以下なら
+  #4 tag_todo.valid
 
-      # # 削除する画像がある場合（check boxにチェックがない場合はparamsにimage_idsはない）
-      # return unless params[:todo][:image_ids]
+def update
+  # 既存の数 - 削除数  = 残った数
+  left_images_ids = params[:all_image_ids].to_a.count - params[:todo][:image_ids].to_a.count
+  # 残った数 + 追加数 = 合計数
+  new_and_old_images_ids = left_images_ids + params[:todo][:images].to_a.count
 
-      # delete_images
+  if new_and_old_images_ids <= 3
+    if tag_todo_valid?(new_tag, @todo)
+      @todo.save(context: :to_delete_images)
+      @todo.save_tag(new_tag, checkbox_tag)
+      flash[:success] = "Todoを更新しました！"
+      redirect_to users_mypage_path
+      delete_images if params[:todo][:image_ids]
+    else
+      @tags = params[:todo][:name]
+      @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
+      flash[:notice] = "更新に失敗しました。"
+      render 'edit', status: :unprocessable_entity
     end
+  else
+    @tags = params[:todo][:name]
+    @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
+    flash[:notice] = "更新に失敗しました。"
+    render 'edit', status: :unprocessable_entity
+  end
+end
+# 1---------------------------------------------------------------------------------------------
+
+
+# 2---------------------------------------------------------------------------------------------
+    #1 画像削除 (@todo.images.count の数が減ること)
+    #2  @todo.images.count + params[:todo][:images].to_a.count(追加する画像の数) が３以下なら
+    #3 tag_todo_valid
+
+def update
+  if params[:todo][:image_ids]
+    puts '------------1-------------'
+    p @todo.images.length
+    delete_images
+    @todo.images.reload
+    puts '------------2-------------'
+    p @todo.images.length
+    # @todo.save
+  end
+  puts '------------3-------------'
+  p @todo.images.length
+  p @todo.images.count + params[:todo][:images].to_a.count
+  p params[:todo][:images].to_a.count
+  p @todo.images.count
+
+  if @todo.images.count + params[:todo][:images].to_a.count <= 3
+    if tag_todo_valid?(new_tag, @todo)
+      @todo.save
+      @todo.save_tag(new_tag, checkbox_tag)
+      flash[:success] = "Todoを更新しました！"
+      redirect_to users_mypage_path
+    else
+      puts '-----------g--------------'
+      @tags = params[:todo][:name]
+      @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
+      render 'edit', status: :unprocessable_entity
+    end
+  else
+    @tags = params[:todo][:name]
+    @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
+    ender 'edit', status: :unprocessable_entity
+  end
+end
+# 2---------------------------------------------------------------------------------------------
+
+    # def update
+    #   if tag_todo_valid?(new_tag, @todo)
+    #     @todo.save
+    #     @todo.save_tag(new_tag, checkbox_tag)
+    #     flash[:success] = "Todoを更新しました！"
+    #     redirect_to users_mypage_path
+    #     delete_images
+    #   else
+    #     @tags = params[:todo][:name]
+    #     @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
+    #     render 'edit', status: :unprocessable_entity
+    #   end
+    # end
 
     def destroy
       @todo.destroy
@@ -77,10 +148,20 @@ module Users
         tag.valid?
         tag.errors.full_messages
       end.flatten.uniq
-
-      todo.valid?(:to_delete_images)
+      return unless todo.valid?(:to_delete_images) #画像のバリデーション無視
       @tags_errors.empty? && todo.errors.empty?
     end
+
+    # def tag_todo_valid2?(tag_names, todo)
+    #   # tag1つずつに対してバリデーションをかける、重複は省く
+    #   @tags_errors = tag_names.map do |tag|
+    #     tag = Tag.new(name: tag, user_id: current_user.id)
+    #     tag.valid?
+    #     tag.errors.full_messages
+    #   end.flatten.uniq
+    #   todo.valid?
+    #   @tags_errors.empty? && todo.errors.empty?
+    # end
 
     def todo_params_for_update
       @todo = Todo.find(params[:id])
@@ -91,22 +172,13 @@ module Users
       @todo.images = todo_params[:images]
     end
 
-    # def delete_images
-    #   params[:todo][:image_ids].each do |image_id|
-    #     image = @todo.images.find(image_id)
-    #     image.purge
-    #   end
-    # end
-
     def delete_images
       return unless params[:todo][:image_ids]
 
-      @todo.save(context: :to_delete_images)
       params[:todo][:image_ids].each do |image_id|
-        @todo.images.find(image_id).purge
+        image = ActiveStorage::Attachment.find(image_id)
+        image.purge
       end
-      @todo.images.reload
-      @todo.save
     end
   end
 end

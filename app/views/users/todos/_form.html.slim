@@ -31,6 +31,9 @@
     - if @todo.images.attached?
       p 削除するものはチェックして下さい
       - @todo.images.each do |image|
+        = hidden_field_tag 'all_image_ids[]', image.id
+        / = f.hidden_field :left_image_ids, value: image.id
+        = image.id
         = f.check_box :image_ids, {multiple: true}, image.id, false
         li.user= image_tag image.variant(:thumb)
     = f.submit class: "btn btn-primary"
