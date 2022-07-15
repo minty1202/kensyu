@@ -9,7 +9,7 @@ module Users
 
     def create
       @todo = current_user.todos.new(todo_params)
-      if tag_todo_valid?(new_tag, @todo)
+      if tag_todo_img_valid?(new_tag, @todo)
         @todo.save
         @todo.save_tag(new_tag, checkbox_tag)
         flash[:success] = "登録が成功しました！"
@@ -25,7 +25,7 @@ module Users
     end
 
     def update
-      if tag_todo_valid?(new_tag, @todo)
+      if tag_todo_img_valid?(new_tag, @todo)
         @todo.save(context: :to_delete_images)
         @todo.save_tag(new_tag, checkbox_tag)
         flash[:success] = "Todoを更新しました！"
@@ -34,7 +34,6 @@ module Users
       else
         @tags = params[:todo][:name]
         @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
-        flash[:notice] = "更新に失敗しました。"
         render 'edit', status: :unprocessable_entity
       end
     end
@@ -66,28 +65,26 @@ module Users
       params[:todo][:tag_ids].reject(&:empty?)
     end
 
-    def tag_todo_valid?(tag_names, todo)
+    def tag_todo_img_valid?(tag_names, todo)
       # tag1つずつに対してバリデーションをかける、重複は省く
       @tags_errors = tag_names.map do |tag|
         tag = Tag.new(name: tag, user_id: current_user.id)
         tag.valid?
         tag.errors.full_messages
       end.flatten.uniq
-
       return unless todo.valid?(:to_delete_images) && image_valid?
 
       @tags_errors.empty? && todo.errors.empty?
     end
 
     def image_valid?
+      @image_error = '3枚以上画像は登録できません'
       # 既存の数 - 削除数  = 残った数
-      left_images_ids = params[:all_image_ids].to_a.count - params[:todo][:image_ids].to_a.count
+      left_images_ids = @todo.images.count - params[:todo][:image_ids].to_a.count
+      # add_images = params.dig(:todo, :images) ? params.dig(:todo, :images).count : 0
+      add_images = params[:todo][:images] ? params[:todo][:images].count : 0
       # 残った数 + 追加数 = 合計数
-      if params[:todo][:images]
-        new_and_old_images_ids = left_images_ids + params[:todo][:images].to_a.count
-      else
-        new_and_old_images_ids = left_images_ids + 0
-      end
+      new_and_old_images_ids = left_images_ids + add_images
       new_and_old_images_ids <= 3
     end
 

@@ -10,6 +10,9 @@
       - if @tags_errors.present?
         - @tags_errors.each do |message|
           li.error-messages= message
+    ul
+      - if @todo.images.count > 3
+        li.error-messages= @image_error
 
     = f.label :title
     = f.text_field :title
@@ -31,7 +34,6 @@
     - if @todo.images.attached?
       p 削除するものはチェックして下さい
       - @todo.images.each do |image|
-        = hidden_field_tag 'all_image_ids[]', image.id
         = f.check_box :image_ids, {multiple: true}, image.id, false
         li.user= image_tag image.variant(:thumb)
     = f.submit class: "btn btn-primary"
