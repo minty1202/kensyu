@@ -66,14 +66,15 @@ RSpec.describe "Todos", type: :request do
           end
           it '登録されること(画像あり)' do
             expect{
-              post users_todos_path(todo), params: { todo: {
+              post users_todos_path(todo_params), params: { todo: {
                                                         title: todo.title,
                                                         text: todo.text,
                                                         user_id: todo.user.id ,
                                                         images: todo.images,
                                                         name: tag.name,
                                                         tag_ids: [],
-                                                        limit_date: Time.current
+                                                        limit_date: Time.current,
+                                                        status: todo.status
                                                     } }
               }.to change(Todo, :count).by 1
           end

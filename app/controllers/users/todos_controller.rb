@@ -10,7 +10,7 @@ module Users
     def create
       @todo = current_user.todos.new(todo_params)
       if tag_todo_img_valid?(new_tag, @todo)
-        @todo.save
+        @todo.save(context: :to_delete_images)
         @todo.save_tag(new_tag, checkbox_tag)
         flash[:success] = "登録が成功しました！"
         redirect_to users_mypage_path
@@ -80,9 +80,8 @@ module Users
     def image_valid?
       @image_error = '3枚以上画像は登録できません'
       # 既存の数 - 削除数  = 残った数
-      left_images_ids = @todo.images.count - params[:todo][:image_ids].to_a.count
-      # add_images = params.dig(:todo, :images) ? params.dig(:todo, :images).count : 0
-      add_images = params[:todo][:images] ? params[:todo][:images].count : 0
+      left_images_ids = @todo.images.count - params.dig(:todo, :image_ids).to_a.count
+      add_images = params.dig(:todo, :images) ? params.dig(:todo, :images)&.count : 0
       # 残った数 + 追加数 = 合計数
       new_and_old_images_ids = left_images_ids + add_images
       new_and_old_images_ids <= 3
