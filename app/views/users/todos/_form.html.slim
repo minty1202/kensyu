@@ -27,10 +27,14 @@
     = f.label '終了期日'
     = f.date_field :limit_date
     = f.label 'ステータス'
-    = f.select :status, options_for_select([["未完了","todo"], ["完了","done"]])
+    - if @todo.user
+      = f.select :status, ([["未完了","todo"], ["完了","done"]])
+    - else
+      = f.select :status, options_for_select([["未完了","todo"]])
     = f.label '画像（3枚まで）'
-    = f.file_field :images, multiple: true, include_hidden: false
-
+    = f.file_field :images, multiple: true
+    - @todo.errors.full_messages_for(:images).each do |message|
+      = message
     - if @todo.images.attached?
       p 削除するものはチェックして下さい
       - @todo.images.each_with_index do |image, i|

@@ -103,5 +103,14 @@ module Users
         image.purge
       end
     end
+
+    def valid_each_tag(tag_names)
+      # tag1つずつに対してバリデーションをかける、重複は省く
+      @tags_errors = tag_names.map do |tag|
+        tag = Tag.new(name: tag, user_id: current_user.id)
+        tag.valid?
+        tag.errors.full_messages
+      end.flatten.uniq
+    end
   end
 end
