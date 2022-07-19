@@ -80,7 +80,7 @@ module Users
     def image_valid?
       # 全体（既存数＋追加数） - 削除数 - 追加数  = 残った数
       left_images_ids = @todo.images.count - params.dig(:todo, :image_ids).to_a.count - params[:todo][:images].to_a.count
-      add_images = params.dig(:todo, :images) ? params.dig(:todo, :images)&.count : 0
+      add_images = params.dig(:todo, :images) ? params.dig(:todo, :images).count : 0
       # 残った数 + 追加数 = 合計数
       new_and_old_images_ids = left_images_ids + add_images
       if new_and_old_images_ids <= 3
