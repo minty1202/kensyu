@@ -11,7 +11,7 @@
         - @tags_errors.each do |message|
           li.error-messages= message
     ul
-      - if @todo.images.count > 3
+      - if @image_error.present?
         li.error-messages= @image_error
 
     = f.label :title
