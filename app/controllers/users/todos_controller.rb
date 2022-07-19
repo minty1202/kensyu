@@ -9,8 +9,8 @@ module Users
 
     def create
       @todo = current_user.todos.new(todo_params)
-      if tag_todo_valid?(new_tag, @todo)
-        @todo.save
+      if tag_todo_img_valid?(new_tag, @todo)
+        @todo.save(context: :to_delete_images)
         @todo.save_tag(new_tag, checkbox_tag)
         flash[:success] = "登録が成功しました！"
         redirect_to users_mypage_path
@@ -25,21 +25,17 @@ module Users
     end
 
     def update
-      if tag_todo_valid?(new_tag, @todo)
-        @todo.save
+      if tag_todo_img_valid?(new_tag, @todo)
+        @todo.save(context: :to_delete_images)
         @todo.save_tag(new_tag, checkbox_tag)
         flash[:success] = "Todoを更新しました！"
         redirect_to users_mypage_path
+        delete_images if params[:todo][:image_ids]
       else
         @tags = params[:todo][:name]
         @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
         render 'edit', status: :unprocessable_entity
       end
-
-      # 削除する画像がある場合（check boxにチェックがない場合はparamsにimage_idsはない）
-      return unless params[:todo][:image_ids]
-
-      delete_images
     end
 
     def destroy
@@ -69,12 +65,27 @@ module Users
       params[:todo][:tag_ids].reject(&:empty?)
     end
 
-    def tag_todo_valid?(tag_names, todo)
+    def tag_todo_img_valid?(tag_names, todo)
       # tag1つずつに対してバリデーションをかける、重複は省く
-      valid_each_tag(tag_names)
+      @tags_errors = tag_names.map do |tag|
+        tag = Tag.new(name: tag, user_id: current_user.id)
+        tag.valid?
+        tag.errors.full_messages
+      end.flatten.uniq
+      return unless todo.valid?(:to_delete_images) && image_valid?
 
-      todo.valid?
       @tags_errors.empty? && todo.errors.empty?
+    end
+
+    def image_valid?
+      # 全体（既存数＋追加数） - 削除数 - 追加数  = 残った数
+      left_images = @todo.images.count - params.dig(:todo, :image_ids).to_a.count
+      if left_images <= 3
+        true
+      else
+        @image_error = '3枚以上画像は登録できません'
+        false
+      end
     end
 
     def todo_params_for_update
@@ -88,7 +99,7 @@ module Users
 
     def delete_images
       params[:todo][:image_ids].each do |image_id|
-        image = @todo.images.find(image_id)
+        image = ActiveStorage::Attachment.find(image_id)
         image.purge
       end
     end
