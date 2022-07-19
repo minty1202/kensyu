@@ -98,8 +98,6 @@ module Users
     end
 
     def delete_images
-      return unless params[:todo][:image_ids]
-
       params[:todo][:image_ids].each do |image_id|
         image = ActiveStorage::Attachment.find(image_id)
         image.purge
