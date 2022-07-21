@@ -9,19 +9,23 @@ module Users
     end
 
     def create
-      # puts '---------------------'
-      # params
       @todo = current_user.todos.new(todo_params)
-      @tag_form = TagForm.new(tag_params)
-      # puts '------------------------'
-      # puts '------------------------'
-      # p @todo
+
+      # あとで消す
+      # puts '---------create------------'
+      # p params[:todo][:name]
+      # p todo_params[:name]
+      # p tag_params[:name]
+      # puts '---------tag-form---------------'
+      # @tag_form = TagForm.new(tag: params[:todo])
+      # @tag_form = TagForm.new(tag: params[:todo])
       # p @tag_form
+      # puts '---------todo---------------'
+      # p @todo
 
       if tag_todo_img_valid?(new_tag, @todo)
         @todo.save(context: :to_delete_images)
-        @tag_form.save
-        # @todo.save_tag(new_tag, checkbox_tag)
+        @todo.save_tag(new_tag, checkbox_tag)
         flash[:success] = "登録が成功しました！"
         redirect_to users_mypage_path
       else
@@ -60,9 +64,10 @@ module Users
       params.require(:todo).permit(:title, :text, :limit_date, :status, images: [], tag_ids: []).merge(user_id: current_user.id)
     end
 
-    def tag_params
-      params.require(:tag).permit(:name).merge(user_id: current_user.id)
-    end
+    # あとで消す
+    # def tag_params
+    #   params.require(:todo).permit(:name).merge(user_id: current_user.id)
+    # end
 
     def find_todo_detail
       @todo = current_user.todos.find(params[:id])
