@@ -21,6 +21,10 @@ ja:
         name: タグ
       comment:
         text: コメント
+  activemodel:
+    attributes:
+      tag_form:
+        name: タグ
   date:
     abbr_day_names:
     - 日

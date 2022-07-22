@@ -7,13 +7,13 @@ ul.user-info
   = button_to 'Todo登録へ', new_users_todo_path, method: :get, class: "btn btn-success"
 
 .col-md-4.col-md-offset-4
-  = form_with model: [:users, :mypage, @tag ],local: true do |f|
+  = form_with model: [:users, :mypage, @form ],local: true do |f|
     ul
-      - @tag.errors.full_messages.each do |message|
+      - @form.errors.full_messages.each do |message|
         li.error-messages= message
 
     = f.label 'タグの編集'
-    = f.text_field :name, placeholder: '10文字以内で入力してください', value: @tag.name
+    = f.text_field :name, placeholder: '10文字以内で入力してください', value: @form.name
     = f.submit class: "btn btn-primary"
 
 .delete_button

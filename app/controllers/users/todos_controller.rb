@@ -5,10 +5,12 @@ module Users
 
     def new
       @todo = Todo.new(limit_date: Time.current)
+      @tag_form = TagForm.new
     end
 
     def create
       @todo = current_user.todos.new(todo_params)
+
       if tag_todo_img_valid?(new_tag, @todo)
         @todo.save(context: :to_delete_images)
         @todo.save_tag(new_tag, checkbox_tag)
