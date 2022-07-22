@@ -17,9 +17,8 @@ class TagForm
   def save
     return if invalid?
 
-    ActiveRecord::Base.transaction do
-      @tag.update!(name:, user_id:)
-    end
+    @tag.name = name
+    @tag.save!
   rescue ActiveRecord::RecordInvalid
     false
   end
