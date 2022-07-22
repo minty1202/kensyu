@@ -3,6 +3,7 @@ class TagForm
   include ActiveModel::Attributes
 
   attr_accessor :name, :user_id
+  attr_reader :tag
 
   validates :name, presence: true, length: { maximum: 10 }
 
@@ -29,8 +30,6 @@ class TagForm
   end
 
   private
-
-  attr_reader :tag
 
   def default_attributes
     {
