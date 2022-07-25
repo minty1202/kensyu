@@ -1,10 +1,8 @@
 .col-md-6.col-md-offset-3
-  - tags_name = @todo.tags.pluck(:name)
-  - tags = tags_name.join(',')
 
-  = form_with model: [:users, @todo ],local: true do |f|
+  = form_with model: [:users, @form ],local: true do |f|
     ul
-      - @todo.errors.full_messages.each do |message|
+      - @form.errors.full_messages.each do |message|
         li.error-messages= message
     ul
       - if @tags_errors.present?
@@ -23,11 +21,11 @@
     = f.label '既存のタグ一覧'
     .tag_checkbox
       .tags
-        = f.collection_check_boxes(:tag_ids, @todo.tags, :id, :name, include_hidden: false)
+        = f.collection_check_boxes(:tag_ids, @form.tags, :id, :name, include_hidden: false)
     = f.label '終了期日'
     = f.date_field :limit_date
     = f.label 'ステータス'
-    - if @todo.user
+    - if @form.user_id
       = f.select :status, ([["未完了","todo"], ["完了","done"]])
     - else
       = f.select :status, options_for_select([["未完了","todo"]])
