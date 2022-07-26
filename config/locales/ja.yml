@@ -21,6 +21,15 @@ ja:
         name: タグ
       comment:
         text: コメント
+  activemodel:
+    attributes:
+      todo_tag_form:
+        name: タグ
+        title: タイトル
+        text: タスクの内容
+        limit_date: 終了期日
+        status: ステータス
+        images: 画像
   date:
     abbr_day_names:
     - 日

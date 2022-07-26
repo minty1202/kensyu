@@ -1,23 +1,25 @@
 class TodoTagForm
   include ActiveModel::Model
-  include ActiveModel::Attributes
 
-  attr_accessor :title, :text, :limit_date, :status, :name, :user_id
+  attr_accessor :title, :text, :limit_date, :status, :name, :user_id, :tag_ids, :images, :image_ids
 
   # todo
   validates :title, presence: true, length: { maximum: 50 }
   validates :text, presence: true, length: { maximum: 140 }
-  validates :limit_date , presence: true
+  validates :limit_date, presence: true
   validates :status, presence: true
-  # validate :file_length
+  validate :pretend_ago
+  validate :file_length
 
   # tag
-  validates :name, presence: true, length: { maximum: 10 }
+  validate :validate_tags
+  validate :limit_tags_per_todo
+  validate :limit_tags_per_user
 
   delegate :persisted?, to: :@todo
 
   # Formオブジェクトの値の初期化
-  def initialize(attributes = nil, todo: Todo.new)
+  def initialize(attributes = nil, todo: Todo.new(limit_date: Time.current))
     @todo = todo
     attributes ||= default_attributes
     super(attributes)
@@ -27,10 +29,12 @@ class TodoTagForm
     return if invalid?
 
     ActiveRecord::Base.transaction do
-      tags = split_tag_names.map { |name| Tag.find_or_create_by!(name:, user_id:) }
-      @todo.update!(title: title, text: text, limit_date: limit_date, status: status, tags: tags, user_id: user_id)
+      @todo.update!(title:, text:, limit_date:, status:, user_id:, images:)
+      delete_tag_image
+      split_tag_names.each { |name| @todo.tags.find_or_create_by!(name:, user_id:) }
     end
-  rescue ActiveRecord::RecordInvalid
+  rescue ActiveRecord::RecordInvalid => e
+    p e.record.errors
     false
   end
 
@@ -47,11 +51,43 @@ class TodoTagForm
       limit_date: @todo.limit_date,
       status: @todo.status,
       name: @todo.tags.pluck(:name).join(','),
-      user_id: @todo.user_id
+      user_id: @todo.user_id,
+      images: @todo.images
     }
   end
 
+  def delete_tag_image
+    image_ids&.each { |delete_image| ActiveStorage::Attachment.find(delete_image).purge } if image_ids
+    tag_ids&.each { |delete_tag| @todo.tags.find(delete_tag).destroy! } unless tag_ids.nil?
+  end
+
   def split_tag_names
-    name.split(',')
+    name.gsub(/\s+/, "").split(',')
+  end
+
+  def pretend_ago
+    return if status == '完了' || status == '期限切れ'
+
+    errors.add(:limit_date, 'は先の日付にしてください') if limit_date.nil? || limit_date < Time.current.yesterday
+  end
+
+  def validate_tags
+    split_tag_names.each do |tag|
+      errors.add(:base, "#{tag}は10文字以下にしてください") if tag.size > 10
+    end
+  end
+
+  def limit_tags_per_todo
+    errors.add(:name, "は10個以上登録できません。") if @todo.tags.count > 10
+  end
+
+  def limit_tags_per_user
+    errors.add(:name, "は1ユーザー100個までしか登録できません") if @todo.user && @todo.user.tags.size > 99
+  end
+
+  def file_length
+    # バリデーションかける数 = 新しく追加する数 + 既存の数 - 削除する数
+    images_count = images.reject(&:blank?).count + @todo.images.count - image_ids.to_a.count
+    errors.add(:images, 'は3ファイルまでにしてください') if images_count > 3
   end
 end

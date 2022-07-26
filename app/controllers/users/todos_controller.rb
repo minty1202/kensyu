@@ -4,30 +4,32 @@ module Users
     before_action :todo_params_for_update, only: :update
 
     def new
+      @todo = Todo.new(limit_date: Time.current)
       @form = TodoTagForm.new
     end
 
     def create
+      @todo = current_user.todos.new(td_params)
       @form = TodoTagForm.new(todo_params)
       if @form.save
         flash[:success] = "登録が成功しました！"
         redirect_to users_mypage_path
       else
+        @tags = params[:todo][:name]
         render 'new', status: :unprocessable_entity
       end
     end
 
     def edit
+      @form = TodoTagForm.new(todo: @todo)
       @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
     end
 
     def update
-      if tag_todo_img_valid?(new_tag, @todo)
-        @todo.save(context: :to_delete_images)
-        @todo.save_tag(new_tag, checkbox_tag)
+      @form = TodoTagForm.new(todo_params, todo: @todo)
+      if @form.save
         flash[:success] = "Todoを更新しました！"
         redirect_to users_mypage_path
-        delete_images if params[:todo][:image_ids]
       else
         @tags = params[:todo][:name]
         @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
@@ -43,8 +45,12 @@ module Users
 
     private
 
+    def td_params
+      params.require(:todo).permit(:title, :text, :limit_date, :status, images: [], tag_ids: []).merge(user_id: current_user.id)
+    end
+
     def todo_params
-      params.require(:todo).permit(:title, :text, :limit_date, :status, :name, images: [], tag_ids: []).merge(user_id: current_user.id)
+      params.require(:todo).permit(:title, :text, :limit_date, :status, :name, images: [], tag_ids: [], image_ids: []).merge(user_id: current_user.id)
     end
 
     def find_todo_detail
