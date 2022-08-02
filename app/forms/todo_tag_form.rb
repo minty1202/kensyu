@@ -19,7 +19,7 @@ class TodoTagForm
   delegate :persisted?, to: :@todo
 
   # Formオブジェクトの値の初期化
-  def initialize(attributes = nil, todo: Todo.new(limit_date: Time.current))
+  def initialize(attributes = nil, todo: Todo.new)
     @todo = todo
     attributes ||= default_attributes
     super(attributes)
@@ -29,12 +29,13 @@ class TodoTagForm
     return if invalid?
 
     ActiveRecord::Base.transaction do
-      @todo.update!(title:, text:, limit_date:, status:, user_id:, images:)
+      split_tag_names.each { |name| @todo.tags.find_or_initialize_by(name:, user_id:) }
+      return if invalid?
       delete_tag_image
-      split_tag_names.each { |name| @todo.tags.find_or_create_by!(name:, user_id:) }
+      @todo.update!(title:, text:, limit_date:, status:, user_id:, images:)
     end
   rescue ActiveRecord::RecordInvalid => e
-    p e.record.errors
+    puts e.record.errors
     false
   end
 
@@ -67,8 +68,9 @@ class TodoTagForm
 
   def pretend_ago
     return if status == '完了' || status == '期限切れ'
+    return if limit_date == ''
 
-    errors.add(:limit_date, 'は先の日付にしてください') if limit_date.nil? || limit_date < Time.current.yesterday
+    errors.add(:limit_date, 'は先の日付にしてください') if limit_date < Time.current.yesterday
   end
 
   def validate_tags
@@ -78,11 +80,11 @@ class TodoTagForm
   end
 
   def limit_tags_per_todo
-    errors.add(:name, "は10個以上登録できません。") if @todo.tags.count > 10
+    errors.add(:name, "は10個以上登録できません。") if @todo.tags.size > 10
   end
 
   def limit_tags_per_user
-    errors.add(:name, "は1ユーザー100個までしか登録できません") if @todo.user && @todo.user.tags.size > 99
+    errors.add(:name, "は1ユーザー100個までしか登録できません") if @todo.user && @todo.user.tags.size > 20
   end
 
   def file_length

@@ -1,16 +1,15 @@
 module Users
   class TodosController < UsersController
     before_action :find_todo_detail, only: [:edit, :update, :destroy]
-    before_action :todo_params_for_update, only: :update
 
     def new
-      @todo = Todo.new(limit_date: Time.current)
-      @form = TodoTagForm.new
+      @todo = Todo.new
+      @form = TodoTagForm.new(todo: @todo)
     end
 
     def create
-      @todo = current_user.todos.new(td_params)
-      @form = TodoTagForm.new(todo_params)
+      @todo = current_user.todos.new(todo_params)
+      @form = TodoTagForm.new(todo_tag_form_params)
       if @form.save
         flash[:success] = "登録が成功しました！"
         redirect_to users_mypage_path
@@ -26,7 +25,7 @@ module Users
     end
 
     def update
-      @form = TodoTagForm.new(todo_params, todo: @todo)
+      @form = TodoTagForm.new(todo_tag_form_params, todo: @todo)
       if @form.save
         flash[:success] = "Todoを更新しました！"
         redirect_to users_mypage_path
@@ -45,11 +44,11 @@ module Users
 
     private
 
-    def td_params
+    def todo_params
       params.require(:todo).permit(:title, :text, :limit_date, :status, images: [], tag_ids: []).merge(user_id: current_user.id)
     end
 
-    def todo_params
+    def todo_tag_form_params
       params.require(:todo).permit(:title, :text, :limit_date, :status, :name, images: [], tag_ids: [], image_ids: []).merge(user_id: current_user.id)
     end
 

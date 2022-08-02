@@ -7,32 +7,38 @@ RSpec.describe TodoTagForm, :type => :model do
 
   it 'タイトルが必須であること' do
     @form.title = ' '
-    expect(@form).to_not be_valid
+    @form.valid?
+    expect(@form.errors[:title]).to be_present
   end
 
   it 'タイトルが50字以内であること' do
     @form.title = 'a' * 51
-    expect(@form).to_not be_valid
+    @form.valid?
+    expect(@form.errors[:title]).to be_present
   end
 
   it 'textが必須であること' do
     @form.text = ' '
-    expect(@form).to_not be_valid
+    @form.valid?
+    expect(@form.errors[:text]).to be_present
   end
 
   it 'textが140字以内であること' do
-    @form.title = 'a' * 141
-    expect(@form).to_not be_valid
+    @form.text = 'a' * 141
+    @form.valid?
+    expect(@form.errors[:text]).to be_present
   end
 
   it '終了期日が必須であること' do
-    @form.limit_date = ' '
-    expect(@form).to_not be_valid
+    @form.limit_date = ''
+    @form.valid?
+    expect(@form.errors[:limit_date]).to be_present
   end
 
   it 'ステータスが必須であること' do
     @form.status = ' '
-    expect(@form).to_not be_valid
+    @form.valid?
+    expect(@form.errors[:status]).to be_present
   end
 
   it '初期値が未完了であること' do
@@ -42,47 +48,57 @@ RSpec.describe TodoTagForm, :type => :model do
   describe 'カスタムバリデーション' do
     it 'pretend_ago' do
       @form.status = '未完了'
-      @form.limit_date = Time.current.yesterday
-      expect(@form).to_not be_valid
+      @form.limit_date = Time.current.ago(3.days)
+      @form.valid?
+      expect(@form.errors[:limit_date]).to be_present
     end
 
     it 'validate_tags' do
       @form.name = 'a' * 11
-      expect(@form).to_not be_valid
+      @form.valid?
+      expect(@form.errors[:base]).to be_present
     end
 
     it 'file_length' do
       @form.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
       @form.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
       @form.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
-      expect(@form).to_not be_valid
+      @form.valid?
+      expect(@form.errors[:images]).to be_present
     end
 
     context 'タスクtag数の制限' do
       let!(:todo) { create(:todo)}
-      let!(:tag) { create(:tag) }
       before do
-        10.times do |i|
+        5.times do |i|
           tag = Tag.create(name: "tag#{i}", user_id: todo.user.id)
           todo.todo_tags.create(tag_id: tag.id)
         end
       end
       it 'limit_tags_per_todo' do
-        expect(todo).to_not be_valid
+        @form2 = TodoTagForm.new(todo: todo)
+        @form2.title = 'title'
+        @form2.text = 'text'
+        @form2.limit_date = Time.current
+        @form2.name = '1, 2, 3, 4, 5, 6, 7,'
+        @form2.save
+        @form2.valid?
+        p @form2.errors
+        expect(@form2.errors[:name]).to include('は10個以上登録できません。')
       end
     end
 
     context 'ユーザーtag数の制限' do
       let!(:todo) { create(:todo)}
-      let!(:tag) { create(:tag) }
       before do
-        100.times do |i|
+        101.times do |i|
           tag = Tag.create(name: "user_tag#{i}", user_id: todo.user.id)
           todo.todo_tags.create(tag_id: tag.id)
         end
       end
       it 'limit_tags_per_user' do
-        expect(tag).to_not be_valid
+        todo.valid?
+        expect(todo.errors[:name]).to include('は1ユーザー100個までしか登録できません')
       end
     end
   end
