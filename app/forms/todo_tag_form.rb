@@ -26,11 +26,10 @@ class TodoTagForm
   end
 
   def save
+    split_tag_names.each { |name| @todo.tags.find_or_initialize_by(name:, user_id:) }
     return if invalid?
 
     ActiveRecord::Base.transaction do
-      split_tag_names.each { |name| @todo.tags.find_or_initialize_by(name:, user_id:) }
-      return if invalid?
       delete_tag_image
       @todo.update!(title:, text:, limit_date:, status:, user_id:, images:)
     end
