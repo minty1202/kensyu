@@ -27,6 +27,7 @@ class TodoTagForm
 
   def save
     split_tag_names.each { |name| @todo.tags.find_or_initialize_by(name:, user_id:) }
+    split_tag_names.each { |name| @todo.user.tags.find_or_initialize_by(name:, user_id:) }
     return false if invalid?
 
     ActiveRecord::Base.transaction do
@@ -83,7 +84,7 @@ class TodoTagForm
   end
 
   def limit_tags_per_user
-    errors.add(:name, "は1ユーザー100個までしか登録できません") if @todo.user && @todo.user.tags.size > 20
+    errors.add(:name, "は1ユーザー100個までしか登録できません") if @todo.user && @todo.user.tags.size > 100
   end
 
   def file_length
