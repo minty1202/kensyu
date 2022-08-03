@@ -76,13 +76,14 @@ RSpec.describe TodoTagForm, :type => :model do
         end
       end
       it 'limit_tags_per_todo' do
-        @form2 = TodoTagForm.new
+        @form2 = TodoTagForm.new(todo: todo)
+        @form2.user_id = todo.user.id
         @form2.title = 'title'
         @form2.text = 'text'
         @form2.limit_date = Time.current
-        @form2.name = '1, 2, 3, 4, 5, 6, 7、8, 9, 10, 11'
+        @form2.name = '1, 2, 3, 4, 5, 6'
         @form2.save
-        @form2.valid?
+
         expect(@form2.errors[:name]).to include('は10個以上登録できません。')
       end
     end
