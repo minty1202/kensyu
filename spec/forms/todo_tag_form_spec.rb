@@ -73,14 +73,14 @@ RSpec.describe TodoTagForm, :type => :model do
         end
       end
       it 'limit_tags_per_todo' do
-        form2 = TodoTagForm.new(todo: todo)
-        form2.user_id = todo.user.id
-        form2.title = 'title'
-        form2.text = 'text'
-        form2.limit_date = Time.current
-        form2.name = '1, 2, 3, 4, 5, 6'
-        form2.save
-        expect(form2.errors[:name]).to include('は10個以上登録できません。')
+        form = TodoTagForm.new(todo: todo)
+        form.user_id = todo.user.id
+        form.title = 'title'
+        form.text = 'text'
+        form.limit_date = Time.current
+        form.name = '1, 2, 3, 4, 5, 6'
+        form.save
+        expect(form.errors[:name]).to include('は10個以上登録できません。')
       end
     end
 
@@ -92,7 +92,7 @@ RSpec.describe TodoTagForm, :type => :model do
       #1つのtodoに対して10個のタグを作成。（合計100個のタグ）
       before do
         10.times do |i|
-          todo = FactoryBot.create(:todo)
+          todo = create(:todo)
           10.times do |i|
             todo.tags.create(name: "user_tag#{i + 1}", user_id: user.id)
           end
@@ -100,14 +100,14 @@ RSpec.describe TodoTagForm, :type => :model do
       end
 
       it 'limit_tags_per_user' do
-        form3 = TodoTagForm.new(todo: todo0)
-        form3.user_id = user.id
-        form3.title = 'title'
-        form3.text = 'text'
-        form3.limit_date = Time.current
-        form3.name = '101'
-        form3.save
-        expect(form3.errors[:name]).to include('は1ユーザー100個までしか登録できません')
+        form = TodoTagForm.new(todo: todo0)
+        form.user_id = user.id
+        form.title = 'title'
+        form.text = 'text'
+        form.limit_date = Time.current
+        form.name = '101'
+        form.save
+        expect(form.errors[:name]).to include('は1ユーザー100個までしか登録できません')
       end
     end
   end
