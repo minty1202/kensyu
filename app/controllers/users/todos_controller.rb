@@ -9,7 +9,7 @@ module Users
 
     def create
       @todo = current_user.todos.new(todo_params)
-      @form = TodoTagForm.new(todo_tag_form_params)
+      @form = TodoTagForm.new(todo_tag_form_params, todo: @todo)
       if @form.save
         flash[:success] = "登録が成功しました！"
         redirect_to users_mypage_path
