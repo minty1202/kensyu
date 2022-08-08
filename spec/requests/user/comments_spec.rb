@@ -16,7 +16,7 @@ RSpec.describe "Users::Comments", type: :request do
                                   text: todo.text,
                                   user_id: todo.user,
                                   name: tag.name,
-                                  tag_ids: [],
+                                  status: todo.status,
                                   limit_date: Time.current},
                                   todo_id: todo.id } }
         let(:comment_params) { { comment: { text: comment.text,
@@ -41,11 +41,25 @@ RSpec.describe "Users::Comments", type: :request do
         end
       end
       context 'コメント登録が失敗する場合' do
-        it '無効な値だと登録できないこと' do
+        let(:todo_params) { { todo: { title: todo.title,
+                          text: todo.text,
+                          user_id: todo.user,
+                          name: tag.name,
+                          status: todo.status,
+                          limit_date: Time.current},
+                          todo_id: todo.id } }
+        let(:comment_params2) { { comment: { text: '',
+                          user_id: '',
+                          todo_id: todo.id} } }
+
+        it 'Todoが登録されていること' do
+          expect{
+            post users_todos_path, params: todo_params
+          }.to change(Todo, :count).by 1
+        end
+        xit '無効な値だと登録できないこと' do
           expect {
-            post users_todo_comments_path(todo.id), params:{comment: {text: '',
-                                          user_id: '',
-                                          todo_id: todo.id}}
+            post users_todo_comments_path(todo.id), params: comment_params2
             }.to_not change(Comment, :count)
         end
       end

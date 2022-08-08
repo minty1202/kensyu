@@ -26,8 +26,10 @@ class TodoTagForm
   end
 
   def save
+    # rubocop:disable Style/CombinableLoops
     split_tag_names.each { |name| @todo.tags.find_or_initialize_by(name:, user_id:) }
     split_tag_names.each { |name| @todo.user.tags.find_or_initialize_by(name:, user_id:) }
+    # rubocop:enable Style/CombinableLoops
     return false if invalid?
 
     ActiveRecord::Base.transaction do
@@ -69,8 +71,9 @@ class TodoTagForm
   def pretend_ago
     return if status == '完了' || status == '期限切れ'
     return if limit_date == ''
+    return if limit_date.nil?
 
-    errors.add(:limit_date, 'は先の日付にしてください') if limit_date < Time.current.yesterday
+    errors.add(:limit_date, 'は先の日付にしてください') if limit_date.in_time_zone < Time.current.yesterday
   end
 
   def validate_tags
@@ -89,7 +92,7 @@ class TodoTagForm
 
   def file_length
     # バリデーションかける数 = 新しく追加する数 + 既存の数 - 削除する数
-    images_count = images.reject(&:blank?).count + @todo.images.count - image_ids.to_a.count
+    images_count = images.to_a.reject(&:blank?).count + @todo.images.count - image_ids.to_a.count
     errors.add(:images, 'は3ファイルまでにしてください') if images_count > 3
   end
 end
