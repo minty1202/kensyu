@@ -1,18 +1,12 @@
 .col-md-6.col-md-offset-3
-  - tags_name = @todo.tags.pluck(:name)
-  - tags = tags_name.join(',')
 
-  = form_with model: [:users, @todo ],local: true do |f|
+  = form_with model: [:users, @form ],local: true do |f|
     ul
       - @todo.errors.full_messages.each do |message|
         li.error-messages= message
     ul
-      - if @tags_errors.present?
-        - @tags_errors.each do |message|
-          li.error-messages= message
-    ul
-      - if @image_error.present?
-        li.error-messages= @image_error
+      - @form.errors.full_messages.each do |message|
+        li.error-messages= message
 
     = f.label :title
     = f.text_field :title
@@ -20,27 +14,25 @@
     = f.text_area :text, rows: "5", placeholder: '140文字以内でご入力ください'
     = f.label '新しいタグを追加(複数追加は , で区切る)'
     = f.text_field :name, placeholder: 'タグ1, タグ2', value: @tags
-    = f.label '既存のタグ一覧'
+    = f.label '既存のタグ一覧(タグを外す場合はチェックして下さい)'
     .tag_checkbox
       .tags
         = f.collection_check_boxes(:tag_ids, @todo.tags, :id, :name, include_hidden: false)
     = f.label '終了期日'
-    = f.date_field :limit_date
+    = f.date_field :limit_date, value: @form.limit_date
     = f.label 'ステータス'
-    - if @todo.user
+    - if @form.user_id
       = f.select :status, ([["未完了","todo"], ["完了","done"]])
     - else
       = f.select :status, options_for_select([["未完了","todo"]])
     = f.label '画像（3枚まで）'
-    = f.file_field :images, multiple: true
-    - @todo.errors.full_messages_for(:images).each do |message|
-      = message
-    - if @todo.images.attached?
+    = f.file_field :images, multiple: true, value: @todo.images
+    - if @form.images.present?
       p 削除するものはチェックして下さい
-      - @todo.images.each_with_index do |image, i|
-        = f.check_box :image_ids, {multiple: true}, image.id, false
-        li.user= image_tag image.variant(:thumb)
-        - break if i == 2
+      - @imgs = @todo.images.map {|img| ActiveStorage::Attachment.find(img.id)}
+      - @imgs.reject(&:blank?).each do |img|
+        = f.check_box :image_ids, {multiple: true}, img.id, false
+        li.user= image_tag img.variant(:thumb)
     = f.submit class: "btn btn-primary"
 
   = link_to '戻る', users_mypage_path
