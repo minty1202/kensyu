@@ -5,6 +5,6 @@
           li.user ID:#{user.id}
           li.user 名前:#{user.name}
           li.user 投稿数：#{user.todos.count}
-          li.user= button_to "削除する",admins_user_path(user) , method: :delete
+          li.user = button_to "削除する", admins_user_path(user), method: :delete
   - else
     p.todos-info ユーザーは登録されてません！

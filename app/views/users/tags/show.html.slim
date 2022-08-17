@@ -2,10 +2,12 @@
 h2 タグ名： #{@tag.name}
 
 ul.user-info
-  li.user= current_user.name
-  li.user= current_user.email
-  = button_to 'タグ編集', edit_users_mypage_tag_path, method: :get, class: "btn btn-primary"
-  = button_to 'Todo登録へ', new_users_todo_path, method: :get, class: "btn btn-success"
+  li.user = current_user.name
+  li.user = current_user.email
+  = button_to 'タグ編集', edit_users_mypage_tag_path,
+                          method: :get, class: "btn btn-primary"
+  = button_to 'Todo登録へ', new_users_todo_path,
+                          method: :get, class: "btn btn-success"
 .todo-list
   h2 #{@tag.todos.count}件
   - if @todos.present?
@@ -14,10 +16,10 @@ ul.user-info
         ul.todos-info
           li.user タイトル：#{todo.title.truncate(15)}
           li.user 期日：#{todo.limit_date}
-          li.user= todo.status
+          li.user = todo.status
           - if todo.images.attached?
             - todo.images.each do |image|
-                li.user= image_tag image.variant(:thumb)
+                li.user = image_tag image.variant(:thumb)
   - else
     p.todos-info Todoリストがありません！
 
