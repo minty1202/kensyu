@@ -3,11 +3,13 @@ h1 編集ページ
 = render partial: '/users/todos/form', locals: { todo: @todo }
 .col-md-6.col-md-offset-3.form-edit
   = button_to "削除する", users_todo_path(@todo),
-                        class: "btn btn-danger", method: :delete
+                          class: "btn btn-danger",
+                          method: :delete
 
   h2.comment-title コメントをする
   = form_with model: [:users, @todo, @comment],
-                      local: true, method: :post do |f|
+                      local: true,
+                      method: :post do |f|
     ul
       - @comment.errors.full_messages_for(:text).each do |message|
         li.error-messages = message

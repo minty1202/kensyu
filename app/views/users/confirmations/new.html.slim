@@ -7,12 +7,8 @@ h2
     = f.label :email
     br
     = f.email_field :email, autofocus: true,
-      autocomplete: "email",
-      value:
-              - if resource.pending_reconfirmation?
-                resource.unconfirmed_email
-              - else
-                resource.email
+                            autocomplete: "email",
+                            value: confirmed_email?
   .actions
     = f.submit "Resend confirmation instructions"
 = render "users/shared/links"
