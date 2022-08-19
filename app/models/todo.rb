@@ -52,9 +52,7 @@ class Todo < ApplicationRecord
 
   # 1日後に終了期限かつ未完了のTodoを取得して通知
   def self.notice_expired_todo
-    # rubocop:disable all
-    notifier = Slack::Notifier.new(ENV['WEBHOOK_URL'])
-    # rubocop:enable all
+    notifier = Slack::Notifier.new(ENV.fetch('WEBHOOK_URL', nil))
     expired_tomorrow_todos = Todo.where(limit_date: Time.current.tomorrow).where(status: 'todo')
 
     return if expired_tomorrow_todos.count.zero?
@@ -65,9 +63,7 @@ class Todo < ApplicationRecord
   end
 
   def self.send_error_message(message)
-    # rubocop:disable all
-    notifier = Slack::Notifier.new(ENV['WEBHOOK_URL'])
-    # rubocop:enable all
+    notifier = Slack::Notifier.new(ENV.fetch('WEBHOOK_URL', nil))
     notifier.ping message
   end
 

@@ -17,11 +17,9 @@ m = Module.new do
     File.expand_path($0) == File.expand_path(__FILE__)
   end
 
-  # rubocop:disable all
   def env_var_version
-    ENV["BUNDLE_GEMFILE"]
+    ENV.fetch("BUNDLER_VERSION", nil)
   end
-  # rubocop:enable all
 
   def cli_arg_version
     return unless invoked_as_script? # don't want to hijack other binstubs
@@ -40,9 +38,7 @@ m = Module.new do
   end
 
   def gemfile
-    # rubocop:disable all
-    gemfile = ENV["BUNDLE_GEMFILE"]
-    # rubocop:enable all
+    gemfile = ENV.fetch("BUNDLER_VERSION", nil)
     return gemfile if gemfile && !gemfile.empty?
 
     File.expand_path("../Gemfile", __dir__)

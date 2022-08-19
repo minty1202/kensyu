@@ -127,6 +127,7 @@ RSpec.describe Todo, type: :model do
     # newメソッドが呼べるようにし、作ったモックを返す
     before do
       allow(Slack::Notifier).to receive(:new).and_return(notifier)
+      allow(ENV).to receive(:[]).and_call_original
     end
 
     it 'is success' do
