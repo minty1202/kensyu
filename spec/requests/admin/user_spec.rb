@@ -9,10 +9,10 @@ RSpec.describe "User", type: :request do
       before do
         sign_in(admin)
       end
-      it 'userが削除されること'do
-        expect {
-              delete admins_user_path(user)
-          }.to change(User, :count).by(-1)
+      it 'userが削除されること' do
+        expect do
+          delete admins_user_path(user)
+        end.to change(User, :count).by(-1)
       end
       it 'dashbprdにリダイレクトされること' do
         delete admins_user_path(user)
@@ -26,5 +26,4 @@ RSpec.describe "User", type: :request do
       end
     end
   end
-
 end

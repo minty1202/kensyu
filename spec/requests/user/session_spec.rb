@@ -7,16 +7,16 @@ RSpec.describe "Session", type: :request do
   end
   describe "POST /users/sign_in" do
     it "return http success" do
-      post user_session_path, params: { user: {email: 'test@example.com',
-                                        password: '123456' } }
-      expect(response).to have_http_status (302)
+      post user_session_path, params: { user: { email: 'test@example.com',
+                                                password: '123456' } }
+      expect(response).to have_http_status(302)
     end
   end
 
   describe "DELETE /users/sign_out" do
     it "ログアウトできること" do
       delete destroy_user_session_path(user)
-      expect(response).to have_http_status (204)
+      expect(response).to have_http_status(204)
     end
   end
 end

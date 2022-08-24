@@ -26,7 +26,7 @@ RSpec.describe "Users::Statuses", type: :request do
   end
 
   describe "GET /status_done" do
-        context 'ログインしている場合' do
+    context 'ログインしている場合' do
       before do
         sign_in(user)
       end
@@ -45,7 +45,7 @@ RSpec.describe "Users::Statuses", type: :request do
   end
 
   describe "GET /status_expired" do
-        context 'ログインしている場合' do
+    context 'ログインしている場合' do
       before do
         sign_in(user)
       end

@@ -12,27 +12,31 @@ RSpec.describe "Users::Comments", type: :request do
         sign_in(user)
       end
       context 'コメントの登録が成功する場合' do
-        let(:todo_params) { { todo: { title: todo.title,
-                                  text: todo.text,
-                                  user_id: todo.user,
-                                  name: tag.name,
-                                  status: todo.status,
-                                  limit_date: Time.current},
-                                  todo_id: todo.id } }
-        let(:comment_params) { { comment: { text: comment.text,
-                                  user_id: comment.user,
-                                  todo_id: todo.id} } }
+        let(:todo_params) do
+          { todo: { title: todo.title,
+                    text: todo.text,
+                    user_id: todo.user,
+                    name: tag.name,
+                    status: todo.status,
+                    limit_date: Time.current },
+            todo_id: todo.id }
+        end
+        let(:comment_params) do
+          { comment: { text: comment.text,
+                       user_id: comment.user,
+                       todo_id: todo.id } }
+        end
 
         it 'Todoが登録されていること' do
-        expect{
-          post users_todos_path, params: todo_params
-        }.to change(Todo, :count).by 1
+          expect do
+            post users_todos_path, params: todo_params
+          end.to change(Todo, :count).by 1
         end
 
         it '有効な値でコメント投稿できること' do
-          expect{
+          expect do
             post users_todo_comments_path(todo.id), params: comment_params
-          }.to change(Comment, :count).by 1
+          end.to change(Comment, :count).by 1
         end
 
         it '編集ページにリダイレクトされること' do
@@ -41,26 +45,30 @@ RSpec.describe "Users::Comments", type: :request do
         end
       end
       context 'コメント登録が失敗する場合' do
-        let(:todo_params) { { todo: { title: todo.title,
-                          text: todo.text,
-                          user_id: todo.user,
-                          name: tag.name,
-                          status: todo.status,
-                          limit_date: Time.current},
-                          todo_id: todo.id } }
-        let(:comment_params2) { { comment: { text: '',
-                          user_id: '',
-                          todo_id: todo.id} } }
+        let(:todo_params) do
+          { todo: { title: todo.title,
+                    text: todo.text,
+                    user_id: todo.user,
+                    name: tag.name,
+                    status: todo.status,
+                    limit_date: Time.current },
+            todo_id: todo.id }
+        end
+        let(:comment_params2) do
+          { comment: { text: '',
+                       user_id: '',
+                       todo_id: todo.id } }
+        end
 
         it 'Todoが登録されていること' do
-          expect{
+          expect do
             post users_todos_path, params: todo_params
-          }.to change(Todo, :count).by 1
+          end.to change(Todo, :count).by 1
         end
         xit '無効な値だと登録できないこと' do
-          expect {
+          expect do
             post users_todo_comments_path(todo.id), params: comment_params2
-            }.to_not change(Comment, :count)
+          end.to_not change(Comment, :count)
         end
       end
     end

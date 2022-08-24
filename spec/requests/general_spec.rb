@@ -12,7 +12,7 @@ RSpec.describe "General", type: :request do
   describe "GET users/mypage " do
     let!(:todo) { create(:todo) }
     context 'ログインしていない場合' do
-      it'ログインページにリダイレクトされること' do
+      it 'ログインページにリダイレクトされること' do
         get users_mypage_path
         expect(response).to redirect_to new_user_session_path
       end
@@ -29,22 +29,21 @@ RSpec.describe "General", type: :request do
   end
 end
 
-
 describe "GET users/todos/:id/edit #edit" do
-    let!(:todo) { create(:todo) }
-    context 'ログインしている場合' do
-      before do
-        sign_in(todo.user)
-      end
-      it "return http success" do
-        get edit_users_todo_path(todo)
-        expect(response).to have_http_status(:success)
-      end
+  let!(:todo) { create(:todo) }
+  context 'ログインしている場合' do
+    before do
+      sign_in(todo.user)
     end
-    context 'ログインしていない場合' do
-      it "ログインページにリダイレクトされること" do
-        get edit_users_todo_path(todo)
-        expect(response).to redirect_to new_user_session_path
-      end
+    it "return http success" do
+      get edit_users_todo_path(todo)
+      expect(response).to have_http_status(:success)
     end
   end
+  context 'ログインしていない場合' do
+    it "ログインページにリダイレクトされること" do
+      get edit_users_todo_path(todo)
+      expect(response).to redirect_to new_user_session_path
+    end
+  end
+end
