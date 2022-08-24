@@ -5,11 +5,16 @@ AllCops:
     - 'db/**/*'
     - 'config/**/*'
     - 'script/**/*'
-    - 'spec/**/*'
+    # - 'spec/**/*'
     - !ruby/regexp /old_and_unused\.rb$/
 
   Rails:
     Enabled: true
+
+# ブロックの長さはできるだけ小さくする
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
 
 Style/Documentation:
   Enabled: false
