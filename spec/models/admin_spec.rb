@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Admin, type: :model do
-  let(:admin) {build(:admin) }
+  let(:admin) { build(:admin) }
 
   it 'emailが必須であること' do
     admin.email = ''

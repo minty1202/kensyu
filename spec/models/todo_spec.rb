@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Todo, type: :model do
-  let(:todo) {create(:todo) }
+  let(:todo) { create(:todo) }
 
   it 'タイトルが必須であること' do
     todo.title = ' '
@@ -50,20 +50,20 @@ RSpec.describe Todo, type: :model do
 
   describe 'scope' do
     describe 'search_title' do
-      let!(:todo) { create(:todo)}
-      subject {Todo.search_title("MyString")}
-      it {is_expected.to include todo}
+      let!(:todo) { create(:todo) }
+      subject { Todo.search_title("MyString") }
+      it { is_expected.to include todo }
     end
     describe 'search_text' do
-      let!(:todo) { create(:todo)}
-      subject {Todo.search_text("MyText")}
-      it {is_expected.to include todo}
+      let!(:todo) { create(:todo) }
+      subject { Todo.search_text("MyText") }
+      it { is_expected.to include todo }
     end
   end
 
   describe 'save_tagメソッド' do
     let!(:tag) { build(:tag) }
-    let!(:todo) { create(:todo)}
+    let!(:todo) { create(:todo) }
 
     context 'すでにあるタグから他のタグに変える' do
       before do
@@ -76,20 +76,19 @@ RSpec.describe Todo, type: :model do
       end
 
       it 'Tagの数は変わらないこと' do
-        expect{todo.save_tag([], [])}.to_not change(Tag, :count)
+        expect { todo.save_tag([], []) }.to_not change(Tag, :count)
       end
 
       it 'TodoTagの数が減ること' do
-        expect{todo.save_tag(['tag3'], [])}.to change(TodoTag, :count).by(-2)
+        expect { todo.save_tag(['tag3'], []) }.to change(TodoTag, :count).by(-2)
       end
-
     end
     context '新しいタグの保存' do
       it 'Tagの数が増えていること' do
-        expect{todo.save_tag([tag.name], [])}.to change(Tag, :count).by(1)
+        expect { todo.save_tag([tag.name], []) }.to change(Tag, :count).by(1)
       end
       it 'TodoTagの数が増えていること' do
-        expect{todo.save_tag([tag.name], [])}.to change(TodoTag, :count).by(1)
+        expect { todo.save_tag([tag.name], []) }.to change(TodoTag, :count).by(1)
       end
     end
     context 'すでに作成してあるタグの登録' do
@@ -100,11 +99,11 @@ RSpec.describe Todo, type: :model do
         todo.todo_tags.create(tag_id: tag_tow.id)
       end
       it 'Tagの数は変わらないこと' do
-        expect{todo.save_tag(['tag1'], [])}.to_not change(Tag, :count)
+        expect { todo.save_tag(['tag1'], []) }.to_not change(Tag, :count)
       end
 
       it 'TodoTagの数が変わらないこと' do
-        expect{todo.save_tag(['tag_one','tag_tow'], [])}.to_not change(TodoTag, :count)
+        expect { todo.save_tag(%w[tag_one tag_tow], []) }.to_not change(TodoTag, :count)
       end
     end
   end
@@ -115,15 +114,15 @@ RSpec.describe Todo, type: :model do
 
     context 'after_commitが実行される' do
       it '未完了から期限切れになること' do
-        expect{Todo.change_status}.to change{ todo.reload.status }.from('未完了').to('期限切れ')
+        expect { Todo.change_status }.to change { todo.reload.status }.from('未完了').to('期限切れ')
       end
     end
   end
 
   describe '明日期限の未完了todoを取得して通知する' do
-    let!(:todo) { create(:todo, limit_date: Time.current.tomorrow)}
+    let!(:todo) { create(:todo, limit_date: Time.current.tomorrow) }
     # モックを作る
-    let(:notifier) { double("mock notifier", ping: 'Working as expected')}
+    let(:notifier) { double("mock notifier", ping: 'Working as expected') }
     # newメソッドが呼べるようにし、作ったモックを返す
     before do
       allow(Slack::Notifier).to receive(:new).and_return(notifier)
@@ -133,6 +132,6 @@ RSpec.describe Todo, type: :model do
       expect(Todo.notice_expired_todo).to be_truthy
     end
 
-    it { expect(Todo.notice_expired_todo).to eq ('Working as expected') }
+    it { expect(Todo.notice_expired_todo).to eq('Working as expected') }
   end
 end
