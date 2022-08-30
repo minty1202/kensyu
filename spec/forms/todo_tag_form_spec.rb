@@ -4,17 +4,21 @@ RSpec.describe TodoTagForm, type: :model do
 
   describe 'バリデーション機能テスト' do
     before { form.valid? }
+    let!(:form) { build(:todo_tag_form, **params, &block) }
+    let!(:params) { {} }
+    let!(:block) { Proc.new {} }
+
 
     describe 'タイトルバリデーションテスト' do
       subject { form.errors[:title] }
 
       context 'タイトルが空欄のとき' do
-        let!(:form) { build(:todo_tag_form, title: ' ') }
+        let!(:params) { { title: ' '} }
         it { is_expected.to be_present}
       end
   
       context 'タイトルが50字以上のとき' do
-        let!(:form) { build(:todo_tag_form, title: 'a' * 51) }
+        let!(:params) { { title: 'a' * 51} }
         it { is_expected.to be_present}
       end
     end
@@ -23,12 +27,12 @@ RSpec.describe TodoTagForm, type: :model do
       subject { form.errors[:text] }
 
       context 'textが空欄のとき' do
-        let!(:form) { build(:todo_tag_form, text: ' ') }
+        let!(:params) { { text: ' '} }
         it { is_expected.to be_present}
       end
 
       context 'textが141字以上のとき' do
-        let!(:form) { build(:todo_tag_form, text: 'a' * 141) }
+        let!(:params) { { text: 'a' * 141} }
         it { is_expected.to be_present}
       end
     end
@@ -37,8 +41,8 @@ RSpec.describe TodoTagForm, type: :model do
       subject { form.errors[:images] }
 
       context 'FIXME: (これはどういうケースのテストだろう)' do
-        let!(:form) do 
-          build(:todo_tag_form) do |f|
+        let(:block) do
+          Proc.new do |f|
             3.times do
               f.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
             end
