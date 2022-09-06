@@ -1,39 +1,40 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  let(:user) { build(:user) }
+  describe 'バリデーション機能テスト' do
+    before { user.valid? }
 
-  it 'nameが必須であること' do
-    user.name = ''
-    expect(user).to_not be_valid
-  end
+    describe '名前のバリデーションテスト' do
+      subject { user.errors[:name] }
 
-  it 'emailが必須であること' do
-    user.email = ''
-    expect(user).to_not be_valid
-  end
+      context '名前が空欄のとき' do
+        let!(:user) { build(:user, name: '') }
+        it { is_expected.to be_present }
+      end
 
-  it 'nameは10文字以内であること' do
-    user.name = 'a' * 11
-    expect(user).to_not be_valid
-  end
+      context '名前が11文字以上のとき' do
+        let!(:user) { build(:user, name: 'a' * 11) }
+        it { is_expected.to be_present }
+      end
+    end
 
-  it 'passwordが必須であること' do
-    user.password = user.password_confirmation = ' ' * 6
-    expect(user).to_not be_valid
-  end
+    describe 'パスワードのバリデーションテスト' do
+      subject { user.errors[:password] }
 
-  it 'passwordが6文字以下は登録できない' do
-    user.password = user.password_confirmation = 'a' * 5
-    expect(user).to_not be_valid
-  end
+      context 'パスワードが空欄のとき' do
+        let!(:user) { build(:user, password: '') }
+        it { is_expected.to be_present }
+      end
 
-  it 'passwordが6文字以上であること' do
-    user.password = user.password_confirmation = 'a' * 6
-    expect(user).to be_valid
-  end
+      context 'パスワードが5文字以下のとき' do
+        let(:user) { build(:user, password: 'a' * 5) }
+        it { is_expected.to be_present }
+      end
+    end
 
-  it 'すべての値が正常であれば登録できる' do
-    expect(user).to be_valid
+    context '値が正常のとき' do
+      let!(:user) { build(:user) }
+      it { expect(user).to be_valid }
+    end
   end
 end

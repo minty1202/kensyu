@@ -19,13 +19,5 @@ FactoryBot.define do
     trait :skip_validate do
       to_create { |instance| instance.save(validate: false) }
     end
-
-    trait :with_attachment do
-      attachment do
-        Rack::Test::UploadedFile.new(
-          "#{Rails.root}/spec/fixtures/files/image/test_image.png", 'image/png'
-        )
-      end
-    end
   end
 end
