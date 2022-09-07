@@ -121,7 +121,7 @@ RSpec.describe Todo, type: :model do
     context '終了期日が過去＆ステータスが完了のTodoとき' do
       let!(:todo) { create(:todo, :todo_not_change_status) }
       it 'ステータスは変わらないこと' do
-        expect { Todo.change_status }.not_to change(todo.reload.status)
+        expect { Todo.change_status }.not_to(change { todo.reload.status })
       end
     end
   end
