@@ -4,6 +4,11 @@ RSpec.describe Todo, type: :model do
   describe 'バリデーション機能テスト' do
     before { todo.valid? }
 
+    context '値が正常のとき' do
+      let!(:todo) { build(:todo) }
+      it { expect(todo).to be_valid }
+    end
+
     describe 'タイトルバリデーションテスト' do
       subject { todo.errors[:title] }
 
@@ -65,35 +70,31 @@ RSpec.describe Todo, type: :model do
         it { is_expected.to be_present }
       end
     end
-
-    context '値が正常のとき' do
-      let!(:todo) { build(:todo) }
-      it { expect(todo).to be_valid }
-    end
   end
 
   describe 'スコープの機能テスト' do
     let!(:todo) { create(:todo) }
 
-    describe 'タイトル検索' do
+    describe '#search_title' do
       subject { Todo.search_title("MyString") }
       it { is_expected.to include todo }
     end
 
-    describe 'テキスト検索' do
+    describe '#search_text' do
       subject { Todo.search_text("MyText") }
       it { is_expected.to include todo }
     end
   end
 
-  describe 'save_tagメソッド' do
+  describe '#save_tag' do
     let!(:tag) { build(:tag) }
-    let!(:todo) { create(:todo) }
-    before do
-      tag_one = Tag.create(name: 'tag1', user_id: todo.user.id)
-      tag_tow = Tag.create(name: 'tag2', user_id: todo.user.id)
-      todo.todo_tags.create(tag_id: tag_one.id)
-      todo.todo_tags.create(tag_id: tag_tow.id)
+    let!(:todo) do
+      create(:todo) do |t|
+        2.times do
+          tag = Tag.create(name: 'tag', user_id: t.user.id)
+          t.todo_tags.create(tag_id: tag.id)
+        end
+      end
     end
 
     context '新しいタグを登録するとき' do
@@ -104,23 +105,28 @@ RSpec.describe Todo, type: :model do
 
     context 'すでにあるタグと同じタグを登録するとき' do
       it 'タグの数は変わらないこと' do
-        expect { todo.save_tag(['tag1'], []) }.to_not change(Tag, :count)
+        expect { todo.save_tag(['tag'], []) }.to_not change(Tag, :count)
       end
     end
   end
 
-  describe 'change_statusメソッド' do
-    let!(:user) { create(:user) }
-    let!(:todo) { create(:todo, :todo_change_status, :skip_validate) }
-
-    context 'after_commitが実行されるとき' do
+  describe '.change_status' do
+    context '終了期日が過去＆ステータスが未完了のTodoのとき' do
+      let!(:todo) { create(:todo, :todo_change_status, :skip_validate) }
       it '未完了から期限切れになること' do
         expect { Todo.change_status }.to change { todo.reload.status }.from('未完了').to('期限切れ')
       end
     end
+
+    context '終了期日が過去＆ステータスが完了のTodoとき' do
+      let!(:todo) { create(:todo, :todo_not_change_status) }
+      it 'ステータスは変わらないこと' do
+        expect { Todo.change_status }.not_to change(todo.reload.status)
+      end
+    end
   end
 
-  describe 'notice_expired_todoメソッド' do
+  describe '.notice_expired_todo' do
     # モックを作る
     let!(:notifier) { double("mock notifier", ping: 'Working as expected') }
 
@@ -129,9 +135,11 @@ RSpec.describe Todo, type: :model do
       allow(Slack::Notifier).to receive(:new).and_return(notifier)
     end
 
-    context '明日期限の未完了todoを取得して通知するとき' do
+    context '明日期限の未完了todoがあるとき' do
       let!(:todo) { create(:todo, limit_date: Time.current.tomorrow) }
-      it { expect(Todo.notice_expired_todo).to eq('Working as expected') }
+      it '明日期限の未完了todoが通知されること' do
+        expect(Todo.notice_expired_todo).to eq('Working as expected')
+      end
     end
   end
 end

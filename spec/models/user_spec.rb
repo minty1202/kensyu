@@ -4,6 +4,11 @@ RSpec.describe User, type: :model do
   describe 'バリデーション機能テスト' do
     before { user.valid? }
 
+    context '値が正常のとき' do
+      let!(:user) { build(:user) }
+      it { expect(user).to be_valid }
+    end
+
     describe '名前のバリデーションテスト' do
       subject { user.errors[:name] }
 
@@ -30,11 +35,6 @@ RSpec.describe User, type: :model do
         let(:user) { build(:user, password: 'a' * 5) }
         it { is_expected.to be_present }
       end
-    end
-
-    context '値が正常のとき' do
-      let!(:user) { build(:user) }
-      it { expect(user).to be_valid }
     end
   end
 end

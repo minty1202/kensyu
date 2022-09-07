@@ -4,6 +4,11 @@ RSpec.describe Admin, type: :model do
   describe 'バリデーション機能テスト' do
     before { admin.valid? }
 
+    context '値が正常のとき' do
+      let!(:admin) { build(:admin) }
+      it { expect(admin).to be_valid }
+    end
+
     describe 'メールバリデーションテスト' do
       subject { admin.errors[:email] }
 
@@ -25,11 +30,6 @@ RSpec.describe Admin, type: :model do
         let!(:admin) { build(:admin, password: 'a' * 5) }
         it { is_expected.to be_present }
       end
-    end
-
-    context '値が正常のとき' do
-      let!(:admin) { build(:admin) }
-      it { expect(admin).to be_valid }
     end
   end
 end
