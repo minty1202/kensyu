@@ -16,6 +16,11 @@ FactoryBot.define do
       limit_date { Time.current.yesterday }
     end
 
+    trait :todo_not_change_status do
+      status { "done" }
+      limit_date { Time.current.yesterday }
+    end
+
     trait :skip_validate do
       to_create { |instance| instance.save(validate: false) }
     end
