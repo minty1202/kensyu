@@ -5,22 +5,26 @@ RSpec.describe "User", type: :request do
   let!(:user) { create(:user) }
 
   describe "DELETE /admins/dashbord/:id #destroy" do
-    context 'ログインしてる場合' do
+    subject { delete admins_user_path(user) }
+
+    context 'is logged in' do
       before do
         sign_in(admin)
       end
-      it 'userが削除されること' do
-        expect do
-          delete admins_user_path(user)
-        end.to change(User, :count).by(-1)
+
+      it 'delete the user' do
+        expect { subject }.to change(User, :count).by(-1)
       end
-      it 'dashbprdにリダイレクトされること' do
-        delete admins_user_path(user)
+
+      it 'redirect to admins_dashbord_url' do
+        subject
+
         expect(response).to redirect_to admins_dashbord_path
       end
     end
-    context 'ログインしていない場合' do
-      it 'ログインページにリダイレクトされること' do
+
+    context 'not logged in' do
+      it 'redirect to new_admin_session_url' do
         get admins_dashbord_path
         expect(response).to redirect_to new_admin_session_path
       end

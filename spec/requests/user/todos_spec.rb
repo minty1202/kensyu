@@ -13,169 +13,124 @@ RSpec.describe "Todos", type: :request do
               name: tag.name } }
   end
 
+  before do
+    sign_in(todo.user)
+  end
+
   describe "GET /todos/new #new" do
-    context 'ログインしている場合' do
-      before do
-        sign_in(user)
-      end
-      it "return http success" do
-        get new_users_todo_path(user)
-        expect(response).to have_http_status(:success)
-      end
-    end
-    context 'ログインしていない場合' do
-      it "ログインページにリダイレクトされること" do
-        get new_users_todo_path
-        expect(response).to redirect_to new_user_session_path
-      end
+    it "return http success" do
+      get new_users_todo_path(user)
+      expect(response).to have_http_status(:success)
     end
   end
 
   describe "POST users/todos #create" do
-    context 'ログインしている場合' do
-      before do
-        sign_in(user)
-      end
-      context '登録が失敗する場合' do
-        it '無効な値だと登録されないこと' do
-          expect do
-            post users_todos_path, params: { todo: { title: '',
-                                                     text: '',
-                                                     user_id: '',
-                                                     name: '',
-                                                     tag_ids: '' } }
-          end.to_not change(Todo, :count)
-        end
-      end
-      context '登録が成功する場合' do
-        it '登録されること(画像なし)' do
-          expect do
-            post users_todos_path, params: todo_params
-          end.to change(Todo, :count).by 1
-        end
+    subject { post users_todos_path, params: todo_params }
 
-        it "ユーザー詳細ページにリダイレクトされること" do
-          post users_todos_path(todo_params)
-          expect(response).to redirect_to users_mypage_path
-          expect(flash[:success]).to be_truthy
-        end
+    context 'valid params without images' do
+      it 'create a new todo (without images)' do
+        expect { subject }.to change(Todo, :count).by 1
+      end
 
-        context '画像投稿がある場合' do
-          before do
-            todo.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
-          end
-          it '登録されること(画像あり)' do
-            expect do
-              post users_todos_path(todo_params), params: todo_params.merge(images: todo.images)
-            end.to change(Todo, :count).by 1
-          end
-        end
+      it "redirect to users_mypage_url" do
+        post users_todos_path(todo_params)
+        expect(response).to redirect_to users_mypage_path
       end
     end
-    context 'ログインしていない場合' do
-      it "ログインページにリダイレクトされること" do
-        post users_todos_path
-        expect(response).to redirect_to new_user_session_path
+
+    context 'valid params with images' do
+      before do
+        todo.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
+      end
+
+      it 'create a new todo (with images)' do
+        expect do
+          post users_todos_path(todo_params), params: todo_params.merge(images: todo.images)
+        end.to change(Todo, :count).by 1
+      end
+    end
+
+    context 'with invalid params' do
+      let!(:todo_params) do
+        { todo: { title: '',
+                  text: '',
+                  user_id: '',
+                  name: '',
+                  tag_ids: '' } }
+      end
+
+      it 'does not create a new todo' do
+        expect { subject }.to_not change(Todo, :count)
       end
     end
   end
 
   describe "GET users/todos/:id/edit #edit" do
-    context 'ログインしている場合' do
-      before do
-        sign_in(todo.user)
-      end
-      it "return http success" do
-        get edit_users_todo_path(todo)
-        expect(response).to have_http_status(:success)
-      end
-    end
-    context 'ログインしていない場合' do
-      it "ログインページにリダイレクトされること" do
-        get edit_users_todo_path(todo)
-        expect(response).to redirect_to new_user_session_path
-      end
+    it "return http success" do
+      get edit_users_todo_path(todo)
+      expect(response).to have_http_status(:success)
     end
   end
 
   describe "PATCH /todos #update" do
-    context 'ログインしている場合' do
-      before do
-        sign_in(todo.user)
-      end
-      context '更新が失敗する場合' do
-        it '無効な値だと更新されないこと' do
-          expect do
-            patch users_todo_path(todo), params: { todo: { title: '',
-                                                           text: '',
-                                                           user_id: '',
-                                                           name: '' } }
-          end.to_not change(Todo, :count)
-        end
-      end
-      context '更新が成功する場合' do
-        it '更新されること' do
-          expect do
-            patch users_todo_path(todo), params: todo_params
-          end.to_not change(Todo, :count)
-          expect(todo.reload.title).to eq 'MyString'
-        end
+    subject { patch users_todo_path(todo), params: todo_params }
 
-        it "ユーザー詳細ページにリダイレクトされること" do
-          patch users_todo_path(todo), params: todo_params
-          expect(response).to redirect_to users_mypage_path
-        end
+    context 'with valid params' do
+      it 'update the todo' do
+        expect { subject }.to_not change(Todo, :count)
+        expect(todo.reload.title).to eq 'MyString'
       end
 
-      context '画像投稿がある場合' do
-        before do
-          todo.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
-        end
-        it '画像投稿追加して更新できること' do
-          expect do
-            patch users_todo_path(todo), params: todo_params.merge(images: todo.images)
-          end.to_not change(Todo, :count)
-        end
+      it "redirect to users_mypage_path" do
+        subject
 
-        it '画像を削除して更新できること' do
-          expect do
-            patch users_todo_path(todo.id), params: todo_params.merge(images: todo.images, image_ids: [todo.images[0].id])
-          end.to_not change(todo.images, :count)
-        end
+        expect(response).to redirect_to users_mypage_path
       end
     end
-    context 'ログインしていない場合' do
-      it "ログインページにリダイレクトされること" do
-        patch users_todo_path(todo)
-        expect(response).to redirect_to new_user_session_path
+
+    context 'valid params with images' do
+      before do
+        todo.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
+      end
+
+      it 'update the todo with images' do
+        expect do
+          patch users_todo_path(todo), params: todo_params.merge(images: todo.images)
+        end.to_not change(Todo, :count)
+      end
+
+      it 'delete the images' do
+        expect do
+          patch users_todo_path(todo.id), params: todo_params.merge(images: todo.images, image_ids: [todo.images[0].id])
+        end.to_not change(todo.images, :count)
+      end
+    end
+
+    context 'with invalid params' do
+      let!(:todo_params) do
+        { todo: { title: '',
+                  text: '',
+                  user_id: '',
+                  name: '' } }
+      end
+
+      it 'does not update the todo' do
+        expect { subject }.to_not change(Todo, :count)
       end
     end
   end
 
   describe 'DELETE users/todos/#delete' do
-    context 'ログインしている場合' do
-      before do
-        sign_in(todo.user)
-      end
+    subject { delete users_todo_path(todo) }
 
-      context '削除が成功する場合' do
-        it '削除されること' do
-          expect do
-            delete users_todo_path(todo)
-          end.to change(Todo, :count).by(-1)
-        end
-        it 'ユーザー詳細ページにリダイレクトされること' do
-          delete users_todo_path(todo)
-          expect(response).to redirect_to users_mypage_path
-        end
-      end
+    it 'delete the todo' do
+      expect { subject }.to change(Todo, :count).by(-1)
     end
 
-    context 'ログインしていない場合' do
-      it "ログインページにリダイレクトされること" do
-        delete users_todo_path(todo)
-        expect(response).to redirect_to new_user_session_path
-      end
+    it 'redirect to users_mypage_url' do
+      subject
+
+      expect(response).to redirect_to users_mypage_path
     end
   end
 end
