@@ -26,29 +26,29 @@ RSpec.describe "Tag", type: :request do
   describe "PATCH /users/mypage/tags/:id #update" do
     subject { patch users_mypage_tag_path(tag), params: tag_params }
 
-    context "with valid params" do
+    context "有効な値の場合" do
       let!(:tag_params) do
         { tag: { name: tag.name,
                  user_id: tag.user_id } }
       end
 
-      it "update the tag" do
+      it "タグを更新できること" do
         expect { subject }.to_not change(Tag, :count)
         expect(tag.reload.name).to eq "MyString"
       end
-      it "redirect to users_mypage_url" do
+      it "ユーザー詳細ページにリダイレクトされること" do
         subject
 
         expect(response).to redirect_to users_mypage_path
       end
     end
 
-    context "with invalid params" do
+    context "無効な値の場合" do
       let!(:tag_params) do
         { tag: { name: '' } }
       end
 
-      it "dose not update the tag" do
+      it "タグが更新できないこと" do
         subject
 
         expect { subject }.to_not change(Tag, :count)
@@ -59,11 +59,11 @@ RSpec.describe "Tag", type: :request do
   describe "DELETE /users/mypage/tags/:id #delete" do
     subject { delete users_mypage_tag_path(tag) }
 
-    it "delete the tag" do
+    it "タグを削除できること" do
       expect { subject }.to change(Tag, :count).by(-1)
     end
 
-    it "redirect to users_mypage_url" do
+    it "ユーザー詳細ページにリダイレクトされること" do
       subject
 
       expect(response).to redirect_to users_mypage_path

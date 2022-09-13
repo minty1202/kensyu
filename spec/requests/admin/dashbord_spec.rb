@@ -6,7 +6,7 @@ RSpec.describe "Admins::Dashbord", type: :request do
   describe "GET /admins_dashbord #show" do
     subject { get admins_dashbord_path }
 
-    context 'is logged in' do
+    context 'ログインしている場合' do
       before do
         sign_in(admin)
       end
@@ -18,8 +18,8 @@ RSpec.describe "Admins::Dashbord", type: :request do
       end
     end
 
-    context 'not logged in' do
-      it 'redirect to new_admin_session_url' do
+    context 'ログインしていない場合' do
+      it 'ログインページにリダイレクトされること' do
         subject
 
         expect(response).to redirect_to new_admin_session_path

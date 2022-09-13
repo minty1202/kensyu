@@ -12,7 +12,7 @@ RSpec.describe "General", type: :request do
   end
 
   describe "GET users/mypage " do
-    context 'is logged in' do
+    context 'ログインしている場合' do
       before do
         sign_in(user)
       end
@@ -23,8 +23,8 @@ RSpec.describe "General", type: :request do
       end
     end
 
-    context 'not logged in' do
-      it 'redirect to new_user_session_url' do
+    context 'ログインしていない場合' do
+      it 'ログインページにリダイレクトされること' do
         get users_mypage_path
         expect(response).to redirect_to new_user_session_path
       end
@@ -32,7 +32,7 @@ RSpec.describe "General", type: :request do
   end
 
   describe "GET users/todos/:id/edit #edit" do
-    context 'is logged in' do
+    context 'ログインしている場合' do
       before do
         sign_in(todo.user)
       end
@@ -43,8 +43,8 @@ RSpec.describe "General", type: :request do
       end
     end
 
-    context 'not logged in' do
-      it "redirect to new_user_session_url'" do
+    context 'ログインしていない場合' do
+      it "ログインページにリダイレクトされること'" do
         get edit_users_todo_path(todo)
         expect(response).to redirect_to new_user_session_path
       end

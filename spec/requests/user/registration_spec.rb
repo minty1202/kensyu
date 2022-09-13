@@ -11,7 +11,7 @@ RSpec.describe "User", type: :request do
   describe 'POST #create' do
     subject { post user_registration_path, params: user_params }
 
-    context 'with valid params' do
+    context '有効な値の場合' do
       let!(:user_params) do
         { user: { name: 'test',
                   email: 'test@example.com',
@@ -19,23 +19,23 @@ RSpec.describe "User", type: :request do
                   password_confirmation: '123456' } }
       end
 
-      it 'create a new user ' do
+      it 'ユーザーを新しく作れること ' do
         expect { subject }.to change(User, :count).by(1)
       end
 
-      it 'is logged in' do
+      it 'ログインしている場合' do
         subject
 
         expect(!session.id.nil?).to be_truthy
       end
     end
 
-    context 'with invalid params' do
+    context '無効な値の場合' do
       let!(:user_params) do
         { user: { name: '' } }
       end
 
-      it 'dose not create a new user' do
+      it 'ユーザーを新しく作れないこと' do
         expect { subject }.to_not change(User, :count)
       end
     end

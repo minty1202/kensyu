@@ -27,30 +27,30 @@ RSpec.describe "Todos", type: :request do
   describe "POST users/todos #create" do
     subject { post users_todos_path, params: todo_params }
 
-    context 'valid params without images' do
-      it 'create a new todo (without images)' do
+    context '有効な値の場合（画像なし）' do
+      it 'Todoを新しく作れること' do
         expect { subject }.to change(Todo, :count).by 1
       end
 
-      it "redirect to users_mypage_url" do
+      it "ユーザー詳細ページにリダイレクトされること" do
         post users_todos_path(todo_params)
         expect(response).to redirect_to users_mypage_path
       end
     end
 
-    context 'valid params with images' do
+    context '有効な値の場合（画像あり）' do
       before do
         todo.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
       end
 
-      it 'create a new todo (with images)' do
+      it 'Todoを新しく作れること' do
         expect do
           post users_todos_path(todo_params), params: todo_params.merge(images: todo.images)
         end.to change(Todo, :count).by 1
       end
     end
 
-    context 'with invalid params' do
+    context '無効な値の場合' do
       let!(:todo_params) do
         { todo: { title: '',
                   text: '',
@@ -59,7 +59,7 @@ RSpec.describe "Todos", type: :request do
                   tag_ids: '' } }
       end
 
-      it 'does not create a new todo' do
+      it 'Todoを新しく作れないこと' do
         expect { subject }.to_not change(Todo, :count)
       end
     end
@@ -75,38 +75,38 @@ RSpec.describe "Todos", type: :request do
   describe "PATCH /todos #update" do
     subject { patch users_todo_path(todo), params: todo_params }
 
-    context 'with valid params' do
-      it 'update the todo' do
+    context '有効な値の場合' do
+      it 'Todoを更新できること' do
         expect { subject }.to_not change(Todo, :count)
         expect(todo.reload.title).to eq 'MyString'
       end
 
-      it "redirect to users_mypage_path" do
+      it "ユーザー詳細ページにリダイレクトされること" do
         subject
 
         expect(response).to redirect_to users_mypage_path
       end
     end
 
-    context 'valid params with images' do
+    context '有効な値の場合（画像あり）' do
       before do
         todo.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
       end
 
-      it 'update the todo with images' do
+      it '画像を更新できること' do
         expect do
           patch users_todo_path(todo), params: todo_params.merge(images: todo.images)
         end.to_not change(Todo, :count)
       end
 
-      it 'delete the images' do
+      it '画像を削除できること' do
         expect do
           patch users_todo_path(todo.id), params: todo_params.merge(images: todo.images, image_ids: [todo.images[0].id])
         end.to_not change(todo.images, :count)
       end
     end
 
-    context 'with invalid params' do
+    context '無効な値の場合' do
       let!(:todo_params) do
         { todo: { title: '',
                   text: '',
@@ -114,7 +114,7 @@ RSpec.describe "Todos", type: :request do
                   name: '' } }
       end
 
-      it 'does not update the todo' do
+      it 'Todoを更新できないこと' do
         expect { subject }.to_not change(Todo, :count)
       end
     end
@@ -123,11 +123,11 @@ RSpec.describe "Todos", type: :request do
   describe 'DELETE users/todos/#delete' do
     subject { delete users_todo_path(todo) }
 
-    it 'delete the todo' do
+    it 'Todoを削除できること' do
       expect { subject }.to change(Todo, :count).by(-1)
     end
 
-    it 'redirect to users_mypage_url' do
+    it 'ユーザー詳細ページにリダイレクトされること' do
       subject
 
       expect(response).to redirect_to users_mypage_path

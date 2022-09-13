@@ -6,20 +6,20 @@ RSpec.describe "Users::Statuses", type: :request do
   describe "GET /status_todo" do
     subject { get status_users_mypage_path('todo') }
 
-    context 'is logged in' do
+    context 'ログインしている場合' do
       before do
         sign_in(user)
       end
 
-      it "returns todo page" do
+      it "未完了Todoページが表示されること" do
         subject
 
         expect(response.body).to include('未完了リスト一覧')
       end
     end
 
-    context 'not logged in' do
-      it "redirect to new_user_sesssion_url" do
+    context 'ログインしていない場合' do
+      it "ログインページにリダイレクトされること" do
         subject
 
         expect(response).to redirect_to new_user_session_path
@@ -30,20 +30,20 @@ RSpec.describe "Users::Statuses", type: :request do
   describe "GET /status_done" do
     subject { get status_users_mypage_path('done') }
 
-    context 'is logged in' do
+    context 'ログインしている場合' do
       before do
         sign_in(user)
       end
 
-      it "returns doen page" do
+      it "完了Todoページが表示されること" do
         subject
 
         expect(response.body).to include('完了リスト一覧')
       end
     end
 
-    context 'not logged in' do
-      it "redirect to new_user_sesssion_url" do
+    context 'ログインしていない場合' do
+      it "ログインページにリダイレクトされること" do
         subject
 
         expect(response).to redirect_to new_user_session_path
@@ -54,20 +54,20 @@ RSpec.describe "Users::Statuses", type: :request do
   describe "GET /status_expired" do
     subject { get status_users_mypage_path('expired') }
 
-    context 'is logged in' do
+    context 'ログインしている場合' do
       before do
         sign_in(user)
       end
 
-      it "returns expired page" do
+      it "期限切れTodoページが表示されること" do
         subject
 
         expect(response.body).to include('期限切れリスト一覧')
       end
     end
 
-    context 'not logged in' do
-      it "redirect to new_user_sesssion_url" do
+    context 'ログインしていない場合' do
+      it "ログインページにリダイレクトされること" do
         subject
 
         expect(response).to redirect_to new_user_session_path

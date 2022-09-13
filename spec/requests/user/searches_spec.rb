@@ -6,7 +6,7 @@ RSpec.describe "Users::Searches", type: :request do
   describe "GET /#search" do
     subject { get users_search_path(user), params: { keyword: 'MyString' } }
 
-    context 'is logged in' do
+    context 'ログインしている場合' do
       before do
         sign_in(user)
       end
@@ -17,20 +17,20 @@ RSpec.describe "Users::Searches", type: :request do
         expect(response).to have_http_status(:success)
       end
 
-      it 'found search results' do
+      it '検索の結果があること' do
         subject
 
         expect(response.body).to include('検索マッチ')
       end
 
-      it 'not be found search results ' do
+      it '検索の結果がないこと' do
         get users_search_path(user), params: { keyword: ' ' }
         expect(response.body).to include('検索マッチ0')
       end
     end
 
-    context 'not logged in' do
-      it 'redirect to new_user_session_url' do
+    context 'ログインしていない場合' do
+      it 'ログインページにリダイレクトされること' do
         get users_search_path
         expect(response).to redirect_to new_user_session_path
       end

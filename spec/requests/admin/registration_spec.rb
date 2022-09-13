@@ -11,30 +11,30 @@ RSpec.describe "Admin", type: :request do
   describe 'POST /admin/registrations #create' do
     subject { post admin_registration_path, params: admin_params }
 
-    context 'with valid params' do
+    context '有効な値の場合' do
       let!(:admin_params) do
         { admin: { email: 'admin@example.com',
                    password: '123456' } }
       end
 
-      it 'create a new admin' do
+      it '管理者を新しく作れること' do
         expect { subject }.to change(Admin, :count).by 1
       end
 
-      it 'is logged in' do
+      it 'ログインしている場合' do
         subject
 
-        expect(!session.id.nil?).to be_truthy
+        expect(session.id).not_to be_nil
       end
     end
 
-    context 'with invalid params' do
+    context '無効な値の場合' do
       let!(:admin_params) do
         { admin: { email: '',
                    password: '' } }
       end
 
-      it 'dose not create a new admin' do
+      it '管理者を新しく作れないこと' do
         expect { subject }.to_not change(Admin, :count)
       end
     end

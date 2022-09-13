@@ -15,7 +15,7 @@ RSpec.describe "Session", type: :request do
   end
 
   describe "DELETE /admin/sign_out" do
-    it "success to logout" do
+    it "ログアウトが出来ること" do
       delete destroy_admin_session_path(admin)
       expect(response).to have_http_status(204)
     end
