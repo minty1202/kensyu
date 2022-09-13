@@ -2,6 +2,11 @@ module Users
   class TodosController < UsersController
     before_action :find_todo_detail, only: [:edit, :update, :destroy]
 
+    def show
+      @todo = Todo.find(params[:id])
+      @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
+    end
+
     def new
       @todo = Todo.new
       @form = TodoTagForm.new(todo: @todo)
@@ -21,7 +26,6 @@ module Users
 
     def edit
       @form = TodoTagForm.new(todo: @todo)
-      @comment = Comment.new(todo_id: @todo.id, user_id: current_user.id)
     end
 
     def update

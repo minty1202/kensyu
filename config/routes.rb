@@ -10,8 +10,8 @@ Rails.application.routes.draw do
       resources :tags, only: [:show, :edit, :update, :destroy]
       get '/find_to/:status', to: 'statuses#find_status', as: 'status'
     end
-    resources :todos, only:[:new, :create, :edit, :update, :destroy] do
-      resources :comments, only: [:create]
+    resources :todos do
+      resources :comments, only: :create
     end
     get '/search', to: 'searches#search'
   end
