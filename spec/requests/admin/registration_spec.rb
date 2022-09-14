@@ -21,7 +21,7 @@ RSpec.describe "Admin", type: :request do
         expect { subject }.to change(Admin, :count).by 1
       end
 
-      it 'ログインしている場合' do
+      it 'ログイン状態であること' do
         subject
 
         expect(session.id).not_to be_nil

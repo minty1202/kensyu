@@ -23,10 +23,10 @@ RSpec.describe "User", type: :request do
         expect { subject }.to change(User, :count).by(1)
       end
 
-      it 'ログインしている場合' do
+      it 'ログイン状態であること' do
         subject
 
-        expect(!session.id.nil?).to be_truthy
+        expect(session.id).not_to be_nil
       end
     end
 

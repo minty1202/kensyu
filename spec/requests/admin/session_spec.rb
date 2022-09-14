@@ -7,10 +7,16 @@ RSpec.describe "Session", type: :request do
   end
 
   describe "POST /admin/sign_in" do
-    it "returns http success" do
-      post admin_session_path, params: { admin: { email: 'test@example.com',
-                                                  password: '123456' } }
-      expect(response).to have_http_status(302)
+    subject { post admin_session_path, params: { admin: { email: admin.email, password: admin.password } } }
+
+    it 'ログイン状態であること' do
+      subject
+
+      expect(session.id).not_to be_nil
+    end
+
+    it "ダッシュボードにリダイレクトされること" do
+      expect(subject).to redirect_to admins_dashbord_path(admin)
     end
   end
 
