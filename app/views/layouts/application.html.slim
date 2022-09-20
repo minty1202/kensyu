@@ -13,5 +13,7 @@ html
     = render 'layouts/header'
     h2 = flash[:success]
     h2 = flash[:notice]
+    h2.notice = notice
+    h2.alert = alert
     = yield
     = render 'layouts/footer'
