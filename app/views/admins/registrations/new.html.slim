@@ -9,10 +9,10 @@ h2
       = f.email_field :email, autofocus: true, autocomplete: "email"
     .field
       = f.label :password
-      - if @minimum_password_length
+      - if Admin::MINIMUM_PASSWORD_LENGTH
         em
           | (
-          = @minimum_password_length
+          = Admin::MINIMUM_PASSWORD_LENGTH
           | 文字以上)
       br
       = f.password_field :password, autocomplete: "new-password"

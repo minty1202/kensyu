@@ -6,4 +6,6 @@ class User < ApplicationRecord
   has_many :todos, dependent: :destroy
   has_many :comments, dependent: :destroy, through: :todos
   has_many :tags, dependent: :destroy
+
+  User::MINIMUM_PASSWORD_LENGTH = @minimum_password_length
 end
