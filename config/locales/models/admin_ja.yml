@@ -1,0 +1,11 @@
+ja:
+  activerecord:
+    models:
+      admin: 管理者
+    attributes:
+      admin:
+        email: メールアドレス
+        password: パスワード
+        password_confirmation: パスワード（確認用）
+        remember_created_at: ログイン記憶時刻
+        remember_me: ログインを記憶する
