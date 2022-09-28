@@ -17,11 +17,8 @@ h2
       | (leave blank if you don't want to change it)
     br
     = f.password_field :password, autocomplete: "new-password"
-    - if User::MINIMUM_PASSWORD_LENGTH
-      br
-      em
-        = User::MINIMUM_PASSWORD_LENGTH
-        | 文字以上
+    b
+      = "（#{Admin::MINIMUM_PASSWORD_LENGTH}文字以上#{Admin::MAXIMUM_PASSWORD_LENGTH}文字以内）"
   .field
     = f.label :password_confirmation
     br

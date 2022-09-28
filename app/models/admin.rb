@@ -4,5 +4,6 @@ class Admin < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  Admin::MINIMUM_PASSWORD_LENGTH = @minimum_password_length
+  MINIMUM_PASSWORD_LENGTH = 6
+  MAXIMUM_PASSWORD_LENGTH = 128
 end
