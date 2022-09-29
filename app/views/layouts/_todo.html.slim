@@ -1,0 +1,23 @@
+.todos_area
+  - if @todos.present?
+    - @todos.each do |todo|
+      .each_todo_area
+        .status
+          - if todo.status == '未完了'
+            = button_to '完了する', done_users_mypage_path(todo.id), method: :post, class: "btn btn-primary btn-sm status_button"
+          - elsif todo.status == '完了'
+            p.btn.btn-success.btn-sm.status_button.target 完了済
+          - else
+            p.btn.btn-secondary.btn-sm.status_button.target 期限切れ
+        .todo_info
+          = link_to users_todo_path(todo)
+            .each_todo_info
+              li.title #{todo.title.truncate(15)}
+              li #{todo.text.truncate(70)}
+              li.i.bi.bi-calendar-check  #{todo.limit_date}
+            .images
+              .image
+                - if todo.images.attached?
+                  .each-image = image_tag todo.images[0].variant(:thumb)
+  - else
+    p.todos-info Todoリストがありません！

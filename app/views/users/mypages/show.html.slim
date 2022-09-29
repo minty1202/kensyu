@@ -18,23 +18,10 @@ br
 
 ul.user-info
   = link_to '未完了', status_users_mypage_path('todo')
-  / = button_to '未完了', '/users/mypage/find_to/:status' , { method: :get, params: {status: 'todo'} }
   = link_to '完了', status_users_mypage_path('done')
   = link_to '期限切れ', status_users_mypage_path('expired')
 
-.todo-list
-  - if @todos.present?
-    - @todos.each do |todo|
-      = link_to users_todo_path(todo)
-        ul.todos-info
-          li.user タイトル：#{todo.title.truncate(15)}
-          li.user 期日：#{todo.limit_date}
-          li.user= todo.status
-          - if todo.images.attached?
-            - todo.images.each do |image|
-                li.user= image_tag image.variant(:thumb)
-  - else
-    p.todos-info Todoリストがありません！
+= render :partial => "/layouts/todo"
 
 .text-center
   = paginate @todos
