@@ -6,6 +6,12 @@ module Users
       no_page if @todos.empty? && params[:page]
     end
 
+    def done
+      @todo = current_user.todos.find(params[:id])
+      @todo.update(status: '完了')
+      redirect_to request.referer
+    end
+
     private
 
     def no_page
