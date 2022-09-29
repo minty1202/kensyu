@@ -14,7 +14,7 @@ h2
     .field
       = f.label :password
       b
-        = "（#{Admin::MINIMUM_PASSWORD_LENGTH}文字以上#{Admin::MAXIMUM_PASSWORD_LENGTH}文字以内）"
+        = "（#{User::password_length.first}文字以上#{User::password_length.last}文字以内）"
       br
       = f.password_field :password, autocomplete: "new-password"
     .field
