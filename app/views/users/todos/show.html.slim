@@ -1,29 +1,36 @@
-h2 #{@todo.title}詳細画面
-ul
-  li.user タイトル：#{@todo.title}
-  li.user タスク内容：#{@todo.title}
-  li.user 期日：#{@todo.limit_date}
-  li.user= @todo.status
-  - if @todo.tags.present?
-    .user タグ：#{@todo.tags.map {|tag| tag.name}}
-  - if @todo.images.attached?
-    - @todo.images.each do |image|
-        li.user= image_tag image.variant(:thumb)
-
-= button_to '編集する', edit_users_todo_path(@todo), method: :get, class: "btn btn-primary"
-
-
+h1 詳細画面
 .col-md-6.col-md-offset-3.form-edit
-  h2.comment-title コメントをする
-  = form_with model:[:users, @todo, @comment],local: true, method: :post do |f|
-    ul
-      - @comment.errors.full_messages_for(:text).each do |message|
-        li.error-messages= message
-    = f.text_area :text, rows: "4", placeholder: '100文字以内でご入力ください'
-    = f.hidden_field :todo_id, value: @todo.id
-    = f.submit 'コメントする', class: "btn btn-primary"
+  = button_to '編集する', edit_users_todo_path(@todo), method: :get, class: "btn btn-primary"
+.todos_area
+  .each_todo_area
+    .status
+      - if @todo.status == '未完了'
+        p.btn.btn-primary.btn-sm.status_button.target 未完了
+      - elsif @todo.status == '完了'
+        p.btn.btn-success.btn-sm.status_button.target 完了済
+      - else
+        p.btn.btn-secondary.btn-sm.status_button.target 期限切れ
+    .todo_info
+      .each_todo_info
+        li.title #{@todo.title.truncate(15)}
+        li #{@todo.text}
+        li.i.bi.bi-calendar-check  #{@todo.limit_date}
+        li.i.bi.bi-tags  #{@todo.tags.map(&:name).join(', ')}
+      .images
+        .image
+          - if @todo.images.attached?
+            - @todo.images.each do |image|
+              .each-image = image_tag image.variant(:thumb)
+    .comment-area
+      h2 コメントをする
+      = form_with model:[:users, @todo, @comment],local: true, method: :post do |f|
+        ul
+          - @comment.errors.full_messages_for(:text).each do |message|
+            li.error-messages= message
+        = f.text_area :text, rows: "4", placeholder: '100文字以内でご入力ください'
+        = f.hidden_field :todo_id, value: @todo.id
+        = f.submit 'コメントする', class: "btn btn-primary"
 
-  h2 コメント一覧
-  - @todo.comments.each do |comment|
-    ul.comment-info
-      li.comment-text= comment.text
+      h3 コメント一覧
+      - @todo.comments.each do |comment|
+        li.comment-text= comment.text
