@@ -85,3 +85,4 @@ gem 'rails-i18n'
 gem 'dotenv-rails'
 gem 'kaminari'
 gem 'slack-notifier'
+gem "cssbundling-rails"
