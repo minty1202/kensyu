@@ -17,6 +17,7 @@ module App
     config.active_record.default_timezone = :local
     config.active_storage.replace_on_assign_to_many = false
     config.active_storage.variant_processor = :vips
+    config.action_controller.include_all_helpers = false
 
     # Configuration for the application, engines, and railties goes here.
     #

@@ -7,12 +7,10 @@
     h2 期限切れリスト一覧
 
 ul.user-info
-  li.user= current_user.name
-  li.user= current_user.email
+  li.user = current_user.name
+  li.use r= current_user.email
   = link_to new_users_todo_path do
     button Todo登録へ
-
-
 
 .todo-list
   - if @todos.present?
@@ -21,10 +19,10 @@ ul.user-info
         ul.todos-info
           li.user タイトル：#{todo.title.truncate(15)}
           li.user 期日：#{todo.limit_date}
-          li.user= todo.status
+          li.user = todo.status
           - if todo.images.attached?
             - todo.images.each do |image|
-                li.user= image_tag image.variant(:thumb)
+                li.user = image_tag image.variant(:thumb)
   - else
     p.todos-info Todoリストがありません！
 
