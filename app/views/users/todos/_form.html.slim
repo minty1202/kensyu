@@ -1,5 +1,4 @@
-.col-md-6.col-md-offset-3
-
+.col-md-6.offset-md-3
   = form_with model: [:users, @form ],local: true do |f|
     ul
       - @todo.errors.full_messages.each do |message|
