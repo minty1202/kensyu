@@ -8,17 +8,19 @@
       - @tags.each_slice(8).to_a.each do |tag_blocks|
         .each-tags
           - tag_blocks.each do |tag|
-            .each-tag= link_to "#{tag.name} (#{tag.todos.count})", users_mypage_tag_path(tag) if tag != nil
+            - unless tag.nil?
+              .each-tag = link_to "#{tag.name} (#{tag.todos.count})",
+                                            users_mypage_tag_path(tag)
 
 ul.user-info
-  li.user= current_user.name
-  li.user= current_user.email
-  = button_to 'Todo登録へ', new_users_todo_path, method: :get, class: "btn btn-success"
+  li.user = current_user.name
+  li.user = current_user.email
+  = button_to 'Todo登録へ', new_users_todo_path,
+            method: :get, class: "btn btn-success"
 br
 
 ul.user-info
   = link_to '未完了', status_users_mypage_path('todo')
-  / = button_to '未完了', '/users/mypage/find_to/:status' , { method: :get, params: {status: 'todo'} }
   = link_to '完了', status_users_mypage_path('done')
   = link_to '期限切れ', status_users_mypage_path('expired')
 
@@ -29,10 +31,10 @@ ul.user-info
         ul.todos-info
           li.user タイトル：#{todo.title.truncate(15)}
           li.user 期日：#{todo.limit_date}
-          li.user= todo.status
+          li.user = todo.status
           - if todo.images.attached?
             - todo.images.each do |image|
-                li.user= image_tag image.variant(:thumb)
+                li.user = image_tag image.variant(:thumb)
   - else
     p.todos-info Todoリストがありません！
 
