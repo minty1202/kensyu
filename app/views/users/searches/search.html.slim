@@ -1,5 +1,5 @@
-h1 Todo 検索結果: #{ @todos.count .to_i }個
-h2.hidden = @todos.count.to_i == 0 ? '検索マッチ0' : '検索マッチ'
+h1 Todo 検索結果: #{ @todos.count.to_i }個
+h2.hidden = @todos.count.to_i.zero? ? '検索マッチ0' : '検索マッチ'
 - @todos.each do |todo|
   - if todo.user === current_user
     = link_to users_todo_path(todo)
