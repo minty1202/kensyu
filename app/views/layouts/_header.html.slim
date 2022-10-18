@@ -4,11 +4,10 @@ header.navbar.navbar-expand.navbar-dark.fixed-top
     nav
       ul.nav.navbar-nav.navbar-right.header-info
         - if user_signed_in?
-          li.navbar-default= link_to "マイページへ", users_mypage_path
-          li.navbar-default= button_to "Logout", destroy_user_session_path, method: :delete, class: ' btn btn-link'
-          / li.btn.btn-link= link_to destroy_user_session_path
-          /   button_to Logout
+          li.navbar-default = link_to "マイページへ", users_mypage_path
+          li.navbar-default = button_to "Logout",
+            destroy_user_session_path, method: :delete, class: ' btn btn-link'
         - else
-          li.navbar-default= link_to "Sign up", new_user_registration_path
-          li.navbar-default= link_to "Login", user_session_path
+          li.navbar-default = link_to "Sign up", new_user_registration_path
+          li.navbar-default = link_to "Login", user_session_path
 / = render 'layouts/search'

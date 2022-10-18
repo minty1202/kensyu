@@ -2,10 +2,10 @@
   = form_with model: [:users, @form ],local: true do |f|
     ul
       - @todo.errors.full_messages.each do |message|
-        li.error-messages= message
+        li.error-messages = message
     ul
       - @form.errors.full_messages.each do |message|
-        li.error-messages= message
+        li.error-messages = message
 
     = f.label :title
     = f.text_field :title
@@ -16,14 +16,15 @@
     = f.label '既存のタグ一覧(タグを外す場合はチェックして下さい)'
     .tag_checkbox
       .tags
-        = f.collection_check_boxes(:tag_ids, @todo.tags, :id, :name, include_hidden: false)
+        = f.collection_check_boxes(:tag_ids,
+                                  @todo.tags, :id, :name, include_hidden: false)
     = f.label '終了期日'
     = f.date_field :limit_date, value: @form.limit_date
     = f.label 'ステータス'
     - if @form.user_id
-      = f.select :status, ([["未完了","todo"], ["完了","done"]])
+      = f.select :status, %w([未完了 todo] [完了 done])
     - else
-      = f.select :status, options_for_select([["未完了","todo"]])
+      = f.select :status, options_for_select(%w([未完了 todo]))
     = f.label '画像（3枚まで）'
     = f.file_field :images, multiple: true, value: @todo.images
     .images
