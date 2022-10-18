@@ -1,0 +1,11 @@
+ja:
+  activerecord:
+    models:
+      admin_account: Todo
+    attributes:
+      todo:
+        title: タイトル
+        text: タスクの内容
+        limit_date: 終了期日
+        status: ステータス
+        images: 画像
