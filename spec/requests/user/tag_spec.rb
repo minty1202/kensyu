@@ -5,102 +5,68 @@ RSpec.describe "Tag", type: :request do
   let!(:todo) { create(:todo) }
   let!(:tag) { create(:tag) }
 
+  before do
+    sign_in(tag.user)
+  end
 
   describe "GET /mypage/tags #show" do
-    context 'ログインしている場合' do
-      before do
-        sign_in(user)
-      end
-      it "returns http success" do
-        get users_mypage_tag_path(tag)
-        expect(response).to have_http_status(:success)
-      end
-    end
-
-    context 'ログインしていない場合' do
-      it "ログインページにリダイレクトされること" do
-        get users_mypage_tag_path(tag)
-        expect(response).to redirect_to new_user_session_path
-      end
+    it "returns http success" do
+      get users_mypage_tag_path(tag)
+      expect(response).to have_http_status(:success)
     end
   end
 
   describe "GET users/mypage/tags/:id/edit #edit" do
-    context 'ログインしている場合' do
-      before do
-        sign_in(tag.user)
-      end
-      it "return http success" do
-        get edit_users_mypage_tag_path(tag)
-        expect(response).to have_http_status(:success)
-      end
-    end
-    context "ログインしていない場合" do
-      it "ログインページにリダイレクトされること" do
-        get edit_users_mypage_tag_path(tag)
-        expect(response).to redirect_to new_user_session_path
-      end
+    it "return http success" do
+      get edit_users_mypage_tag_path(tag)
+      expect(response).to have_http_status(:success)
     end
   end
 
   describe "PATCH /users/mypage/tags/:id #update" do
-    context 'ログインしている場合' do
-      before do
-        sign_in(tag.user)
+    subject { patch users_mypage_tag_path(tag), params: tag_params }
+
+    context "有効な値の場合" do
+      let!(:tag_params) do
+        { tag: { name: tag.name,
+                 user_id: tag.user_id } }
       end
-      context "更新が失敗する場合" do
-        it "無効な値だと更新されないこと" do
-          expect {patch users_mypage_tag_path(tag), params: {tag: {name: '',
-                                                                  user_id: ''}}
-          }.to_not change(Tag, :count)
-        end
+
+      it "タグを更新できること" do
+        expect { subject }.to_not change(Tag, :count)
+        expect(tag.reload.name).to eq "MyString"
       end
-      context "更新成功する場合" do
-        let!(:tag_params) {{tag: {name: tag.name,
-                                  user_id: tag.user_id}}}
-        it "更新されること" do
-          expect{patch users_mypage_tag_path(tag), params: tag_params
-          }.to_not change(Tag, :count)
-          expect(tag.reload.name).to eq "MyString"
-        end
-        it "マイページにリダイレクトされること" do
-          patch users_mypage_tag_path(tag), params: tag_params
-          expect(response).to redirect_to users_mypage_path
-          expect(flash[:success]).to be_truthy
-        end
+      it "ユーザー詳細ページにリダイレクトされること" do
+        subject
+
+        expect(response).to redirect_to users_mypage_path
       end
     end
-    context "ログインしていない場合" do
-      it "ログインページにリダイレクトされること" do
-        patch users_mypage_tag_path(tag)
-        expect(response).to redirect_to new_user_session_path
+
+    context "無効な値の場合" do
+      let!(:tag_params) do
+        { tag: { name: '' } }
+      end
+
+      it "タグが更新できないこと" do
+        subject
+
+        expect { subject }.to_not change(Tag, :count)
       end
     end
   end
 
   describe "DELETE /users/mypage/tags/:id #delete" do
-    context "ログインしている場合" do
-      before do
-        sign_in(tag.user)
-      end
+    subject { delete users_mypage_tag_path(tag) }
 
-      context "削除が成功する場合" do
-        it "タグが削除されること" do
-          expect{delete users_mypage_tag_path(tag)
-          }.to change(Tag, :count).by(-1)
-        end
-        it "マイページにリダイレクトされること" do
-          delete users_mypage_tag_path(tag)
-          expect(response).to redirect_to users_mypage_path
-          expect(flash[:success]).to be_truthy
-        end
-      end
+    it "タグを削除できること" do
+      expect { subject }.to change(Tag, :count).by(-1)
     end
-    context "ログインしていない場合" do
-      it "ログインページにリダイレクトされること" do
-        delete users_mypage_tag_path(tag)
-        expect(response).to redirect_to new_user_session_path
-      end
+
+    it "ユーザー詳細ページにリダイレクトされること" do
+      subject
+
+      expect(response).to redirect_to users_mypage_path
     end
   end
 end

@@ -2,8 +2,8 @@ FactoryBot.define do
   factory :todo do
     title { "MyString" }
     text { "MyText" }
-    limit_date {Time.current}
-    status {"todo"}
+    limit_date { Time.current }
+    status { "todo" }
     user
     # association :user
     # user_id {FactoryBot.create(:user)}
@@ -13,17 +13,16 @@ FactoryBot.define do
     # end
 
     trait :todo_change_status do
-      limit_date {Time.current.yesterday}
+      limit_date { Time.current.yesterday }
+    end
+
+    trait :todo_not_change_status do
+      status { "done" }
+      limit_date { Time.current.yesterday }
     end
 
     trait :skip_validate do
-      to_create {|instance| instance.save(validate: false)}
+      to_create { |instance| instance.save(validate: false) }
     end
-
-    trait :with_attachment do
-      attachment { Rack::Test::UploadedFile.new(
-      "#{Rails.root}/spec/fixtures/files/image/test_image.png", 'image/png') }
-    end
-
   end
 end

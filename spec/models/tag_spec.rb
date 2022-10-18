@@ -1,14 +1,21 @@
 require 'rails_helper'
 
 RSpec.describe Tag, type: :model do
-  let(:tag) {build(:tag) }
+  describe 'タグのバリデーション機能テスト' do
+    before { tag.valid? }
 
-  it 'tagが10文字以内であること' do
-    tag.name = 'a' * 11
-    expect(tag).to_not be_valid
-  end
+    context '値が正常のとき' do
+      let!(:tag) { build(:tag) }
+      it { expect(tag).to be_valid }
+    end
 
-  it 'すべての値が正常であれば登録できる' do
-    expect(tag).to be_valid
+    describe 'タグのバリデーションテスト' do
+      subject { tag.errors[:name] }
+
+      context 'タグが12文字以上のとき' do
+        let!(:tag) { build(:tag, name: 'a' * 12) }
+        it { is_expected.to be_present }
+      end
+    end
   end
 end

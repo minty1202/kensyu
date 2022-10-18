@@ -14,7 +14,7 @@ ul.user-info
   h2 #{@tag.todos.count}件
   - if @todos.present?
     - @todos.each do |todo|
-      = link_to edit_users_todo_path(todo)
+      = link_to users_todo_path(todo)
         ul.todos-info
           li.user タイトル：#{todo.title.truncate(15)}
           li.user 期日：#{todo.limit_date}

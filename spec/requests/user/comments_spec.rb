@@ -3,73 +3,58 @@ require 'rails_helper'
 RSpec.describe "Users::Comments", type: :request do
   let!(:user) { create(:user) }
   let!(:todo) { create(:todo) }
-  let!(:comment) { create(:comment) }
-  let!(:tag) { create(:tag) }
+  let(:todo_params) do
+    { todo: { title: todo.title,
+              text: todo.text,
+              user_id: todo.user,
+              name: tag.name,
+              status: todo.status,
+              limit_date: Time.current },
+      todo_id: todo.id }
+  end
 
-  describe "POST /users/comments/ #create" do
-    context 'ログインしている場合' do
-      before do
-        sign_in(user)
+  describe "POST #create" do
+    subject { post users_todo_comments_path(todo.id), params: comment_params }
+
+    before do
+      sign_in(user)
+    end
+
+    context '有効な値の場合' do
+      let!(:comment_params) do
+        { comment: { text: 'commnet',
+                     user_id: todo.user,
+                     todo_id: todo.id } }
       end
-      context 'コメントの登録が成功する場合' do
-        let(:todo_params) { { todo: { title: todo.title,
-                                  text: todo.text,
-                                  user_id: todo.user,
-                                  name: tag.name,
-                                  status: todo.status,
-                                  limit_date: Time.current},
-                                  todo_id: todo.id } }
-        let(:comment_params) { { comment: { text: comment.text,
-                                  user_id: comment.user,
-                                  todo_id: todo.id} } }
 
-        it 'Todoが登録されていること' do
-        expect{
-          post users_todos_path, params: todo_params
-        }.to change(Todo, :count).by 1
-        end
-
-        it '有効な値でコメント投稿できること' do
-          expect{
-            post users_todo_comments_path(todo.id), params: comment_params
-          }.to change(Comment, :count).by 1
-        end
-
-        it '編集ページにリダイレクトされること' do
-          post users_todo_comments_path(todo.id), params: comment_params
-          expect(response).to redirect_to edit_users_todo_path(todo)
-        end
+      it 'コメントを新しく作れること' do
+        expect { subject }.to change(Comment, :count).by(1)
       end
-      context 'コメント登録が失敗する場合' do
-        let(:todo_params) { { todo: { title: todo.title,
-                          text: todo.text,
-                          user_id: todo.user,
-                          name: tag.name,
-                          status: todo.status,
-                          limit_date: Time.current},
-                          todo_id: todo.id } }
-        let(:comment_params2) { { comment: { text: '',
-                          user_id: '',
-                          todo_id: todo.id} } }
 
-        it 'Todoが登録されていること' do
-          expect{
-            post users_todos_path, params: todo_params
-          }.to change(Todo, :count).by 1
-        end
-        xit '無効な値だと登録できないこと' do
-          expect {
-            post users_todo_comments_path(todo.id), params: comment_params2
-            }.to_not change(Comment, :count)
-        end
+      it 'Todo詳細ページにリダイレクトされること' do
+        subject
+
+        expect(response).to redirect_to users_todo_path(todo)
       end
     end
 
-    context 'ログインしていない場合' do
-      it "ログインページにリダイレクトされること" do
-        get edit_users_todo_path(todo)
-        expect(response).to redirect_to new_user_session_path
+    context '無効な値の場合' do
+      let!(:comment_params) do
+        { comment: { text: ' ',
+                     user_id: todo.user,
+                     todo_id: todo.id } }
       end
+
+      it 'コメントを新しく作れないこと' do
+        expect { subject }.not_to change(Comment, :count)
+      end
+    end
+  end
+
+  context 'ログインしていない場合' do
+    it "ログインページにリダイレクトされること" do
+      get edit_users_todo_path(todo)
+      expect(response).to redirect_to new_user_session_path
     end
   end
 end
