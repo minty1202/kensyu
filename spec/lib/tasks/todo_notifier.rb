@@ -15,15 +15,15 @@ describe 'todo_notifier' do
   # end
 
   describe 'get_todo_status' do
-    let!(:todo) { create(:todo, limit_date: Time.current.tomorrow)}
+    let!(:todo) { create(:todo, limit_date: Time.current.tomorrow) }
     # モックを作る
-    let(:notifier) { double("mock notifier", ping: 'Working as expected')}
+    let(:notifier) { double("mock notifier", ping: 'Working as expected') }
     # newメソッドが呼べるようにし、作ったモックを返す
     before do
       allow(Slack::Notifier).to receive(:new).and_return(notifier)
     end
     it 'is Working as expected' do
-      expect(Todo.notice_expired_todo).to eq ('Working as expected')
+      expect(Todo.notice_expired_todo).to eq('Working as expected')
     end
   end
 end

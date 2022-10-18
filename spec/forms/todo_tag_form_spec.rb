@@ -1,97 +1,123 @@
 require 'rails_helper'
 
-RSpec.describe TodoTagForm, :type => :model do
-  let!(:form) {build(:todo_tag_form)}
+RSpec.describe TodoTagForm, type: :model do
+  describe 'バリデーション機能テスト' do
+    before { form.valid? }
 
-  it 'タイトルが必須であること' do
-    form.title = ' '
-    form.valid?
-    expect(form.errors[:title]).to be_present
-  end
+    describe 'タイトルバリデーションテスト' do
+      subject { form.errors[:title] }
 
-  it 'タイトルが50字以内であること' do
-    form.title = 'a' * 51
-    form.valid?
-    expect(form.errors[:title]).to be_present
-  end
+      context 'タイトルが空欄のとき' do
+        let!(:form) { build(:todo_tag_form, title: ' ') }
+        it { is_expected.to be_present }
+      end
 
-  it 'textが必須であること' do
-    form.text = ' '
-    form.valid?
-    expect(form.errors[:text]).to be_present
-  end
-
-  it 'textが140字以内であること' do
-    form.text = 'a' * 141
-    form.valid?
-    expect(form.errors[:text]).to be_present
-  end
-
-  it '終了期日が必須であること' do
-    form.limit_date = ''
-    form.valid?
-    expect(form.errors[:limit_date]).to be_present
-  end
-
-  it 'ステータスが必須であること' do
-    form.status = ' '
-    form.valid?
-    expect(form.errors[:status]).to be_present
-  end
-
-  it '初期値が未完了であること' do
-    expect(form.status).to eq '未完了'
-  end
-
-  describe 'カスタムバリデーション' do
-    it 'pretend_ago' do
-      form.status = '未完了'
-      form.limit_date = Time.current.ago(3.days)
-      form.valid?
-      expect(form.errors[:limit_date]).to be_present
+      context 'タイトルが51文字以上のとき' do
+        let!(:form) { build(:todo_tag_form, title: 'a' * 51) }
+        it { is_expected.to be_present }
+      end
     end
 
-    it 'validate_tags' do
-      form.name = 'a' * 11
-      form.valid?
-      expect(form.errors[:base]).to be_present
+    describe 'テキストバリデーションテスト' do
+      subject { form.errors[:text] }
+
+      context 'テキストが空欄のとき' do
+        let!(:form) { build(:todo_tag_form, text: ' ') }
+        it { is_expected.to be_present }
+      end
+
+      context 'テキストが141文字以上のとき' do
+        let!(:form) { build(:todo_tag_form, text: 'a' * 151) }
+        it { is_expected.to be_present }
+      end
     end
 
-    it 'file_length' do
-      form.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
-      form.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
-      form.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
-      form.valid?
-      expect(form.errors[:images]).to be_present
+    describe '画像バリデーションテスト' do
+      subject { form.errors[:images] }
+
+      context '画像が4枚以上のとき' do
+        let!(:form) do
+          build(:todo_tag_form) do |f|
+            4.times do
+              f.images.attach(io: File.open('spec/fixtures/files/image/test_image.png'), filename: 'test_image.png', content_type: 'image/png')
+            end
+          end
+        end
+        it { is_expected.to be_present }
+      end
     end
 
-    context 'タスクtag数の制限' do
-      let!(:todo) { create(:todo)}
+    describe '終了期日のバリデーションテスト' do
+      subject { form.errors[:limit_date] }
+
+      context '終了期日が空欄のとき' do
+        let!(:form) { build(:todo_tag_form, limit_date: '') }
+        it { is_expected.to be_present }
+      end
+
+      context '終了期日が過去の日付のとき(pretend_ago)' do
+        let!(:form) { build(:todo_tag_form, limit_date: Time.current.ago(3.days)) }
+        it { is_expected.to be_present }
+      end
+    end
+
+    describe 'ステータスのバリデーションテスト' do
+      subject { form.errors[:status] }
+
+      context 'ステータスが空欄のとき' do
+        let!(:form) { build(:todo_tag_form, status: ' ') }
+        it { is_expected.to be_present }
+      end
+
+      context 'ステータスの初期値は未完了であること' do
+        let!(:form) { build(:todo_tag_form) }
+        it { expect(form.status).to eq '未完了' }
+      end
+    end
+
+    describe 'タグのバリデーションテスト' do
+      subject { form.errors[:base] }
+
+      context 'タグの文字数が11文字以上のとき' do
+        let!(:form) { build(:todo_tag_form, name: 'a' * 11) }
+        it { is_expected.to be_present }
+      end
+    end
+  end
+
+  describe 'タグ数の制限テスト' do
+    subject { form.errors[:name] }
+
+    let!(:user) { create(:user) }
+    let!(:todo) { create(:todo, user:) }
+    let!(:form) do
+      TodoTagForm.new(todo:) do
+        form.user_id = user.id
+        form.title = 'title'
+        form.text = 'text'
+        form.limit_date = Time.current
+      end
+    end
+
+    context '1つのTodoに11個以上のタグを登録しようとするとき' do
+      # あらかじめ5個のタグを登録しておく
       before do
         5.times do |i|
           todo.tags.create(name: "user_tag#{i}", user_id: todo.user.id)
         end
       end
-      it 'limit_tags_per_todo' do
-        form = TodoTagForm.new(todo: todo)
-        form.user_id = todo.user.id
-        form.title = 'title'
-        form.text = 'text'
-        form.limit_date = Time.current
+      it '[10個以上登録できません]というエラー文言があること' do
         form.name = '1, 2, 3, 4, 5, 6'
         form.save
-        expect(form.errors[:name]).to include('は10個以上登録できません。')
+        expect(subject).to include('は10個以上登録できません。')
       end
     end
 
-    context 'ユーザーtag数の制限' do
-      let!(:user) { create(:user)}
-      let!(:todo0) { create(:todo, user: user)}
-
+    context '1ユーザーにつき101個以上タグを登録しようとするとき' do
       # todoを10個作成
-      #1つのtodoに対して10個のタグを作成。（合計100個のタグ）
+      # あらかじめ1つのtodoに対して10個のタグを登録。（合計100個のタグ）
       before do
-        10.times do |i|
+        10.times do |_i|
           todo = create(:todo)
           10.times do |i|
             todo.tags.create(name: "user_tag#{i + 1}", user_id: user.id)
@@ -99,15 +125,10 @@ RSpec.describe TodoTagForm, :type => :model do
         end
       end
 
-      it 'limit_tags_per_user' do
-        form = TodoTagForm.new(todo: todo0)
-        form.user_id = user.id
-        form.title = 'title'
-        form.text = 'text'
-        form.limit_date = Time.current
-        form.name = '101'
+      it '[1ユーザー100個までしか登録できません]というエラー文言があること' do
+        form.name = '101個目'
         form.save
-        expect(form.errors[:name]).to include('は1ユーザー100個までしか登録できません')
+        expect(subject).to include('は1ユーザー100個までしか登録できません')
       end
     end
   end
