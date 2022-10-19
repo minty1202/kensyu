@@ -7,26 +7,11 @@
     h2 期限切れリスト一覧
 
 ul.user-info
-  li.user = current_user.name
-  li.use r= current_user.email
-  = link_to new_users_todo_path do
-    button Todo登録へ
+  li.user= current_user.name
+  li.user= current_user.email
+  = button_to 'Todo登録へ', new_users_todo_path, method: :get, class: "btn btn-success"
 
-.todo-list
-  - if @todos.present?
-    - @todos.each do |todo|
-      = link_to users_todo_path(todo)
-        ul.todos-info
-          li.user タイトル：#{todo.title.truncate(15)}
-          li.user 期日：#{todo.limit_date}
-          li.user = todo.status
-          - if todo.images.attached?
-            - todo.images.each do |image|
-                li.user = image_tag image.variant(:thumb)
-  - else
-    p.todos-info Todoリストがありません！
-
-h2 = link_to 'マイページに戻る', users_mypage_path
+= render :partial => "/layouts/todo"
 
 .text-center
   = paginate @todos

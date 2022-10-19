@@ -1,6 +1,6 @@
-header.navbar.navbar-fixed-top
-  .container
-    = link_to "TODO", root_path, id: "header"
+header.navbar.navbar-expand.navbar-dark.fixed-top
+  div.container
+    = link_to "TODO", root_path, id:"header"
     nav
       ul.nav.navbar-nav.navbar-right.header-info
         - if user_signed_in?

@@ -1,5 +1,5 @@
-@import "bootstrap-sprockets";
-@import "bootstrap";
+@import 'bootstrap/scss/bootstrap';
+@import 'bootstrap-icons/font/bootstrap-icons';
 
 body {
   padding-top: 100px;
@@ -158,6 +158,7 @@ li{
 .user-info{
   width: 70%;
   margin: 0 auto;
+  padding-bottom: 15px;
   display: flex;
   justify-content: space-around;
 }
@@ -175,18 +176,14 @@ li{
 }
 
 .comment-title{
-  margin-top: 100px;
+  margin-top: 10px;
   font-size: 30px;
   color: rgb(0, 0, 0);
 }
-.comment-info{
-  width: 90%;
-  margin: 20px auto;
-  display: flex;
-  justify-content: start;
-}
+
 .comment-text{
   font-size: 18px;
+  padding-bottom: 10px;
   color: rgb(0, 0, 0);
 }
 
@@ -247,4 +244,79 @@ li{
 /*ホバー時のデザイン*/
 .pagination>li>a:hover {
   border-radius: 15px;    /*角を丸くする*/
+}
+
+/* todo一覧 */
+.todos_area {
+  width: 80%;
+  margin: 0 auto;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  // margin-top: 50px;
+  display: block;
+  :hover{
+    text-decoration: none;
+    color: rgb(0, 0, 0);
+  }
+}
+.each_todo_area {
+  background-color: #93c9ff;
+  width: 80%;
+  margin: 0 auto;
+  background-color: rgb(245, 242, 242);
+  border-radius: 30px;
+  margin-bottom: 15px;
+}
+
+.status {
+  display: flex;
+  margin-right: auto;
+  padding-top: 15px;
+  padding-left: 20px;
+}
+
+.todo_info {
+  margin-right: auto;
+  padding: 15px 15px 15px 20px
+}
+
+.each_todo_info {
+  list-style: none;
+  margin-right: auto;
+  font-size: 18px;
+  color: rgb(0, 0, 0);
+}
+
+.target {
+  pointer-events: none;
+}
+
+.status_button {
+  border-radius: 99px;
+}
+
+.title {
+  font-size: 25px;
+  font-weight: bold;
+
+}
+
+.images {
+  width:90%;
+  margin: auto;
+  padding: 15px;
+}
+
+.image {
+  text-align: center;
+  overflow:hidden;
+}
+
+.each-image {
+  margin: 10px;
+}
+
+.comment-area {
+  width: 90%;
+  margin: auto;
 }

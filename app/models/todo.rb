@@ -7,7 +7,8 @@ class Todo < ApplicationRecord
   validate :pretend_ago
 
   has_many_attached :images do |attachable|
-    attachable.variant :thumb, resize_to_limit: [100, 100]
+    attachable.variant :thumb, resize_to_limit: [500, 500]
+    attachable.variant :small, resize_to_limit: [300, 300]
   end
   belongs_to :user
   has_many :comments, dependent: :destroy

@@ -1,6 +1,5 @@
-.col-md-6.col-md-offset-3
-
-  = form_with model: [:users, @form], local: true do |f|
+.col-md-6.offset-md-3
+  = form_with model: [:users, @form ],local: true do |f|
     ul
       - @todo.errors.full_messages.each do |message|
         li.error-messages = message
@@ -28,12 +27,13 @@
       = f.select :status, options_for_select(%w([未完了 todo]))
     = f.label '画像（3枚まで）'
     = f.file_field :images, multiple: true, value: @todo.images
-    - if @form.images.present?
-      p 削除するものはチェックして下さい
-      - @imgs = @todo.images.map img ActiveStorage::Attachment.find(img.id)
-      - @imgs.reject(&:blank?).each do |img|
-        = f.check_box :image_ids, { multiple: true }, img.id, false
-        li.user = image_tag img.variant(:thumb)
+    .images
+      - if @form.images.present?
+        p 削除するものはチェックして下さい
+        - @imgs = @todo.images.map {|img| ActiveStorage::Attachment.find(img.id)}
+        - @imgs.reject(&:blank?).each do |img|
+          = f.check_box :image_ids, {multiple: true}, img.id, false
+          .each-image = image_tag img.variant(:small)
     = f.submit class: "btn btn-primary"
 
-  = link_to '戻る', users_mypage_path
+  = link_to '戻る', users_mypage_path, class: "btn btn-secondary"

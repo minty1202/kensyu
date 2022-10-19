@@ -7,6 +7,7 @@ Rails.application.routes.draw do
 
   namespace :users do
     resource :mypage, only: :show do
+      post'/:id', to: 'mypages#done', as: 'done'
       resources :tags, only: [:show, :edit, :update, :destroy]
       get '/find_to/:status', to: 'statuses#find_status', as: 'status'
     end
